@@ -273,9 +273,6 @@
         
         <div class="nav-bar">
             <a href="index.html">← Volver a la página principal</a>
-            <div>
-                <a href="#" onclick="window.print()">Imprimir</a>
-            </div>
         </div>
         
         <div class="calculator-section">
@@ -440,7 +437,7 @@
                 
                 const resistorLeft = leftMargin + (containerWidth - leftMargin - rightMargin - resistorWidth) / 2;
                 
-                // Añadir la resistencia
+                // Añadir la resistencia con su valor claramente visible
                 addResistor(
                     resistorLeft,
                     yPosition - resistorHeight / 2,
@@ -497,13 +494,18 @@
             resistor.style.top = `${y}px`;
             resistor.style.width = `${width}px`;
             resistor.style.height = `${height}px`;
-            resistor.textContent = '⚡';
             
+            // Agregar el valor de la resistencia directamente en el resistor
+            resistor.innerHTML = `<span style="font-size: 10px;">${value} Ω</span>`;
+            
+            // Agregar el símbolo de resistencia y el valor de forma más visible
             const label = document.createElement('div');
             label.className = 'resistor-label';
             label.style.left = `${x + width / 2}px`;
             label.style.top = `${y + height + 5}px`;
             label.style.transform = 'translateX(-50%)';
+            label.style.fontSize = '14px';
+            label.style.fontWeight = 'bold';
             label.textContent = `${value} Ω`;
             
             circuitContainer.appendChild(resistor);
