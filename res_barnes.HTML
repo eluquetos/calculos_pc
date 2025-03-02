@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resistividad Barnes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Eliminadas las bibliotecas que ya no necesitamos -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #27ae60;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            grid-column: span 3;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .print-button {
+            background-color: #3498db;
+        }
+        .print-button:hover {
+            background-color: #2980b9;
+        }
+        /* Mensaje de estado para la generación del PDF */
+        #pdf-status {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+        @media print {
+            body {
+                background-color: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="content-to-print">
+        <h1>Resistividad Barnes</h1>
+        
+        <div class="input-section no-print">
+            <div class="input-group">
+                <label for="depth1">Profundidad 1 (m):</label>
+                <input type="number" id="depth1" step="0.01" value="1.0">
+            </div>
+            <div class="input-group">
+                <label for="depth2">Profundidad 2 (m):</label>
+                <input type="number" id="depth2" step="0.01" value="2.0">
+            </div>
+            <div class="input-group">
+                <label for="depth3">Profundidad 3 (m):</label>
+                <input type="number" id="depth3" step="0.01" value="3.0">
+            </div>
+            <div class="input-group">
+                <label for="resistance1">Resistencia 1 (ohm):</label>
+                <input type="number" id="resistance1" step="0.01" value="10.0">
+            </div>
+            <div class="input-group">
+                <label for="resistance2">Resistencia 2 (ohm):</label>
+                <input type="number" id="resistance2" step="0.01" value="15.0">
+            </div>
+            <div class="input-group">
+                <label for="resistance3">Resistencia 3 (ohm):</label>
+                <input type="number" id="resistance3" step="0.01" value="20.0">
+            </div>
+            <div class="button-container">
+                <button onclick="calcularResistividad()">Calcular</button>
+                <button class="print-button" onclick="imprimirDirectamente()">Imprimir PDF</button>
+            </div>
+        </div>
+        
+        <!-- Elemento de estado eliminado ya que no se necesita -->
+        
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Profundidad (m)</th>
+                    <th>Resistencia (ohm)</th>
+                    <th>Resistividad (ohm-m)</th>
+                    <th>ResxBarnes (ohm-m)</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <!-- Resultados se mostrarán aquí -->
+            </tbody>
+        </table>
+        
+        <div class="chart-container">
+            <canvas id="resistivityChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let myChart = null;
+        
+        // Ejecutar cálculo inicial al cargar la página
+        window.onload = function() {
+            calcularResistividad();
+        };
+        
+        function calcularResistividad() {
+            // Obtener valores de entrada
+            const depths = [
+                parseFloat(document.getElementById('depth1').value),
+                parseFloat(document.getElementById('depth2').value),
+                parseFloat(document.getElementById('depth3').value)
+            ];
+            
+            const resistances = [
+                parseFloat(document.getElementById('resistance1').value),
+                parseFloat(document.getElementById('resistance2').value),
+                parseFloat(document.getElementById('resistance3').value)
+            ];
+            
+            // Limpiar tabla
+            const tableBody = document.getElementById('resultBody');
+            tableBody.innerHTML = '';
+            
+            // Constante para cálculos
+            const PI2 = 6.2832;
+            
+            // Calcular resistividades y valores Barnes con la nueva fórmula
+            const resistivities = depths.map((depth, i) => PI2 * resistances[i] * depth);
+            
+            // Calcular ResxBarnes
+            let barnesValues = [];
+            
+            // Para la primera fila, ResxBarnes = Resistividad
+            barnesValues[0] = resistivities[0];
+            
+            // Para filas posteriores
+            for (let i = 1; i < depths.length; i++) {
+                // Calcular inversa de resistencia actual e inversa de resistencia anterior
+                const invCurrent = 1 / resistances[i];
+                const invPrevious = 1 / resistances[i-1];
+                
+                // Calcular ResxBarnes
+                barnesValues[i] = PI2 / (invCurrent - invPrevious);
+            }
+            
+            // Mostrar resultados en la tabla
+            for (let i = 0; i < depths.length; i++) {
+                const row = tableBody.insertRow();
+                
+                // Añadir celdas con valores
+                row.insertCell(0).textContent = depths[i].toFixed(2);
+                row.insertCell(1).textContent = resistances[i].toFixed(2);
+                row.insertCell(2).textContent = resistivities[i].toFixed(2);
+                row.insertCell(3).textContent = barnesValues[i].toFixed(2);
+            }
+            
+            // Generar gráfica
+            generarGrafica(depths, resistivities, barnesValues);
+        }
+        
+        function generarGrafica(depths, resistivities, barnesValues) {
+            // Destruir gráfica anterior si existe
+            if (myChart !== null) {
+                myChart.destroy();
+            }
+            
+            const ctx = document.getElementById('resistivityChart').getContext('2d');
+            
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: depths.map(d => d.toFixed(2) + ' m'),
+                    datasets: [
+                        {
+                            label: 'Resistividad (ohm-m)',
+                            data: resistivities,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 5
+                        },
+                        {
+                            label: 'ResxBarnes (ohm-m)',
+                            data: barnesValues,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 0 // Deshabilitar animaciones para captura de gráficos
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Valor (ohm-m)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Profundidad (m)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Resistividad y ResxBarnes vs. Profundidad',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Método simple para imprimir usando la función del navegador
+        function imprimirDirectamente() {
+            window.print();
+        }
+        
+        // Función para imprimir usando la función nativa del navegador
+        function imprimirDirectamente() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
