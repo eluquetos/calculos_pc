@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Resistencias en Paralelo</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f5f7fa;
+            --dark-text: #34495e;
+            --light-text: #ffffff;
+            --success-color: #2ecc71;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .nav-bar {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            margin: -20px -20px 20px -20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-bar a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .calculator-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .diagram-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .input-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .resistance-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .resistance-value {
+            flex-grow: 1;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .delete-btn {
+            background-color: var(--accent-color);
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .print-btn {
+            background-color: var(--success-color);
+            margin-top: 20px;
+        }
+        
+        .print-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .result-section {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .circuit-diagram {
+            width: 100%;
+            height: 300px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .circuit-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .horizontal-wire {
+            position: absolute;
+            height: 4px;
+            background-color: #333;
+        }
+        
+        .vertical-wire {
+            position: absolute;
+            width: 4px;
+            background-color: #333;
+        }
+        
+        .resistor {
+            position: absolute;
+            height: 20px;
+            background-color: #f8f8f8;
+            border: 2px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        
+        .resistor-label {
+            position: absolute;
+            font-size: 12px;
+            color: #333;
+            text-align: center;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .container, .container * {
+                visibility: visible;
+            }
+            
+            .container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            
+            .print-btn, .add-resistance-btn, .delete-btn {
+                display: none;
+            }
+            
+            input[type="number"] {
+                border: none;
+                font-weight: bold;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Calculadora de Resistencias en Paralelo</h1>
+        </header>
+        
+        <div class="nav-bar">
+            <a href="index.html">← Volver a la página principal</a>
+            <div>
+                <a href="#" onclick="window.print()">Imprimir</a>
+            </div>
+        </div>
+        
+        <div class="calculator-section">
+            <div class="input-section">
+                <h2>Resistencias en Paralelo</h2>
+                <p>Ingrese los valores de las resistencias en ohms (Ω):</p>
+                
+                <div id="resistances-container">
+                    <!-- Las resistencias se agregarán aquí dinámicamente -->
+                </div>
+                
+                <button id="add-resistance-btn" class="add-resistance-btn">+ Agregar Resistencia</button>
+                
+                <div class="result-section">
+                    <h3>Resistencia Equivalente</h3>
+                    <div class="result-value"><span id="equivalent-resistance">0.00</span> Ω</div>
+                </div>
+                
+                <button class="print-btn" onclick="window.print()">Imprimir PDF</button>
+            </div>
+            
+            <div class="diagram-section">
+                <h2>Diagrama del Circuito</h2>
+                <div class="circuit-diagram">
+                    <div id="circuit-container" class="circuit-container">
+                        <!-- El diagrama del circuito se generará aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            &copy; 2025 Cálculos de Ingeniería | Creado con GitHub Pages
+        </footer>
+    </div>
+    
+    <script>
+        // Estado inicial
+        let resistances = [100, 220]; // Valores iniciales (en ohms)
+        
+        // Referencias a elementos del DOM
+        const resistancesContainer = document.getElementById('resistances-container');
+        const addResistanceBtn = document.getElementById('add-resistance-btn');
+        const equivalentResistanceElement = document.getElementById('equivalent-resistance');
+        const circuitContainer = document.getElementById('circuit-container');
+        
+        // Inicializar la aplicación
+        initializeApp();
+        
+        function initializeApp() {
+            // Cargar las resistencias iniciales
+            renderResistances();
+            
+            // Actualizar el circuito y el resultado
+            updateCircuitDiagram();
+            calculateEquivalentResistance();
+            
+            // Agregar event listeners
+            addResistanceBtn.addEventListener('click', addResistance);
+        }
+        
+        function renderResistances() {
+            // Limpiar el contenedor
+            resistancesContainer.innerHTML = '';
+            
+            // Renderizar cada resistencia
+            resistances.forEach((resistance, index) => {
+                const resistanceItem = document.createElement('div');
+                resistanceItem.className = 'resistance-item';
+                
+                resistanceItem.innerHTML = `
+                    <div class="resistance-value">
+                        <label>R${index + 1} (Ω):</label>
+                        <input type="number" min="0.1" step="0.1" value="${resistance}" 
+                            onchange="updateResistance(${index}, this.value)">
+                    </div>
+                    <button class="delete-btn" onclick="deleteResistance(${index})">×</button>
+                `;
+                
+                resistancesContainer.appendChild(resistanceItem);
+            });
+        }
+        
+        function updateResistance(index, value) {
+            const numValue = parseFloat(value);
+            if (!isNaN(numValue) && numValue > 0) {
+                resistances[index] = numValue;
+                updateCircuitDiagram();
+                calculateEquivalentResistance();
+            }
+        }
+        
+        function addResistance() {
+            resistances.push(100); // Valor predeterminado
+            renderResistances();
+            updateCircuitDiagram();
+            calculateEquivalentResistance();
+        }
+        
+        function deleteResistance(index) {
+            if (resistances.length > 1) {
+                resistances.splice(index, 1);
+                renderResistances();
+                updateCircuitDiagram();
+                calculateEquivalentResistance();
+            } else {
+                alert('Debe haber al menos una resistencia.');
+            }
+        }
+        
+        function calculateEquivalentResistance() {
+            // Fórmula para resistencias en paralelo: 1/Req = 1/R1 + 1/R2 + ... + 1/Rn
+            let sum = 0;
+            
+            for (const resistance of resistances) {
+                sum += 1 / resistance;
+            }
+            
+            const equivalentResistance = 1 / sum;
+            
+            // Actualizar la visualización del resultado
+            equivalentResistanceElement.textContent = equivalentResistance.toFixed(2);
+        }
+        
+        function updateCircuitDiagram() {
+            // Limpiar el contenedor del circuito
+            circuitContainer.innerHTML = '';
+            
+            const containerWidth = circuitContainer.clientWidth;
+            const containerHeight = circuitContainer.clientHeight;
+            
+            // Dimensiones y posiciones
+            const leftMargin = 50;
+            const rightMargin = 50;
+            const topPosition = 40;
+            const bottomPosition = containerHeight - 40;
+            const resistorSpacing = Math.min(50, (containerHeight - 100) / (resistances.length + 1));
+            const resistorHeight = 20;
+            const resistorWidth = 60;
+            
+            // Cables principales (vertical izquierdo y derecho)
+            addVerticalWire(leftMargin, topPosition, bottomPosition - topPosition);
+            addVerticalWire(containerWidth - rightMargin, topPosition, bottomPosition - topPosition);
+            
+            // Cable horizontal superior e inferior
+            addHorizontalWire(leftMargin, topPosition, containerWidth - leftMargin - rightMargin);
+            addHorizontalWire(leftMargin, bottomPosition, containerWidth - leftMargin - rightMargin);
+            
+            // Agregar símbolo de fuente (batería)
+            addBatterySymbol(leftMargin - 25, (topPosition + bottomPosition) / 2, 25);
+            
+            // Calcular la altura disponible para las resistencias
+            const availableHeight = bottomPosition - topPosition - 40;
+            const resistorVerticalSpacing = availableHeight / (resistances.length + 1);
+            
+            // Agregar las resistencias
+            resistances.forEach((resistance, index) => {
+                const yPosition = topPosition + resistorVerticalSpacing * (index + 1);
+                
+                // Agregar cables horizontales para conectar la resistencia
+                addHorizontalWire(leftMargin, yPosition, (containerWidth - leftMargin - rightMargin - resistorWidth) / 2);
+                
+                const resistorLeft = leftMargin + (containerWidth - leftMargin - rightMargin - resistorWidth) / 2;
+                
+                // Añadir la resistencia
+                addResistor(
+                    resistorLeft,
+                    yPosition - resistorHeight / 2,
+                    resistorWidth,
+                    resistorHeight,
+                    resistance
+                );
+                
+                // Añadir cable después de la resistencia
+                addHorizontalWire(
+                    resistorLeft + resistorWidth,
+                    yPosition,
+                    (containerWidth - leftMargin - rightMargin - resistorWidth) / 2
+                );
+            });
+            
+            // Agregar texto de resultado
+            const resultText = document.createElement('div');
+            resultText.style.position = 'absolute';
+            resultText.style.top = `${bottomPosition + 10}px`;
+            resultText.style.left = `${containerWidth / 2}px`;
+            resultText.style.transform = 'translateX(-50%)';
+            resultText.style.fontWeight = 'bold';
+            resultText.style.fontSize = '14px';
+            resultText.innerHTML = `Req = ${parseFloat(equivalentResistanceElement.textContent).toFixed(2)} Ω`;
+            
+            circuitContainer.appendChild(resultText);
+        }
+        
+        function addVerticalWire(x, y, height) {
+            const wire = document.createElement('div');
+            wire.className = 'vertical-wire';
+            wire.style.left = `${x}px`;
+            wire.style.top = `${y}px`;
+            wire.style.height = `${height}px`;
+            
+            circuitContainer.appendChild(wire);
+        }
+        
+        function addHorizontalWire(x, y, width) {
+            const wire = document.createElement('div');
+            wire.className = 'horizontal-wire';
+            wire.style.left = `${x}px`;
+            wire.style.top = `${y}px`;
+            wire.style.width = `${width}px`;
+            
+            circuitContainer.appendChild(wire);
+        }
+        
+        function addResistor(x, y, width, height, value) {
+            const resistor = document.createElement('div');
+            resistor.className = 'resistor';
+            resistor.style.left = `${x}px`;
+            resistor.style.top = `${y}px`;
+            resistor.style.width = `${width}px`;
+            resistor.style.height = `${height}px`;
+            resistor.textContent = '⚡';
+            
+            const label = document.createElement('div');
+            label.className = 'resistor-label';
+            label.style.left = `${x + width / 2}px`;
+            label.style.top = `${y + height + 5}px`;
+            label.style.transform = 'translateX(-50%)';
+            label.textContent = `${value} Ω`;
+            
+            circuitContainer.appendChild(resistor);
+            circuitContainer.appendChild(label);
+        }
+        
+        function addBatterySymbol(x, y, size) {
+            // Línea vertical para la batería
+            const battery = document.createElement('div');
+            battery.style.position = 'absolute';
+            battery.style.left = `${x}px`;
+            battery.style.top = `${y - size / 2}px`;
+            battery.style.width = `${size}px`;
+            battery.style.height = `${size}px`;
+            battery.style.border = '2px solid #333';
+            battery.style.borderRadius = '50%';
+            battery.innerHTML = '+<br>−';
+            battery.style.display = 'flex';
+            battery.style.justifyContent = 'center';
+            battery.style.alignItems = 'center';
+            battery.style.fontWeight = 'bold';
+            battery.style.fontSize = '12px';
+            battery.style.lineHeight = '1';
+            battery.style.textAlign = 'center';
+            
+            circuitContainer.appendChild(battery);
+        }
+        
+        // Ajustar el diagrama cuando se cambia el tamaño de la ventana
+        window.addEventListener('resize', updateCircuitDiagram);
+    </script>
+</body>
+</html>
