@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Resistencia de Vigas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .calculator {
+            background-color: #f7f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .results {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .formula {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Resistencia de Vigas</h1>
+    
+    <div class="calculator">
+        <h2>Cálculo de Momento Flector Máximo</h2>
+        
+        <p>Esta herramienta calcula el momento flector máximo y la tensión máxima para una viga simplemente apoyada con carga uniformemente distribuida.</p>
+        
+        <div class="formula">
+            Momento Flector Máximo (M) = (w × L²) / 8<br>
+            Tensión Máxima (σ) = (M × y) / I
+        </div>
+        
+        <div class="input-group">
+            <label for="load">Carga Distribuida (w) [kN/m]:</label>
+            <input type="number" id="load" placeholder="Ejemplo: 10" step="0.1" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label for="length">Longitud de la Viga (L) [m]:</label>
+            <input type="number" id="length" placeholder="Ejemplo: 5" step="0.1" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label for="section-height">Altura de la Sección (h) [mm]:</label>
+            <input type="number" id="section-height" placeholder="Ejemplo: 200" step="1" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label for="section-width">Ancho de la Sección (b) [mm]:</label>
+            <input type="number" id="section-width" placeholder="Ejemplo: 100" step="1" min="0">
+        </div>
+        
+        <button onclick="calcular()">Calcular</button>
+        
+        <div class="results" id="results" style="display: none;">
+            <h3>Resultados:</h3>
+            <p>Momento Flector Máximo: <span id="moment"></span> kN·m</p>
+            <p>Momento de Inercia: <span id="inertia"></span> mm⁴</p>
+            <p>Tensión Máxima: <span id="stress"></span> MPa</p>
+        </div>
+    </div>
+    
+    <div class="calculator">
+        <h2>Información Adicional</h2>
+        <p>Esta calculadora aplica para vigas simplemente apoyadas con carga uniformemente distribuida. El momento máximo ocurre en el centro de la viga.</p>
+        <p>Para otros tipos de cargas o condiciones de apoyo, se deben utilizar fórmulas diferentes.</p>
+    </div>
+    
+    <script>
+        function calcular() {
+            // Obtener valores de entrada
+            const carga = parseFloat(document.getElementById('load').value);
+            const longitud = parseFloat(document.getElementById('length').value);
+            const altura = parseFloat(document.getElementById('section-height').value);
+            const ancho = parseFloat(document.getElementById('section-width').value);
+            
+            // Validar entradas
+            if (isNaN(carga) || isNaN(longitud) || isNaN(altura) || isNaN(ancho)) {
+                alert("Por favor, complete todos los campos con valores numéricos válidos.");
+                return;
+            }
+            
+            if (carga <= 0 || longitud <= 0 || altura <= 0 || ancho <= 0) {
+                alert("Todos los valores deben ser positivos.");
+                return;
+            }
+            
+            // Cálculos
+            const momento = (carga * Math.pow(longitud, 2)) / 8;  // kN·m
+            
+            // Momento de inercia para sección rectangular
+            const inercia = (ancho * Math.pow(altura, 3)) / 12;  // mm⁴
+            
+            // Distancia del eje neutro a la fibra más alejada
+            const yMax = altura / 2;  // mm
+            
+            // Tensión máxima (convertir momento a N·mm para cálculo)
+            const momentoNmm = momento * 1000000;  // Convertir de kN·m a N·mm
+            const tension = (momentoNmm * yMax) / inercia;  // N/mm²
+            const tensionMPa = tension;  // 1 N/mm² = 1 MPa
+            
+            // Mostrar resultados
+            document.getElementById('moment').textContent = momento.toFixed(2);
+            document.getElementById('inertia').textContent = inercia.toFixed(0);
+            document.getElementById('stress').textContent = tensionMPa.toFixed(2);
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
