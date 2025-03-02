@@ -454,17 +454,24 @@
                 );
             });
             
-            // Agregar texto de resultado
-            const resultText = document.createElement('div');
-            resultText.style.position = 'absolute';
-            resultText.style.top = `${bottomPosition + 10}px`;
-            resultText.style.left = `${containerWidth / 2}px`;
-            resultText.style.transform = 'translateX(-50%)';
-            resultText.style.fontWeight = 'bold';
-            resultText.style.fontSize = '14px';
-            resultText.innerHTML = `Req = ${parseFloat(equivalentResistanceElement.textContent).toFixed(2)} Ω`;
-            
-            circuitContainer.appendChild(resultText);
+           // Calcular el valor de resistencia equivalente actual
+let sum = 0;
+for (const resistance of resistances) {
+    sum += 1 / resistance;
+}
+const equivalentResistance = 1 / sum;
+
+// Agregar texto de resultado con el valor actualizado
+const resultText = document.createElement('div');
+resultText.style.position = 'absolute';
+resultText.style.top = `${bottomPosition + 10}px`;
+resultText.style.left = `${containerWidth / 2}px`;
+resultText.style.transform = 'translateX(-50%)';
+resultText.style.fontWeight = 'bold';
+resultText.style.fontSize = '14px';
+resultText.innerHTML = `Req = ${equivalentResistance.toFixed(2)} Ω`;
+
+circuitContainer.appendChild(resultText);
         }
         
         function addVerticalWire(x, y, height) {
