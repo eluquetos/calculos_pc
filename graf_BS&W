@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráficos de Agua y Conductividad - Para Imprimir</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 85%;
+            max-width: 800px;
+            height: 400px;
+            margin: 0 auto 70px auto;
+            page-break-after: always;
+            position: relative;
+            padding-bottom: 30px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .print-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .print-button:hover {
+            background-color: #45a049;
+        }
+        @media print {
+            .print-button {
+                display: none;
+            }
+            .chart-container {
+                page-break-after: always;
+                height: 500px;
+                margin-bottom: 100px;
+                padding-bottom: 50px;
+            }
+            body {
+                padding: 0;
+            }
+            h2 {
+                margin-top: 40px;
+                margin-bottom: 30px;
+            }
+        }
+        .data-table {
+            width: 85%;
+            max-width: 800px;
+            margin: 40px auto;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .data-table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background-color: #f2f2f2;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relación entre contenido de agua, altura del colchón de agua y conductividad eléctrica</h1>
+    
+    <button class="print-button" onclick="window.print()">Imprimir Gráficos</button>
+    
+    <!-- Tabla de datos original -->
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Contenido de Agua (%)</th>
+                <th>Altura del Colchón de Agua (m)</th>
+                <th>Conductividad Eléctrica (μS/cm)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>20</td>
+                <td>0.8 - 1.2</td>
+                <td>157.5</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>1.0 - 1.5</td>
+                <td>196.9</td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>1.2 - 1.8</td>
+                <td>236.3</td>
+            </tr>
+            <tr>
+                <td>35</td>
+                <td>1.4 - 2.1</td>
+                <td>275.6</td>
+            </tr>
+            <tr>
+                <td>40</td>
+                <td>1.6 - 2.4</td>
+                <td>315.0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Gráfico 1: Conductividad vs Contenido de Agua -->
+    <div class="chart-container">
+        <h2>Conductividad Eléctrica vs Contenido de Agua</h2>
+        <div style="height: 90%; width: 100%;">
+            <canvas id="chart1"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico 2: Altura del Colchón vs Contenido de Agua -->
+    <div class="chart-container">
+        <h2>Altura del Colchón de Agua vs Contenido de Agua</h2>
+        <div style="height: 90%; width: 100%;">
+            <canvas id="chart2"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico 3: Barras de Conductividad -->
+    <div class="chart-container">
+        <h2>Comparativa de Conductividad por Contenido de Agua</h2>
+        <div style="height: 90%; width: 100%;">
+            <canvas id="chart3"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico 4: Correlación entre variables -->
+    <div class="chart-container">
+        <h2>Correlación: Contenido de Agua y Conductividad</h2>
+        <div style="height: 90%; width: 100%;">
+            <canvas id="chart4"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Datos de la tabla
+        const contenidoAgua = [20, 25, 30, 35, 40];
+        const alturaMin = [0.8, 1.0, 1.2, 1.4, 1.6];
+        const alturaMax = [1.2, 1.5, 1.8, 2.1, 2.4];
+        const conductividad = [157.5, 196.9, 236.3, 275.6, 315.0];
+        const alturaMedia = alturaMin.map((min, i) => (min + alturaMax[i]) / 2);
+
+        // Gráfico 1: Conductividad vs Contenido de Agua
+        new Chart(document.getElementById('chart1'), {
+            type: 'line',
+            data: {
+                labels: contenidoAgua,
+                datasets: [{
+                    label: 'Conductividad Eléctrica (μS/cm)',
+                    data: conductividad,
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Contenido de Agua (%)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 20
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Conductividad Eléctrica (μS/cm)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Gráfico 2: Altura vs Contenido de Agua
+        new Chart(document.getElementById('chart2'), {
+            type: 'line',
+            data: {
+                labels: contenidoAgua,
+                datasets: [
+                    {
+                        label: 'Altura Mínima (m)',
+                        data: alturaMin,
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        tension: 0.1,
+                        pointRadius: 6
+                    },
+                    {
+                        label: 'Altura Máxima (m)',
+                        data: alturaMax,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        tension: 0.1,
+                        pointRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Contenido de Agua (%)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Altura del Colchón de Agua (m)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Gráfico 3: Barras de Conductividad
+        new Chart(document.getElementById('chart3'), {
+            type: 'bar',
+            data: {
+                labels: contenidoAgua,
+                datasets: [{
+                    label: 'Conductividad Eléctrica (μS/cm)',
+                    data: conductividad,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 99, 132, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 99, 132)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Contenido de Agua (%)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Conductividad Eléctrica (μS/cm)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico 4: Scatter de Correlación
+        new Chart(document.getElementById('chart4'), {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Altura Media vs Conductividad',
+                    data: alturaMedia.map((altura, i) => ({
+                        x: altura,
+                        y: conductividad[i]
+                    })),
+                    backgroundColor: contenidoAgua.map(c => 
+                        `rgba(${Math.round(c * 5)}, 100, 200, 0.8)`
+                    ),
+                    pointRadius: 10,
+                    pointHoverRadius: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: 'Altura Media del Colchón (m)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Conductividad Eléctrica (μS/cm)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const index = context.dataIndex;
+                                return `Contenido: ${contenidoAgua[index]}%, Altura: ${alturaMedia[index].toFixed(1)}m, Conductividad: ${conductividad[index]} μS/cm`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
