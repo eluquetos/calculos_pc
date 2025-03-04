@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conversor de Ánodos de Aluminio</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <h1>Conversor de Ánodos de Aluminio</h1>
+
+    <label for="modelo">Ingrese el Modelo:</label>
+    <input type="text" id="modelo" name="modelo">
+    <button onclick="buscarAnodo()">Buscar</button>
+
+    <table id="tablaResultados">
+        <thead>
+            <tr>
+                <th>Modelo</th>
+                <th>Peso (lbs)</th>
+                <th>Peso (kgs)</th>
+                <th>Longitud (in)</th>
+                <th>Longitud (mm)</th>
+                <th>Ancho (in)</th>
+                <th>Ancho (mm)</th>
+                <th>Altura (in)</th>
+                <th>Altura (mm)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se mostrarán los resultados -->
+        </tbody>
+    </table>
+
+    <script>
+        const anodos = [
+            { "Modelo": "GA-A-2-10H", "Peso": 10.00, "Longitud": 14.00, "Ancho": 6.50, "Altura": 1.25 },
+            { "Modelo": "GA-A-1-12H", "Peso": 12.00, "Longitud": 14.00, "Ancho": 4.50, "Altura": 2.25 },
+            { "Modelo": "GA-A-1-15H", "Peso": 15.00, "Longitud": 21.50, "Ancho": 5.00, "Altura": 1.38 },
+            { "Modelo": "GA-A-2-15H", "Peso": 15.00, "Longitud": 21.50, "Ancho": 5.00, "Altura": 1.38 },
+            { "Modelo": "GA-A-1-20H", "Peso": 20.00, "Longitud": 24.00, "Ancho": 4.50, "Altura": 2.25 },
+            { "Modelo": "GA-A-1-23H", "Peso": 23.00, "Longitud": 24.00, "Ancho": 5.00, "Altura": 1.94 },
+            { "Modelo": "GA-A-1-29H", "Peso": 29.00, "Longitud": 24.00, "Ancho": 5.00, "Altura": 2.50 },
+            { "Modelo": "GA-A-2-32H", "Peso": 32.00, "Longitud": 20.00, "Ancho": 10.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-21", "Peso": 21.00, "Longitud": 48.00, "Ancho": 2.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-26", "Peso": 26.00, "Longitud": 60.00, "Ancho": 2.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-30", "Peso": 30.00, "Longitud": 48.00, "Ancho": 2.50, "Altura": 2.50 },
+            { "Modelo": "GA-ABT-39", "Peso": 39.00, "Longitud": 60.00, "Ancho": 2.50, "Altura": 2.50 },
+            { "Modelo": "GA-ABT-48", "Peso": 48.00, "Longitud": 48.00, "Ancho": 3.00, "Altura": 3.00 },
+            { "Modelo": "GA-ABT-B21", "Peso": 21.00, "Longitud": 48.00, "Ancho": 2.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-B26", "Peso": 26.00, "Longitud": 60.00, "Ancho": 2.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-B30", "Peso": 30.00, "Longitud": 48.00, "Ancho": 2.50, "Altura": 2.50 },
+            { "Modelo": "GA-ABT-B39", "Peso": 39.00, "Longitud": 60.00, "Ancho": 2.50, "Altura": 2.50 },
+            { "Modelo": "GA-ABT-B48", "Peso": 48.00, "Longitud": 48.00, "Ancho": 3.00, "Altura": 3.00 },
+            { "Modelo": "GA-ABT-C21", "Peso": 21.00, "Longitud": 48.00, "Ancho": 2.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-C26", "Peso": 26.00, "Longitud": 60.00, "Ancho": 2.00, "Altura": 2.00 },
+            { "Modelo": "GA-ABT-C30", "Peso": 30.00, "Longitud": 48.00, "Ancho": 2.50, "Altura": 2.50 },
+            { "Modelo": "GA-ABT-C39", "Peso": 39.00, "Longitud": 60.00, "Ancho": 2.50, "Altura": 2.50 },
+            { "Modelo": "GA-ABT-C48", "Peso": 48.00, "Longitud": 48.00, "Ancho": 3.00, "Altura": 3.00 }
+        ];
+
+        function buscarAnodo() {
+            const modeloBuscado = document.getElementById("modelo").value;
+            const anodoEncontrado = anodos.find(anodo => anodo.Modelo === modeloBuscado);
+
+            if (anodoEncontrado) {
+                mostrarResultados(anodoEncontrado);
+            } else {
+                alert("Modelo no encontrado.");
+            }
+        }
+
+        function mostrarResultados(anodo) {
+            const pesoKgs = anodo.Peso * 0.453592;
+            const longitudMm = anodo.Longitud * 25.4;
+            const anchoMm = anodo.Ancho * 25.4;
+            const alturaMm = anodo.Altura * 25.4;
+
+            const tabla = document.getElementById("tablaResultados").getElementsByTagName('tbody')[0];
+            tabla.innerHTML = ""; // Limpiar resultados anteriores
+
+            let newRow = tabla.insertRow();
+            let cell1 = newRow.insertCell(0);
+            let cell2 = newRow.insertCell(1);
+            let cell3 = newRow.insertCell(2);
+            let cell4 = newRow.insertCell(3);
+            let cell5 = newRow.insertCell(4);
+            let cell6 = newRow.insertCell(5);
+            let cell7 = newRow.insertCell(6);
+            let cell8 = newRow.insertCell(7);
+            let cell9 = newRow.insertCell(8);
+
+            cell1.innerHTML = anodo.Modelo;
+            cell2.innerHTML = anodo.Peso.toFixed(2);
+            cell3.innerHTML = pesoKgs.toFixed(2);
+            cell4.innerHTML = anodo.Longitud.toFixed(2);
+            cell5.innerHTML = longitudMm.toFixed(2);
+            cell6.innerHTML = anodo.Ancho.toFixed(2);
+            cell7.innerHTML = anchoMm.toFixed(2);
+            cell8.innerHTML = anodo.Altura.toFixed(2);
+            cell9.innerHTML = alturaMm.toFixed(2);
+        }
+    </script>
+</body>
+</html>
