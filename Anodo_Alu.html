@@ -3,129 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información de Ánodos de Aluminio</title>
+    <title>Consulta de Ánodos de Aluminio</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
+        h1 {
+            color: #005b96;
+            text-align: center;
         }
-        select {
-            padding: 5px;
-            margin-bottom: 10px;
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
         }
-        ul {
-            list-style: none; /* Quita los puntos de la lista */
-            padding: 0;       /* Quita el padding por defecto */
+        .search-container {
+            margin-bottom: 20px;
+            text-align: center;
         }
-        li {
-            margin-bottom: 10px; /* Espacio entre elementos de la lista */
-            padding: 5px;
+        select, button {
+            padding: 10px;
+            font-size: 16px;
             border: 1px solid #ccc;
+            border-radius: 4px;
         }
-        .hidden {
+        button {
+            background-color: #005b96;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+            border: none;
+        }
+        button:hover {
+            background-color: #003d66;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
             display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #005b96;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .data-table {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        .highlight {
+            background-color: #ffeb99 !important;
         }
     </style>
 </head>
 <body>
-
-    <h1>Información de Ánodos de Aluminio</h1>
-
-    <label for="modeloAnodo">Selecciona el Modelo de Ánodo:</label>
-    <select id="modeloAnodo" onchange="mostrarInformacion()">
-        <option value="">-- Selecciona un modelo --</option>
-        <!-- Opciones se agregarán dinámicamente con JavaScript -->
-    </select>
-
-    <ul id="infoAnodo">
-        <!-- La información se mostrará aquí -->
-    </ul>
-
-
+    <h1>Consulta de Ánodos de Aluminio</h1>
+    
+    <div class="container">
+        <div class="search-container">
+            <select id="modelo">
+                <option value="">Seleccione un modelo...</option>
+                <option value="GA-A-2-10H">GA-A-2-10H</option>
+                <option value="GA-A-1-12H">GA-A-1-12H</option>
+                <option value="GA-A-1-15H">GA-A-1-15H</option>
+                <option value="GA-A-2-15H">GA-A-2-15H</option>
+                <option value="GA-A-1-20H">GA-A-1-20H</option>
+                <option value="GA-A-1-23H">GA-A-1-23H</option>
+                <option value="GA-A-1-29H">GA-A-1-29H</option>
+                <option value="GA-A-2-32H">GA-A-2-32H</option>
+                <option value="GA-ABT-21">GA-ABT-21</option>
+                <option value="GA-ABT-26">GA-ABT-26</option>
+                <option value="GA-ABT-30">GA-ABT-30</option>
+                <option value="GA-ABT-39">GA-ABT-39</option>
+                <option value="GA-ABT-48">GA-ABT-48</option>
+                <option value="GA-ABT-B21">GA-ABT-B21</option>
+                <option value="GA-ABT-B26">GA-ABT-B26</option>
+                <option value="GA-ABT-B30">GA-ABT-B30</option>
+                <option value="GA-ABT-B39">GA-ABT-B39</option>
+                <option value="GA-ABT-B48">GA-ABT-B48</option>
+                <option value="GA-ABT-C21">GA-ABT-C21</option>
+                <option value="GA-ABT-C26">GA-ABT-C26</option>
+                <option value="GA-ABT-C30">GA-ABT-C30</option>
+                <option value="GA-ABT-C39">GA-ABT-C39</option>
+                <option value="GA-ABT-C48">GA-ABT-C48</option>
+            </select>
+            <button onclick="consultarAnodo()">Consultar</button>
+        </div>
+        
+        <div id="result" class="result">
+            <h2>Resultado de la consulta</h2>
+            <p><strong>Modelo:</strong> <span id="modeloResult"></span></p>
+            <p><strong>Peso:</strong> <span id="pesoResult"></span> lbs (<span id="pesoKgResult"></span> kg)</p>
+            <p><strong>Longitud:</strong> <span id="longitudResult"></span> pulgadas (<span id="longitudMmResult"></span> mm)</p>
+            <p><strong>Ancho:</strong> <span id="anchoResult"></span> pulgadas (<span id="anchoMmResult"></span> mm)</p>
+            <p><strong>Altura:</strong> <span id="alturaResult"></span> pulgadas (<span id="alturaMmResult"></span> mm)</p>
+        </div>
+        
+        <!-- La tabla ha sido removida según solicitud -->
+    </div>
 
     <script>
-        // Datos de los ánodos (simulados, reemplaza con tu tabla real)
-        const datosAnodos = [
-            { modelo: "A-1", pesoLbs: 10, longitudIn: 20, anchoIn: 5, alturaIn: 2 },
-            { modelo: "A-2", pesoLbs: 25, longitudIn: 36, anchoIn: 8, alturaIn: 3 },
-            { modelo: "B-3", pesoLbs: 15, longitudIn: 24, anchoIn: 6, alturaIn: 2.5 },
-            { modelo: "C-5", pesoLbs: 40, longitudIn: 48, anchoIn: 10, alturaIn: 4 },
-            { modelo: "S-10", pesoLbs: 5,  longitudIn: 12, anchoIn: 3, alturaIn: 1.5},
+        // Datos de los ánodos
+        const anodosData = [
+            { nro: 1, modelo: "GA-A-2-10H", peso: 10.00, longitud: 14.00, ancho: 6.50, altura: 1.25 },
+            { nro: 2, modelo: "GA-A-1-12H", peso: 12.00, longitud: 14.00, ancho: 4.50, altura: 2.25 },
+            { nro: 3, modelo: "GA-A-1-15H", peso: 15.00, longitud: 21.50, ancho: 5.00, altura: 1.38 },
+            { nro: 4, modelo: "GA-A-2-15H", peso: 15.00, longitud: 21.50, ancho: 5.00, altura: 1.38 },
+            { nro: 5, modelo: "GA-A-1-20H", peso: 20.00, longitud: 24.00, ancho: 4.50, altura: 2.25 },
+            { nro: 6, modelo: "GA-A-1-23H", peso: 23.00, longitud: 24.00, ancho: 5.00, altura: 1.94 },
+            { nro: 7, modelo: "GA-A-1-29H", peso: 29.00, longitud: 24.00, ancho: 5.00, altura: 2.50 },
+            { nro: 8, modelo: "GA-A-2-32H", peso: 32.00, longitud: 20.00, ancho: 10.00, altura: 2.00 },
+            { nro: 9, modelo: "GA-ABT-21", peso: 21.00, longitud: 48.00, ancho: 2.00, altura: 2.00 },
+            { nro: 10, modelo: "GA-ABT-26", peso: 26.00, longitud: 60.00, ancho: 2.00, altura: 2.00 },
+            { nro: 11, modelo: "GA-ABT-30", peso: 30.00, longitud: 48.00, ancho: 2.50, altura: 2.50 },
+            { nro: 12, modelo: "GA-ABT-39", peso: 39.00, longitud: 60.00, ancho: 2.50, altura: 2.50 },
+            { nro: 13, modelo: "GA-ABT-48", peso: 48.00, longitud: 48.00, ancho: 3.00, altura: 3.00 },
+            { nro: 14, modelo: "GA-ABT-B21", peso: 21.00, longitud: 48.00, ancho: 2.00, altura: 2.00 },
+            { nro: 15, modelo: "GA-ABT-B26", peso: 26.00, longitud: 60.00, ancho: 2.00, altura: 2.00 },
+            { nro: 16, modelo: "GA-ABT-B30", peso: 30.00, longitud: 48.00, ancho: 2.50, altura: 2.50 },
+            { nro: 17, modelo: "GA-ABT-B39", peso: 39.00, longitud: 60.00, ancho: 2.50, altura: 2.50 },
+            { nro: 18, modelo: "GA-ABT-B48", peso: 48.00, longitud: 48.00, ancho: 3.00, altura: 3.00 },
+            { nro: 19, modelo: "GA-ABT-C21", peso: 21.00, longitud: 48.00, ancho: 2.00, altura: 2.00 },
+            { nro: 20, modelo: "GA-ABT-C26", peso: 26.00, longitud: 60.00, ancho: 2.00, altura: 2.00 },
+            { nro: 21, modelo: "GA-ABT-C30", peso: 30.00, longitud: 48.00, ancho: 2.50, altura: 2.50 },
+            { nro: 22, modelo: "GA-ABT-C39", peso: 39.00, longitud: 60.00, ancho: 2.50, altura: 2.50 },
+            { nro: 23, modelo: "GA-ABT-C48", peso: 48.00, longitud: 48.00, ancho: 3.00, altura: 3.00 }
         ];
 
+        // La función para llenar la tabla ha sido removida ya que no se mostrará la tabla
 
-        // --- Funciones de conversión ---
-
-        function lbsAKgs(lbs) {
-            return lbs * 0.453592;
-        }
-
-        function pulgadasAMm(pulgadas) {
-            return pulgadas * 25.4;
-        }
-
-
-        // ---  Poblar el menú desplegable ---
-        const selectModelo = document.getElementById("modeloAnodo");
-        datosAnodos.forEach(anodo => {
-            const option = document.createElement("option");
-            option.value = anodo.modelo;
-            option.textContent = anodo.modelo;
-            selectModelo.appendChild(option);
-        });
-
-
-
-        // --- Función para mostrar la información ---
-        function mostrarInformacion() {
-            const modeloSeleccionado = document.getElementById("modeloAnodo").value;
-            const listaInfo = document.getElementById("infoAnodo");
-            listaInfo.innerHTML = ""; // Limpia la lista
-
+        // Función para consultar un ánodo específico
+        function consultarAnodo() {
+            const modeloSeleccionado = document.getElementById('modelo').value;
+            const resultDiv = document.getElementById('result');
+            
+            // Limpiar cualquier fila resaltada anteriormente
+            document.querySelectorAll('tr').forEach(row => {
+                row.classList.remove('highlight');
+            });
+            
             if (!modeloSeleccionado) {
-                 return; // Sale si no hay seleccion.
+                alert('Por favor, seleccione un modelo para consultar');
+                resultDiv.style.display = 'none';
+                return;
             }
-
-
-            const anodo = datosAnodos.find(a => a.modelo === modeloSeleccionado);
-
-            if (anodo) {
-                const pesoKg = lbsAKgs(anodo.pesoLbs).toFixed(2); // Limita a 2 decimales
-                const longitudMm = pulgadasAMm(anodo.longitudIn).toFixed(2);
-                const anchoMm = pulgadasAMm(anodo.anchoIn).toFixed(2);
-                const alturaMm = pulgadasAMm(anodo.alturaIn).toFixed(2);
-
-
-                const liPeso = document.createElement("li");
-                liPeso.textContent = `Peso: ${anodo.pesoLbs} lbs  (${pesoKg} kg)`;
-
-                const liLongitud = document.createElement("li");
-                liLongitud.textContent = `Longitud: ${anodo.longitudIn} in (${longitudMm} mm)`;
-
-                const liAncho = document.createElement("li");
-                liAncho.textContent = `Ancho: ${anodo.anchoIn} in (${anchoMm} mm)`;
-
-
-                const liAltura = document.createElement("li");
-                liAltura.textContent = `Altura: ${anodo.alturaIn} in (${alturaMm} mm)`;
-
-                listaInfo.appendChild(liPeso);
-                listaInfo.appendChild(liLongitud);
-                listaInfo.appendChild(liAncho);
-                listaInfo.appendChild(liAltura);
-
+            
+            const anodoEncontrado = anodosData.find(anodo => anodo.modelo === modeloSeleccionado);
+            
+            if (anodoEncontrado) {
+                document.getElementById('modeloResult').textContent = anodoEncontrado.modelo;
+                document.getElementById('pesoResult').textContent = anodoEncontrado.peso.toFixed(2);
+                document.getElementById('pesoKgResult').textContent = (anodoEncontrado.peso * 0.45359237).toFixed(2);
+                document.getElementById('longitudResult').textContent = anodoEncontrado.longitud.toFixed(2);
+                document.getElementById('longitudMmResult').textContent = (anodoEncontrado.longitud * 25.4).toFixed(2);
+                document.getElementById('anchoResult').textContent = anodoEncontrado.ancho.toFixed(2);
+                document.getElementById('anchoMmResult').textContent = (anodoEncontrado.ancho * 25.4).toFixed(2);
+                document.getElementById('alturaResult').textContent = anodoEncontrado.altura.toFixed(2);
+                document.getElementById('alturaMmResult').textContent = (anodoEncontrado.altura * 25.4).toFixed(2);
+                
+                resultDiv.style.display = 'block';
+                
+                // El código para resaltar filas ha sido removido ya que no hay tabla
             } else {
-                // Manejo de error (modelo no encontrado).  Esto no deberia ocurrir, pero
-                // es una buena practica de programacion defensiva.
-                listaInfo.innerHTML = "<li>Modelo no encontrado.</li>";
+                alert('Modelo no encontrado');
+                resultDiv.style.display = 'none';
             }
         }
-
-
+        
+        // No es necesario cargar la tabla al iniciar
     </script>
-
 </body>
 </html>
