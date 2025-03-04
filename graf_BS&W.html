@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tanques Petroleros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #003366;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #004080;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #003366;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #003366;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .info-group {
+            flex: 1;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Parámetros Operativos para Tanques Petroleros</h1>
+        
+        <div class="form-group">
+            <label for="tipoRecipiente">Tipo de Recipiente:</label>
+            <select id="tipoRecipiente">
+                <option value="skimmer">Skimmer</option>
+                <option value="lavado">Lavado</option>
+                <option value="desnatado">Desnatado</option>
+                <option value="almacenamiento">Almacenamiento de Crudo</option>
+                <option value="multiproposito">Multipropósito</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="lugar">Lugar:</label>
+            <input type="text" id="lugar" placeholder="Ej. Bloque 15, Shushufindi, etc.">
+        </div>
+        
+        <div class="form-group">
+            <label for="compania">Compañía:</label>
+            <input type="text" id="compania" placeholder="Ej. Petroamazonas, Petroecuador, etc.">
+        </div>
+        
+        <div class="form-group">
+            <label for="diametro">Diámetro (m):</label>
+            <input type="number" id="diametro" step="0.01" min="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="altura">Altura (m):</label>
+            <input type="number" id="altura" step="0.01" min="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="temperatura">Temperatura de Operación (°F):</label>
+            <input type="number" id="temperatura" step="0.1" min="0">
+        </div>
+        
+
+        
+        <button onclick="calcular()">Calcular Parámetros</button>
+        
+        <div id="resultados" class="results" style="display: none;">
+            <div class="header-info">
+                <div class="info-group">
+                    <h3>Información del Tanque</h3>
+                    <p><strong>Tipo:</strong> <span id="res-tipo"></span></p>
+                    <p><strong>Lugar:</strong> <span id="res-lugar"></span></p>
+                    <p><strong>Compañía:</strong> <span id="res-compania"></span></p>
+                </div>
+                <div class="info-group">
+                    <h3>Parámetros Físicos</h3>
+                    <p><strong>Diámetro:</strong> <span id="res-diametro"></span> m</p>
+                    <p><strong>Altura:</strong> <span id="res-altura"></span> m</p>
+                    <p><strong>Temperatura:</strong> <span id="res-temperatura"></span> °F</p>
+                </div>
+            </div>
+            
+            <h3>Resultado del Análisis</h3>
+            <p><strong>Porcentaje de Agua Más Probable en la Emulsión:</strong> <span id="porcentajeAgua"></span>%</p>
+            <p><strong>Conductividad Eléctrica del Agua:</strong> <span id="conductividadAgua"></span> μS/cm</p>
+            <p><strong>Resistividad Eléctrica del Agua:</strong> <span id="resistividadAgua"></span> ohm-m</p>
+            
+            <h3>Tabla de Parámetros Calculados</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>% de Agua en Emulsión</th>
+                        <th>Altura del Colchón de Agua (m)</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaResultados">
+                    <!-- Los resultados se insertarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            // Obtener valores de entrada
+            const tipoRecipiente = document.getElementById('tipoRecipiente').value;
+            const lugar = document.getElementById('lugar').value;
+            const compania = document.getElementById('compania').value;
+            const diametro = parseFloat(document.getElementById('diametro').value);
+            const altura = parseFloat(document.getElementById('altura').value);
+            const temperatura = parseFloat(document.getElementById('temperatura').value);
+            // Valores predeterminados para los cálculos
+            const api = 28; // Valor predeterminado para API
+            const salinidad = 20000; // Valor predeterminado para salinidad
+            
+            // Validar entradas
+            if (isNaN(diametro) || isNaN(altura) || isNaN(temperatura)) {
+                alert("Por favor, complete todos los campos numéricos correctamente.");
+                return;
+            }
+            
+            // Calcular volumen del tanque
+            const volumenTanque = Math.PI * Math.pow(diametro/2, 2) * altura;
+            
+            // Calcular porcentaje de agua más probable basado en tipo de tanque y API
+            let porcentajeAgua;
+            
+            if (tipoRecipiente === "gun-barrel" || tipoRecipiente === "tanque-lavado") {
+                // Para Gun Barrel y tanque de lavado, el % de agua depende del API
+                if (api < 20) {
+                    porcentajeAgua = 25 + (20 - api) * 0.5;
+                } else if (api < 30) {
+                    porcentajeAgua = 20 + (30 - api) * 0.5;
+                } else {
+                    porcentajeAgua = 15 + (30 - api) * 0.3;
+                }
+                
+                // Ajustar por temperatura (temperatura en °F)
+                const factorTemperatura = 1 - (temperatura - 140) * 0.001;
+                porcentajeAgua *= factorTemperatura;
+            } else if (tipoRecipiente === "fwko") {
+                // Para FWKO, el % es menor
+                if (api < 25) {
+                    porcentajeAgua = 15 + (25 - api) * 0.3;
+                } else {
+                    porcentajeAgua = 10 + (25 - api) * 0.2;
+                }
+            } else {
+                // Para tanque de almacenamiento
+                if (api < 25) {
+                    porcentajeAgua = 8 + (25 - api) * 0.2;
+                } else {
+                    porcentajeAgua = 5 + (25 - api) * 0.1;
+                }
+            }
+            
+            // Redondear a un decimal
+            porcentajeAgua = Math.round(porcentajeAgua * 10) / 10;
+            
+            // Generar valores para la tabla
+            let valoresPorcentaje = [
+                Math.max(1, porcentajeAgua - 4),
+                Math.max(1, porcentajeAgua - 2),
+                porcentajeAgua,
+                Math.min(100, porcentajeAgua + 2),
+                Math.min(100, porcentajeAgua + 4)
+            ];
+            
+            // Calcular alturas del colchón de agua para cada porcentaje
+            const alturasAgua = valoresPorcentaje.map(porcentaje => {
+                // Cálculo del volumen de agua
+                const volumenAgua = (porcentaje / 100) * volumenTanque;
+                // Altura del colchón de agua
+                const alturaAgua = volumenAgua / (Math.PI * Math.pow(diametro/2, 2));
+                return Math.round(alturaAgua * 100) / 100; // Redondear a 2 decimales
+            });
+            
+            // Calcular conductividad eléctrica para cada temperatura
+            const conductividades = valoresPorcentaje.map(() => {
+                // Base conductivity at 25°C, based on salinity
+                let conductividadBase = salinidad * 0.1; // Aproximación simple
+                
+                // Ajuste por temperatura (aumenta ~2% por cada grado por encima de 25°C)
+                let factorTemperatura = 1 + (temperatura - 25) * 0.02;
+                if (temperatura < 25) {
+                    factorTemperatura = 1 - (25 - temperatura) * 0.01;
+                }
+                
+                const conductividad = conductividadBase * factorTemperatura;
+                return Math.round(conductividad); // Redondear a entero
+            });
+            
+            // Mostrar resultados
+            document.getElementById('res-tipo').textContent = document.getElementById('tipoRecipiente').options[document.getElementById('tipoRecipiente').selectedIndex].text;
+            document.getElementById('res-lugar').textContent = lugar;
+            document.getElementById('res-compania').textContent = compania;
+            document.getElementById('res-diametro').textContent = diametro.toFixed(2);
+            document.getElementById('res-altura').textContent = altura.toFixed(2);
+            document.getElementById('res-temperatura').textContent = temperatura.toFixed(1);
+            document.getElementById('porcentajeAgua').textContent = porcentajeAgua.toFixed(1);
+            
+            // Calcular conductividad eléctrica base
+            let conductividadBase = salinidad * 0.1; // Aproximación simple
+                
+            // Ajuste por temperatura (°F a °C para los cálculos)
+            const temperaturaC = (temperatura - 32) * 5/9;
+            
+            // Ajuste de conductividad por temperatura (referencia 25°C)
+            let factorTemperatura = 1 + (temperaturaC - 25) * 0.02;
+            if (temperaturaC < 25) {
+                factorTemperatura = 1 - (25 - temperaturaC) * 0.01;
+            }
+            
+            const conductividad = conductividadBase * factorTemperatura;
+            document.getElementById('conductividadAgua').textContent = Math.round(conductividad).toLocaleString();
+            
+            // Calcular resistividad eléctrica (inverso de la conductividad)
+            // Convertir de μS/cm a S/m y luego invertir
+            const conductividadSm = (conductividad / 1000000) * 100; // μS/cm a S/m
+            const resistividad = 1 / conductividadSm;
+            document.getElementById('resistividadAgua').textContent = resistividad.toFixed(2);
+            
+            // Generar tabla
+            let tablaHTML = '';
+            for (let i = 0; i < valoresPorcentaje.length; i++) {
+                tablaHTML += `
+                <tr>
+                    <td>${valoresPorcentaje[i].toFixed(1)}%</td>
+                    <td>${alturasAgua[i].toFixed(2)} m</td>
+                </tr>`;
+            }
+            
+            document.getElementById('tablaResultados').innerHTML = tablaHTML;
+            document.getElementById('resultados').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
