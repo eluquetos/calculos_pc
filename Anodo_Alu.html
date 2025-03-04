@@ -1,143 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Conversor de Ánodos de Aluminio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de Ánodos de Aluminio</title>
     <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
         }
-
-        table {
-            border-collapse: collapse;
-            width: 80%;
-            margin-top: 20px;
+        label {
+            display: block;
+            margin-bottom: 5px;
         }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        select {
+            padding: 5px;
+            margin-bottom: 10px;
         }
-
-        th {
-            background-color: #f2f2f2;
+        ul {
+            list-style: none; /* Quita los puntos de la lista */
+            padding: 0;       /* Quita el padding por defecto */
         }
-
-        input[type="text"] {
+        li {
+            margin-bottom: 10px; /* Espacio entre elementos de la lista */
             padding: 5px;
             border: 1px solid #ccc;
-            border-radius: 4px;
         }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #3e8e41;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Conversor de Ánodos de Aluminio</h1>
 
-    <label for="modelo">Ingrese el Modelo:</label>
-    <input type="text" id="modelo" name="modelo">
-    <button onclick="buscarAnodo()">Buscar</button>
+    <h1>Información de Ánodos de Aluminio</h1>
 
-    <table id="tablaResultados">
-        <thead>
-            <tr>
-                <th>Modelo</th>
-                <th>Peso (lbs)</th>
-                <th>Peso (kgs)</th>
-                <th>Longitud (in)</th>
-                <th>Longitud (mm)</th>
-                <th>Ancho (in)</th>
-                <th>Ancho (mm)</th>
-                <th>Altura (in)</th>
-                <th>Altura (mm)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Aquí se mostrarán los resultados -->
-        </tbody>
-    </table>
+    <label for="modeloAnodo">Selecciona el Modelo de Ánodo:</label>
+    <select id="modeloAnodo" onchange="mostrarInformacion()">
+        <option value="">-- Selecciona un modelo --</option>
+        <!-- Opciones se agregarán dinámicamente con JavaScript -->
+    </select>
+
+    <ul id="infoAnodo">
+        <!-- La información se mostrará aquí -->
+    </ul>
+
+
 
     <script>
-        const anodos = [
-            { "Modelo": "GA-A-2-10H", "Peso": 10.00, "Longitud": 14.00, "Ancho": 6.50, "Altura": 1.25 },
-            { "Modelo": "GA-A-1-12H", "Peso": 12.00, "Longitud": 14.00, "Ancho": 4.50, "Altura": 2.25 },
-            { "Modelo": "GA-A-1-15H", "Peso": 15.00, "Longitud": 21.50, "Ancho": 5.00, "Altura": 1.38 },
-            { "Modelo": "GA-A-2-15H", "Peso": 15.00, "Longitud": 21.50, "Ancho": 5.00, "Altura": 1.38 },
-            { "Modelo": "GA-A-1-20H", "Peso": 20.00, "Longitud": 24.00, "Ancho": 4.50, "Altura": 2.25 },
-            { "Modelo": "GA-A-1-23H", "Peso": 23.00, "Longitud": 24.00, "Ancho": 5.00, "Altura": 1.94 },
-            { "Modelo": "GA-A-1-29H", "Peso": 29.00, "Longitud": 24.00, "Ancho": 5.00, "Altura": 2.50 },
-            { "Modelo": "GA-A-2-32H", "Peso": 32.00, "Longitud": 20.00, "Ancho": 10.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-21", "Peso": 21.00, "Longitud": 48.00, "Ancho": 2.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-26", "Peso": 26.00, "Longitud": 60.00, "Ancho": 2.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-30", "Peso": 30.00, "Longitud": 48.00, "Ancho": 2.50, "Altura": 2.50 },
-            { "Modelo": "GA-ABT-39", "Peso": 39.00, "Longitud": 60.00, "Ancho": 2.50, "Altura": 2.50 },
-            { "Modelo": "GA-ABT-48", "Peso": 48.00, "Longitud": 48.00, "Ancho": 3.00, "Altura": 3.00 },
-            { "Modelo": "GA-ABT-B21", "Peso": 21.00, "Longitud": 48.00, "Ancho": 2.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-B26", "Peso": 26.00, "Longitud": 60.00, "Ancho": 2.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-B30", "Peso": 30.00, "Longitud": 48.00, "Ancho": 2.50, "Altura": 2.50 },
-            { "Modelo": "GA-ABT-B39", "Peso": 39.00, "Longitud": 60.00, "Ancho": 2.50, "Altura": 2.50 },
-            { "Modelo": "GA-ABT-B48", "Peso": 48.00, "Longitud": 48.00, "Ancho": 3.00, "Altura": 3.00 },
-            { "Modelo": "GA-ABT-C21", "Peso": 21.00, "Longitud": 48.00, "Ancho": 2.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-C26", "Peso": 26.00, "Longitud": 60.00, "Ancho": 2.00, "Altura": 2.00 },
-            { "Modelo": "GA-ABT-C30", "Peso": 30.00, "Longitud": 48.00, "Ancho": 2.50, "Altura": 2.50 },
-            { "Modelo": "GA-ABT-C39", "Peso": 39.00, "Longitud": 60.00, "Ancho": 2.50, "Altura": 2.50 },
-            { "Modelo": "GA-ABT-C48", "Peso": 48.00, "Longitud": 48.00, "Ancho": 3.00, "Altura": 3.00 }
+        // Datos de los ánodos (simulados, reemplaza con tu tabla real)
+        const datosAnodos = [
+            { modelo: "A-1", pesoLbs: 10, longitudIn: 20, anchoIn: 5, alturaIn: 2 },
+            { modelo: "A-2", pesoLbs: 25, longitudIn: 36, anchoIn: 8, alturaIn: 3 },
+            { modelo: "B-3", pesoLbs: 15, longitudIn: 24, anchoIn: 6, alturaIn: 2.5 },
+            { modelo: "C-5", pesoLbs: 40, longitudIn: 48, anchoIn: 10, alturaIn: 4 },
+            { modelo: "S-10", pesoLbs: 5,  longitudIn: 12, anchoIn: 3, alturaIn: 1.5},
         ];
 
-        function buscarAnodo() {
-            const modeloBuscado = document.getElementById("modelo").value;
-            const anodoEncontrado = anodos.find(anodo => anodo.Modelo === modeloBuscado);
 
-            if (anodoEncontrado) {
-                mostrarResultados(anodoEncontrado);
+        // --- Funciones de conversión ---
+
+        function lbsAKgs(lbs) {
+            return lbs * 0.453592;
+        }
+
+        function pulgadasAMm(pulgadas) {
+            return pulgadas * 25.4;
+        }
+
+
+        // ---  Poblar el menú desplegable ---
+        const selectModelo = document.getElementById("modeloAnodo");
+        datosAnodos.forEach(anodo => {
+            const option = document.createElement("option");
+            option.value = anodo.modelo;
+            option.textContent = anodo.modelo;
+            selectModelo.appendChild(option);
+        });
+
+
+
+        // --- Función para mostrar la información ---
+        function mostrarInformacion() {
+            const modeloSeleccionado = document.getElementById("modeloAnodo").value;
+            const listaInfo = document.getElementById("infoAnodo");
+            listaInfo.innerHTML = ""; // Limpia la lista
+
+            if (!modeloSeleccionado) {
+                 return; // Sale si no hay seleccion.
+            }
+
+
+            const anodo = datosAnodos.find(a => a.modelo === modeloSeleccionado);
+
+            if (anodo) {
+                const pesoKg = lbsAKgs(anodo.pesoLbs).toFixed(2); // Limita a 2 decimales
+                const longitudMm = pulgadasAMm(anodo.longitudIn).toFixed(2);
+                const anchoMm = pulgadasAMm(anodo.anchoIn).toFixed(2);
+                const alturaMm = pulgadasAMm(anodo.alturaIn).toFixed(2);
+
+
+                const liPeso = document.createElement("li");
+                liPeso.textContent = `Peso: ${anodo.pesoLbs} lbs  (${pesoKg} kg)`;
+
+                const liLongitud = document.createElement("li");
+                liLongitud.textContent = `Longitud: ${anodo.longitudIn} in (${longitudMm} mm)`;
+
+                const liAncho = document.createElement("li");
+                liAncho.textContent = `Ancho: ${anodo.anchoIn} in (${anchoMm} mm)`;
+
+
+                const liAltura = document.createElement("li");
+                liAltura.textContent = `Altura: ${anodo.alturaIn} in (${alturaMm} mm)`;
+
+                listaInfo.appendChild(liPeso);
+                listaInfo.appendChild(liLongitud);
+                listaInfo.appendChild(liAncho);
+                listaInfo.appendChild(liAltura);
+
             } else {
-                alert("Modelo no encontrado.");
+                // Manejo de error (modelo no encontrado).  Esto no deberia ocurrir, pero
+                // es una buena practica de programacion defensiva.
+                listaInfo.innerHTML = "<li>Modelo no encontrado.</li>";
             }
         }
 
-        function mostrarResultados(anodo) {
-            const pesoKgs = anodo.Peso * 0.453592;
-            const longitudMm = anodo.Longitud * 25.4;
-            const anchoMm = anodo.Ancho * 25.4;
-            const alturaMm = anodo.Altura * 25.4;
 
-            const tabla = document.getElementById("tablaResultados").getElementsByTagName('tbody')[0];
-            tabla.innerHTML = ""; // Limpiar resultados anteriores
-
-            let newRow = tabla.insertRow();
-            let cell1 = newRow.insertCell(0);
-            let cell2 = newRow.insertCell(1);
-            let cell3 = newRow.insertCell(2);
-            let cell4 = newRow.insertCell(3);
-            let cell5 = newRow.insertCell(4);
-            let cell6 = newRow.insertCell(5);
-            let cell7 = newRow.insertCell(6);
-            let cell8 = newRow.insertCell(7);
-            let cell9 = newRow.insertCell(8);
-
-            cell1.innerHTML = anodo.Modelo;
-            cell2.innerHTML = anodo.Peso.toFixed(2);
-            cell3.innerHTML = pesoKgs.toFixed(2);
-            cell4.innerHTML = anodo.Longitud.toFixed(2);
-            cell5.innerHTML = longitudMm.toFixed(2);
-            cell6.innerHTML = anodo.Ancho.toFixed(2);
-            cell7.innerHTML = anchoMm.toFixed(2);
-            cell8.innerHTML = anodo.Altura.toFixed(2);
-            cell9.innerHTML = alturaMm.toFixed(2);
-        }
     </script>
+
 </body>
 </html>
