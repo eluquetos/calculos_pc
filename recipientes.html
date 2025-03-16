@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Áreas Expuestas - Recipientes Petroleros</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .calculator {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2980b9;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #3498db;
+        }
+        .results {
+            margin-top: 20px;
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .result-item {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .info-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #2c3e50;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Áreas Expuestas</h1>
+    <p style="text-align: center;">Recipientes de Producción Petrolera</p>
+
+    <div class="calculator">
+        <h2>1. Tanques (Verticales y Horizontales)</h2>
+        <div class="input-group">
+            <label for="tanque-tipo">Tipo de tanque:</label>
+            <select id="tanque-tipo">
+                <option value="vertical">Tanque Vertical</option>
+                <option value="horizontal">Tanque Horizontal</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="tanque-diametro">Diámetro interno (pies):</label>
+            <input type="number" id="tanque-diametro" placeholder="Ej: 30" step="0.01" min="0">
+        </div>
+        <div class="input-group">
+            <label for="tanque-altura">Altura mojada (pies):</label>
+            <input type="number" id="tanque-altura" placeholder="Ej: 15" step="0.01" min="0">
+        </div>
+        <div class="input-group" id="tanque-longitud-grupo" style="display: none;">
+            <label for="tanque-longitud">Longitud (pies):</label>
+            <input type="number" id="tanque-longitud" placeholder="Ej: 30" step="0.01" min="0">
+        </div>
+        <button onclick="calcularAreasTanque()">Calcular Áreas</button>
+        <div class="results" id="tanque-resultados" style="display: none;">
+            <div class="result-title">Resultados del Cálculo:</div>
+            <div class="result-item" id="tanque-area-piso"></div>
+            <div class="result-item" id="tanque-area-pared"></div>
+            <div class="result-item" id="tanque-area-total"></div>
+            <div class="result-item" id="tanque-area-piso-m2"></div>
+            <div class="result-item" id="tanque-area-pared-m2"></div>
+            <div class="result-item" id="tanque-area-total-m2"></div>
+        </div>
+    </div>
+
+    <div class="calculator">
+        <h2>2. Separadores Horizontales</h2>
+        <div class="input-group">
+            <label for="sep-h-tipo-cabezal">Tipo de cabezal:</label>
+            <select id="sep-h-tipo-cabezal">
+                <option value="asme-2-1">ASME Elipsoidal 2:1</option>
+                <option value="toriferico">Toriesférico</option>
+                <option value="hemiesferico">Hemisférico Estándar</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="sep-h-diametro">Diámetro del separador (pies):</label>
+            <input type="number" id="sep-h-diametro" placeholder="Ej: 8" step="0.01" min="0">
+        </div>
+        <div class="input-group">
+            <label for="sep-h-longitud-emulsion">Longitud del área de emulsión (pies):</label>
+            <input type="number" id="sep-h-longitud-emulsion" placeholder="Ej: 12" step="0.01" min="0">
+        </div>
+        <div class="input-group">
+            <label for="sep-h-longitud-crudo">Longitud del área de crudo (pies):</label>
+            <input type="number" id="sep-h-longitud-crudo" placeholder="Ej: 10" step="0.01" min="0">
+        </div>
+        <div class="input-group">
+            <label for="sep-h-altura-emulsion">Altura del área de emulsión (pies):</label>
+            <input type="number" id="sep-h-altura-emulsion" placeholder="Ej: 3" step="0.01" min="0">
+        </div>
+        <div class="input-group">
+            <label for="sep-h-altura-crudo">Altura del área de crudo (pies):</label>
+            <input type="number" id="sep-h-altura-crudo" placeholder="Ej: 5" step="0.01" min="0">
+        </div>
+        <button onclick="calcularAreasSeparadorH()">Calcular Áreas</button>
+        <div class="results" id="sep-h-resultados" style="display: none;">
+            <div class="result-title">Resultados del Cálculo:</div>
+            <div class="result-item" id="sep-h-area-emulsion"></div>
+            <div class="result-item" id="sep-h-area-crudo"></div>
+            <div class="result-item" id="sep-h-area-total"></div>
+            <div class="result-item" id="sep-h-area-emulsion-m2"></div>
+            <div class="result-item" id="sep-h-area-crudo-m2"></div>
+            <div class="result-item" id="sep-h-area-total-m2"></div>
+        </div>
+    </div>
+
+    <div class="calculator">
+        <h2>3. Separadores Verticales</h2>
+        <div class="input-group">
+            <label for="sep-v-tipo-cabezal">Tipo de cabezal:</label>
+            <select id="sep-v-tipo-cabezal">
+                <option value="asme-2-1">ASME Elipsoidal 2:1</option>
+                <option value="toriferico">Toriesférico</option>
+                <option value="hemiesferico">Hemisférico Estándar</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="sep-v-diametro">Diámetro del separador (pies):</label>
+            <input type="number" id="sep-v-diametro" placeholder="Ej: 6" step="0.01" min="0">
+        </div>
+        <div class="input-group">
+            <label for="sep-v-altura">Altura mojada (pies):</label>
+            <input type="number" id="sep-v-altura" placeholder="Ej: 10" step="0.01" min="0">
+        </div>
+        <button onclick="calcularAreasSeparadorV()">Calcular Áreas</button>
+        <div class="results" id="sep-v-resultados" style="display: none;">
+            <div class="result-title">Resultados del Cálculo:</div>
+            <div class="result-item" id="sep-v-area-mojada"></div>
+            <div class="result-item" id="sep-v-area-mojada-m2"></div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>Consideraciones Técnicas</h2>
+        <p><strong>Tipos de Cabezales:</strong></p>
+        <ul>
+            <li><strong>ASME Elipsoidal 2:1:</strong> El diámetro mayor es el doble de la altura del cabezal. El área superficial es aproximadamente 1.084 veces el área de un círculo del mismo diámetro. La altura del cabezal es igual a D/4, donde D es el diámetro del recipiente.</li>
+            <li><strong>Toriesférico:</strong> Formado por un casquete esférico en el centro y un toroide en la periferia. Tiene un factor aproximado de 1.12 veces el área de un círculo del mismo diámetro. La altura típica es aproximadamente D/6, donde D es el diámetro del recipiente.</li>
+            <li><strong>Hemisférico Estándar:</strong> El cabezal tiene forma de media esfera perfecta. Su área es exactamente la mitad del área de una esfera completa (2πr²). La altura del cabezal es igual al radio del recipiente.</li>
+        </ul>
+        <p><strong>Separadores Horizontales:</strong> Se calculan las áreas específicas para las zonas de emulsión y crudo, considerando tanto las secciones cilíndricas como los cabezales seleccionados.</p>
+        <p><strong>Unidades:</strong> Todos los cálculos se realizan en pies y pies². Se incluyen conversiones a metros cuadrados (m²) para facilitar la interpretación en el sistema métrico.</p>
+    </div>
+
+    <footer>
+        <p>Calculadora de Áreas Expuestas para Recipientes de Producción Petrolera © 2025</p>
+    </footer>
+
+    <script>
+        // Constantes
+        const PI = Math.PI;
+        const FEET2_TO_M2 = 0.092903; // Factor de conversión de pies² a m²
+
+        // Mostrar/ocultar campo de longitud según tipo de tanque
+        document.getElementById('tanque-tipo').addEventListener('change', function() {
+            const tipoTanque = this.value;
+            const longitudGrupo = document.getElementById('tanque-longitud-grupo');
+            
+            if (tipoTanque === 'horizontal') {
+                longitudGrupo.style.display = 'block';
+            } else {
+                longitudGrupo.style.display = 'none';
+            }
+        });
+
+        // 1. TANQUES
+        function calcularAreasTanque() {
+            // Obtener valores de entrada
+            const tipoTanque = document.getElementById('tanque-tipo').value;
+            const diametro = parseFloat(document.getElementById('tanque-diametro').value);
+            const alturaMojada = parseFloat(document.getElementById('tanque-altura').value);
+            let longitud = 0;
+            
+            // Validar entradas
+            if (isNaN(diametro) || diametro <= 0) {
+                alert("Por favor, ingrese un diámetro válido mayor que cero.");
+                return;
+            }
+            
+            if (isNaN(alturaMojada) || alturaMojada < 0) {
+                alert("Por favor, ingrese una altura mojada válida (mayor o igual a cero).");
+                return;
+            }
+            
+            if (tipoTanque === 'horizontal') {
+                longitud = parseFloat(document.getElementById('tanque-longitud').value);
+                if (isNaN(longitud) || longitud <= 0) {
+                    alert("Por favor, ingrese una longitud válida mayor que cero.");
+                    return;
+                }
+            }
+            
+            // Cálculos
+            const radio = diametro / 2;
+            const areaPiso = PI * Math.pow(radio, 2);
+            
+            let areaPared = 0;
+            
+            if (tipoTanque === 'vertical') {
+                // Para tanques verticales
+                areaPared = PI * diametro * alturaMojada;
+            } else {
+                // Para tanques horizontales
+                if (alturaMojada >= diametro) {
+                    // Tanque completamente lleno
+                    areaPared = PI * diametro * longitud;
+                } else if (alturaMojada <= 0) {
+                    // Tanque vacío
+                    areaPared = 0;
+                } else {
+                    // Nivel parcial
+                    const h = alturaMojada;
+                    let theta;
+                    
+                    if (h <= radio) {
+                        // Para nivel por debajo del eje central
+                        theta = 2 * Math.acos((radio - h) / radio);
+                    } else {
+                        // Para nivel por encima del eje central
+                        theta = 2 * Math.PI - 2 * Math.acos((h - radio) / radio);
+                    }
+                    
+                    // Largo de arco mojado x longitud del tanque
+                    areaPared = (radio * theta) * longitud;
+                }
+            }
+            
+            // Área total mojada
+            const areaTotalMojada = areaPiso + areaPared;
+            
+            // Mostrar resultados
+            document.getElementById('tanque-area-piso').textContent = `Área del piso: ${areaPiso.toFixed(2)} pies²`;
+            document.getElementById('tanque-area-pared').textContent = `Área de la pared mojada: ${areaPared.toFixed(2)} pies²`;
+            document.getElementById('tanque-area-total').textContent = `Área total mojada: ${areaTotalMojada.toFixed(2)} pies²`;
+            
+            // Conversión a metros cuadrados
+            document.getElementById('tanque-area-piso-m2').textContent = `Área del piso: ${(areaPiso * FEET2_TO_M2).toFixed(2)} m²`;
+            document.getElementById('tanque-area-pared-m2').textContent = `Área de la pared mojada: ${(areaPared * FEET2_TO_M2).toFixed(2)} m²`;
+            document.getElementById('tanque-area-total-m2').textContent = `Área total mojada: ${(areaTotalMojada * FEET2_TO_M2).toFixed(2)} m²`;
+            
+            // Mostrar sección de resultados
+            document.getElementById('tanque-resultados').style.display = 'block';
+        }
+
+        // Funciones para cálculos de cabezales
+        
+        /**
+         * Calcula el área total de un cabezal según su tipo
+         * @param {number} diametro - Diámetro del separador en pies
+         * @param {string} tipoCabezal - Tipo de cabezal ('asme-2-1', 'toriferico' o 'hemiesferico')
+         * @return {number} - Área total del cabezal en pies²
+         */
+        function calcularAreaCabezalTotal(diametro, tipoCabezal) {
+            const radio = diametro / 2;
+            
+            if (tipoCabezal === 'asme-2-1') {
+                // Cabezal ASME elipsoidal 2:1
+                // Para la relación 2:1, el área superficial es aproximadamente 1.084 veces el área de un círculo
+                return 1.084 * PI * Math.pow(radio, 2);
+            } else if (tipoCabezal === 'toriferico') {
+                // Cabezal toriesférico
+                // El área superficial es aproximadamente 1.12 veces el área de un círculo
+                return 1.12 * PI * Math.pow(radio, 2);
+            } else {
+                // Cabezal hemisférico estándar
+                // El área es exactamente la mitad del área de una esfera completa: 2πr²
+                return 2 * PI * Math.pow(radio, 2);
+            }
+        }
+        
+        /**
+         * Obtiene la altura máxima de un cabezal según su tipo
+         * @param {number} radio - Radio del separador en pies
+         * @param {string} tipoCabezal - Tipo de cabezal
+         * @return {number} - Altura máxima del cabezal en pies
+         */
+        function obtenerAlturaCabezal(radio, tipoCabezal) {
+            if (tipoCabezal === 'asme-2-1') {
+                // Para ASME 2:1, la altura es radio/2 (o diámetro/4)
+                return radio / 2;
+            } else if (tipoCabezal === 'toriferico') {
+                // Para toriesférico, la altura es aproximadamente radio/3 (o diámetro/6)
+                return radio / 3;
+            } else {
+                // Para hemisférico, la altura es igual al radio
+                return radio;
+            }
+        }
+        
+        /**
+         * Calcula el área de un segmento de cabezal dado un nivel de líquido
+         * @param {number} diametro - Diámetro del separador en pies
+         * @param {number} nivel - Nivel del líquido en pies
+         * @param {string} tipoCabezal - Tipo de cabezal ('asme-2-1', 'toriferico' o 'hemiesferico')
+         * @return {number} - Área mojada del cabezal en pies²
+         */
+        function calcularAreaCabezalParcialMojado(diametro, nivel, tipoCabezal) {
+            const radio = diametro / 2;
+            
+            // Si el nivel está por debajo del cabezal
+            if (nivel <= 0) return 0;
+            
+            // Si el nivel está por encima del diámetro, todo el cabezal está mojado
+            if (nivel >= diametro) return calcularAreaCabezalTotal(diametro, tipoCabezal);
+            
+            // Altura máxima del cabezal según su tipo
+            const alturaMaximaCabezal = obtenerAlturaCabezal(radio, tipoCabezal);
+            
+            // Si el nivel es mayor que la altura máxima del cabezal, todo el cabezal está mojado
+            if (nivel >= alturaMaximaCabezal) return calcularAreaCabezalTotal(diametro, tipoCabezal);
+            
+            if (tipoCabezal === 'hemiesferico') {
+                // Para cabezal hemisférico, calculamos el área exacta
+                // Área de la calota = 2πrh, donde h es la altura de la calota
+                return 2 * PI * radio * nivel;
+            } else {
+                // Para cabezales ASME 2:1 y toriesféricos usamos una aproximación proporcional
+                // Esta es una aproximación común para estos cabezales cuando no se requiere extrema precisión
+                const proporcionMojada = nivel / alturaMaximaCabezal;
+                return calcularAreaCabezalTotal(diametro, tipoCabezal) * proporcionMojada;
+            }
+        }
+        
+        /**
+         * Calcula el área de un segmento circular dado nivel y diámetro
+         * @param {number} diametro - Diámetro en pies
+         * @param {number} nivel - Nivel del líquido en pies
+         * @return {number} - Área del segmento circular en pies²
+         */
+        function calcularAreaSegmentoCircular(diametro, nivel) {
+            const radioSegmento = diametro / 2;
+            
+            // Si está vacío o completamente lleno
+            if (nivel <= 0) return 0;
+            if (nivel >= diametro) return PI * Math.pow(radioSegmento, 2);
+            
+            // Cálculo para nivel parcial
+            const h = nivel;
+            let theta;
+            
+            if (h <= radioSegmento) {
+                // Para nivel por debajo del eje central
+                theta = 2 * Math.acos((radioSegmento - h) / radioSegmento);
+            } else {
+                // Para nivel por encima del eje central
+                theta = 2 * Math.PI - 2 * Math.acos((h - radioSegmento) / radioSegmento);
+            }
+            
+            // Área del segmento circular
+            return (Math.pow(radioSegmento, 2) / 2) * (theta - Math.sin(theta));
+        }
+
+        // 2. SEPARADORES HORIZONTALES
+        function calcularAreasSeparadorH() {
+            // Obtener valores de entrada
+            const tipoCabezal = document.getElementById('sep-h-tipo-cabezal').value;
+            const diametro = parseFloat(document.getElementById('sep-h-diametro').value);
+            const longitudAreaEmulsion = parseFloat(document.getElementById('sep-h-longitud-emulsion').value);
+            const longitudAreaCrudo = parseFloat(document.getElementById('sep-h-longitud-crudo').value);
+            const alturaAreaEmulsion = parseFloat(document.getElementById('sep-h-altura-emulsion').value);
+            const alturaAreaCrudo = parseFloat(document.getElementById('sep-h-altura-crudo').value);
+            
+            // Validar entradas
+            if (isNaN(diametro) || diametro <= 0 || 
+                isNaN(longitudAreaEmulsion) || longitudAreaEmulsion < 0 ||
+                isNaN(longitudAreaCrudo) || longitudAreaCrudo < 0 ||
+                isNaN(alturaAreaEmulsion) || alturaAreaEmulsion < 0 ||
+                isNaN(alturaAreaCrudo) || alturaAreaCrudo < 0) {
+                alert("Por favor, ingrese valores válidos para todos los campos.");
+                return;
+            }
+            
+            // Cálculos para emulsión
+            const radio = diametro / 2;
+            let thetaEmulsion;
+            
+            if (alturaAreaEmulsion <= radio) {
+                thetaEmulsion = 2 * Math.acos((radio - alturaAreaEmulsion) / radio);
+            } else {
+                thetaEmulsion = 2 * Math.PI - 2 * Math.acos((alturaAreaEmulsion - radio) / radio);
+            }
+            
+            const areaLateralEmulsion = (radio * thetaEmulsion) * longitudAreaEmulsion;
+            const areaCabezalEmulsion = calcularAreaCabezalParcialMojado(diametro, alturaAreaEmulsion, tipoCabezal);
+            const areaZonaEmulsion = areaLateralEmulsion + areaCabezalEmulsion;
+            
+            // Cálculos para crudo
+            let thetaCrudo;
+            
+            if (alturaAreaCrudo <= radio) {
+                thetaCrudo = 2 * Math.acos((radio - alturaAreaCrudo) / radio);
+            } else {
+                thetaCrudo = 2 * Math.PI - 2 * Math.acos((alturaAreaCrudo - radio) / radio);
+            }
+            
+            const areaLateralCrudo = (radio * thetaCrudo) * longitudAreaCrudo;
+            const areaCabezalCrudo = calcularAreaCabezalParcialMojado(diametro, alturaAreaCrudo, tipoCabezal);
+            const areaZonaCrudo = areaLateralCrudo + areaCabezalCrudo;
+            
+            // Área total mojada
+            const areaTotalMojada = areaZonaEmulsion + areaZonaCrudo;
+            
+            // Mostrar resultados
+            document.getElementById('sep-h-area-emulsion').textContent = `Área zona emulsión: ${areaZonaEmulsion.toFixed(2)} pies²`;
+            document.getElementById('sep-h-area-crudo').textContent = `Área zona crudo: ${areaZonaCrudo.toFixed(2)} pies²`;
+            document.getElementById('sep-h-area-total').textContent = `Área total mojada: ${areaTotalMojada.toFixed(2)} pies²`;
+            
+            // Conversión a metros cuadrados
+            document.getElementById('sep-h-area-emulsion-m2').textContent = `Área zona emulsión: ${(areaZonaEmulsion * FEET2_TO_M2).toFixed(2)} m²`;
+            document.getElementById('sep-h-area-crudo-m2').textContent = `Área zona crudo: ${(areaZonaCrudo * FEET2_TO_M2).toFixed(2)} m²`;
+            document.getElementById('sep-h-area-total-m2').textContent = `Área total mojada: ${(areaTotalMojada * FEET2_TO_M2).toFixed(2)} m²`;
+            
+            // Mostrar sección de resultados
+            document.getElementById('sep-h-resultados').style.display = 'block';
+        }
+
+        // 3. SEPARADORES VERTICALES
+        function calcularAreasSeparadorV() {
+            // Obtener valores de entrada
+            const tipoCabezal = document.getElementById('sep-v-tipo-cabezal').value;
+            const diametro = parseFloat(document.getElementById('sep-v-diametro').value);
+            const alturaMojada = parseFloat(document.getElementById('sep-v-altura').value);
+            
+            // Validar entradas
+            if (isNaN(diametro) || diametro <= 0) {
+                alert("Por favor, ingrese un diámetro válido mayor que cero.");
+                return;
+            }
+            
+            if (isNaN(alturaMojada) || alturaMojada < 0) {
+                alert("Por favor, ingrese una altura mojada válida.");
+                return;
+            }
+            
+            // Cálculos
+            const radio = diametro / 2;
+            
+            // Área del cabezal inferior (completamente mojado)
+            const areaCabezalInferior = calcularAreaCabezalTotal(diametro, tipoCabezal);
+            
+            // Área lateral mojada (cilíndrica)
+            const areaLateralMojada = PI * diametro * alturaMojada;
+            
+            // Área mojada total (lateral + cabezal inferior)
+            const areaMojada = areaLateralMojada + areaCabezalInferior;
+            
+            // Mostrar resultados
+            document.getElementById('sep-v-area-mojada').textContent = `Área mojada total: ${areaMojada.toFixed(2)} pies²`;
+            
+            // Conversión a metros cuadrados
+            document.getElementById('sep-v-area-mojada-m2').textContent = `Área mojada total: ${(areaMojada * FEET2_TO_M2).toFixed(2)} m²`;
+            
+            // Mostrar sección de resultados
+            document.getElementById('sep-v-resultados').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
