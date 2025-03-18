@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Áreas Mojadas - Separador Bifásico</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        .resultado {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .unidades {
+          display: flex;
+          align-items: center;
+        }
+        .unidades label {
+          margin-right: 10px;
+        }
+        .unidades input[type="radio"] {
+          margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cálculo de Áreas Mojadas - Separador Bifásico</h1>
+
+    <form id="calculoForm">
+        <h2>Datos de Entrada</h2>
+
+        <div class="unidades">
+            <label>Unidades:</label>
+            <label><input type="radio" name="unidades" value="pies" checked> Pies</label>
+            <label><input type="radio" name="unidades" value="metros"> Metros</label>
+        </div>
+
+        <label for="tipoCabezal">Tipo de Cabezal:</label>
+        <select id="tipoCabezal" name="tipoCabezal">
+            <option value="eliptico">Elíptico (2:1)</option>
+            <option value="toriesferico">Toriesférico ASME F&D</option>
+            <option value="semiesferico">Semiesférico (Hemisférico)</option>
+            <option value="conico">Cónico</option>
+        </select>
+
+        <label for="diametro">Diámetro:</label>
+        <input type="number" id="diametro" name="diametro" step="any" required>
+
+
+        <h3>Zona Emulsión</h3>
+        <label for="longitudEmulsion">Longitud (Cuerpo Cilíndrico):</label>
+        <input type="number" id="longitudEmulsion" name="longitudEmulsion" step="any" required>
+
+        <label for="alturaFluidoEmulsion">Altura Fluido Corrosivo:</label>
+        <input type="number" id="alturaFluidoEmulsion" name="alturaFluidoEmulsion" step="any" required>
+
+        <h3>Zona Crudo</h3>
+        <label for="longitudCrudo">Longitud (Cuerpo Cilíndrico):</label>
+        <input type="number" id="longitudCrudo" name="longitudCrudo" step="any" required>
+
+        <label for="alturaFluidoCrudo">Altura Fluido Corrosivo:</label>
+        <input type="number" id="alturaFluidoCrudo" name="alturaFluidoCrudo" step="any" required>
+
+        <button type="button" onclick="calcularAreasMojadas()">Calcular</button>
+    </form>
+
+    <div id="resultados" class="resultado" style="display: none;">
+    <h2>Datos de Salida</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Área Mojada (pies²)</th>
+            <th>Área Mojada (m²)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3"><strong>Zona Emulsión</strong></td>
+          </tr>
+          <tr>
+            <td>Cabezal</td>
+            <td id="areaCabezalEmulsionPies"></td>
+            <td id="areaCabezalEmulsionMetros"></td>
+          </tr>
+          <tr>
+            <td>Cuerpo Cilíndrico</td>
+            <td id="areaCilindroEmulsionPies"></td>
+            <td id="areaCilindroEmulsionMetros"></td>
+          </tr>
+          <tr>
+            <td>Bafle</td>
+            <td id="areaBafleEmulsionPies"></td>
+            <td id="areaBafleEmulsionMetros"></td>
+          </tr>
+          <tr>
+            <td colspan="3"><strong>Zona Crudo</strong></td>
+          </tr>
+          <tr>
+            <td>Bafle</td>
+            <td id="areaBafleCrudoPies"></td>
+            <td id="areaBafleCrudoMetros"></td>
+          </tr>
+          <tr>
+            <td>Cuerpo Cilíndrico</td>
+            <td id="areaCilindroCrudoPies"></td>
+            <td id="areaCilindroCrudoMetros"></td>
+          </tr>
+          <tr>
+            <td>Cabezal (Bafle)</td>
+            <td id="areaCabezalCrudoPies"></td>
+            <td id="areaCabezalCrudoMetros"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+    <script>
+        function calcularAreasMojadas() {
+            const unidades = document.querySelector('input[name="unidades"]:checked').value;
+            const tipoCabezal = document.getElementById("tipoCabezal").value;
+            const diametro = parseFloat(document.getElementById("diametro").value);
+            const longitudEmulsion = parseFloat(document.getElementById("longitudEmulsion").value);
+            const alturaFluidoEmulsion = parseFloat(document.getElementById("alturaFluidoEmulsion").value);
+            const longitudCrudo = parseFloat(document.getElementById("longitudCrudo").value);
+            const alturaFluidoCrudo = parseFloat(document.getElementById("alturaFluidoCrudo").value);
+
+
+            // Validaciones (asegurarse que los datos son válidos)
+            if (isNaN(diametro) || diametro <= 0 || isNaN(longitudEmulsion) || longitudEmulsion < 0 || isNaN(alturaFluidoEmulsion) || alturaFluidoEmulsion < 0 ||
+                isNaN(longitudCrudo) || longitudCrudo < 0 || isNaN(alturaFluidoCrudo) || alturaFluidoCrudo < 0) {
+                alert("Por favor, ingrese valores numéricos válidos mayores que cero (excepto las longitudes, que pueden ser cero).");
+                return;
+            }
+
+            if (alturaFluidoEmulsion > diametro || alturaFluidoCrudo > diametro) {
+                alert("La altura del fluido no puede ser mayor que el diámetro.");
+                return;
+            }
+           
+            let areaCabezalEmulsionPies = 0;
+            let areaCilindroEmulsionPies = 0;
+            let areaBafleEmulsionPies = 0;
+            let areaBafleCrudoPies = 0;
+            let areaCilindroCrudoPies = 0;
+            let areaCabezalCrudoPies = 0; // En realidad es un bafle plano.
+             let radio = diametro / 2;
+
+            // Zona Emulsión
+
+            // Cabezal
+            if (alturaFluidoEmulsion > 0)
+            {
+              if (tipoCabezal === "eliptico") {
+                  //Aproximación para el área mojada de un cabezal elíptico 2:1
+                  let a = diametro / 2;
+                  let b = diametro / 4;
+
+                  if(alturaFluidoEmulsion <= b)
+                  {
+                    areaCabezalEmulsionPies = Math.PI * a * b * (1 + (alturaFluidoEmulsion / (2*b)) * (2- (alturaFluidoEmulsion/(2*b))));
+                  } else{
+                      areaCabezalEmulsionPies = Math.PI * a * b * (1 + (1 / (6 * a * a)) * (4 * b *b - a * a) + (alturaFluidoEmulsion - b)/a); //Aproximación.
+                  }
+
+              } else if (tipoCabezal === "toriesferico") {
+                    //Aproximación para cabezal toriesférico
+                    let L = diametro * 0.8;  // Radio de la corona esférica (aproximado para F&D)
+                    let r = diametro * 0.1; // Radio del  toroide (aproximado para F&D)
+
+                    // Si el fluido está dentro de la sección esférica
+                    if (alturaFluidoEmulsion <= (diametro/2 - r)) {
+                        let h_esfera = alturaFluidoEmulsion;
+                        areaCabezalEmulsionPies = 2 * Math.PI * L * h_esfera; // Área de un casquete esférico
+
+                    } else { //Si el fluido esta en la sección del toro
+                        let h_esfera = diametro/2-r;
+                        let area_esfera =  2 * Math.PI * L * h_esfera;
+                        let h_toroidal = alturaFluidoEmulsion - h_esfera;
+
+                       //Calcular el area mojada usando una aproximación.
+                        let theta = 2 * Math.acos((r - h_toroidal) / r); // Ángulo central
+                        let area_sector_toroidal =  r * r * theta; //Area del sector circular completo
+                        let area_triangulo_toroidal = r * (r-h_toroidal)*Math.sin(theta/2)
+                        let area_segmento_toroidal = area_sector_toroidal - area_triangulo_toroidal //Área del segmento mojado.
+
+                        let perimetro_toroidal_mojado =  theta * r;
+
+                        //Area toridal mojada (aproximación de revolución de Pappus-Guldinus)
+                        let area_toroidal_mojado = (2 * Math.PI * (L-r)) + perimetro_toroidal_mojado;
+
+                        areaCabezalEmulsionPies = area_esfera + area_toroidal_mojado;
+
+                    }
+
+                } else if (tipoCabezal === "semiesferico") {
+                    areaCabezalEmulsionPies = 2 * Math.PI * radio * alturaFluidoEmulsion;
+
+                } else if (tipoCabezal === "conico") {
+                    // Asumimos un cono con altura igual al radio del separador
+                    let h_cono = radio; // Altura del cono
+                    let g = Math.sqrt(radio * radio + h_cono * h_cono); // Generatriz
+                    let h_tronco = alturaFluidoEmulsion;
+
+                  if(h_tronco < h_cono)
+                    {
+                       let r_sup = radio * (h_cono - h_tronco) / h_cono; //Radio superior del tronco.
+                       let g_tronco = Math.sqrt(Math.pow(radio - r_sup, 2) + h_tronco * h_tronco);  //Generatriz del tronco de cono.
+
+                        areaCabezalEmulsionPies = Math.PI * (radio+r_sup) * g_tronco;
+                    }
+                  else{
+
+                       areaCabezalEmulsionPies = Math.PI * radio * g; //Area de cono completo.
+                    }
+
+                }
+              }
+
+            // Cuerpo Cilíndrico (Emulsión)
+            if(longitudEmulsion>0 && alturaFluidoEmulsion>0)
+            {
+                let thetaEmulsion = 2 * Math.acos((radio - alturaFluidoEmulsion) / radio);
+                areaCilindroEmulsionPies = longitudEmulsion * radio * thetaEmulsion;
+            }
+
+
+            // Bafle (Emulsión) - Plano
+            if(alturaFluidoEmulsion > 0){
+                let thetaBafleEmulsion = 2 * Math.acos((radio - alturaFluidoEmulsion) / radio);
+                let areaSegmentoCircularEmulsion = 0.5 * radio * radio * (thetaBafleEmulsion - Math.sin(thetaBafleEmulsion));
+                areaBafleEmulsionPies = areaSegmentoCircularEmulsion;
+            }
+
+            // Zona Crudo
+
+            // Bafle (Crudo) -  Plano
+            if(alturaFluidoCrudo > 0){
+              let thetaBafleCrudo = 2 * Math.acos((radio - alturaFluidoCrudo) / radio);
+              let areaSegmentoCircularCrudo = 0.5 * radio * radio * (thetaBafleCrudo - Math.sin(thetaBafleCrudo));
+              areaBafleCrudoPies = areaSegmentoCircularCrudo;
+            }
+
+            // Cuerpo Cilíndrico (Crudo)
+            if(longitudCrudo > 0 && alturaFluidoCrudo > 0){
+              let thetaCrudo = 2 * Math.acos((radio - alturaFluidoCrudo) / radio);
+              areaCilindroCrudoPies = longitudCrudo * radio * thetaCrudo;
+            }
+
+            // Cabezal / Bafle (Crudo) - Plano
+            if(alturaFluidoCrudo > 0){
+              areaCabezalCrudoPies = areaBafleCrudoPies;  //Es el mismo bafle, misma area.
+            }
+
+            // Conversiones y Mostrar Resultados
+            const factorConversion = 0.092903; // 1 pie^2 = 0.092903 m^2
+
+            function convertirYMostrar(areaPies, idPies, idMetros) {
+              let areaMetros = areaPies * factorConversion;
+              document.getElementById(idPies).textContent = areaPies.toFixed(3);
+              document.getElementById(idMetros).textContent = areaMetros.toFixed(3);
+            }
+            convertirYMostrar(areaCabezalEmulsionPies,"areaCabezalEmulsionPies","areaCabezalEmulsionMetros");
+            convertirYMostrar(areaCilindroEmulsionPies,"areaCilindroEmulsionPies","areaCilindroEmulsionMetros");
+            convertirYMostrar(areaBafleEmulsionPies, "areaBafleEmulsionPies", "areaBafleEmulsionMetros");
+            convertirYMostrar(areaBafleCrudoPies,"areaBafleCrudoPies", "areaBafleCrudoMetros");
+            convertirYMostrar(areaCilindroCrudoPies,"areaCilindroCrudoPies","areaCilindroCrudoMetros");
+            convertirYMostrar(areaCabezalCrudoPies,"areaCabezalCrudoPies", "areaCabezalCrudoMetros");
+
+
+            document.getElementById("resultados").style.display = "block";
+        }
+
+
+    </script>
+
+</body>
+</html>
