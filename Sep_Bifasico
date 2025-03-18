@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Área Mojada - Separador Horizontal Bifásico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .results-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .zone {
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1a252f;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+        }
+        .result-value {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        canvas {
+            max-width: 100%;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .visualization {
+            margin-top: 30px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .zone-title {
+            background-color: #2c3e50;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .emulsion {
+            background-color: rgba(41, 128, 185, 0.3);
+        }
+        .crude {
+            background-color: rgba(192, 57, 43, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Área Mojada - Separador Horizontal Bifásico con Zonas</h1>
+    <div class="container">
+        <div class="input-section">
+            <h2>Datos Generales del Separador</h2>
+            <div class="form-group">
+                <label for="diameter">Diámetro (D):</label>
+                <input type="number" id="diameter" step="0.1" min="0" value="8">
+            </div>
+            <div class="form-group">
+                <label for="unit-diameter">Unidad:</label>
+                <select id="unit-diameter">
+                    <option value="ft">pies</option>
+                    <option value="m">metros</option>
+                    <option value="in">pulgadas</option>
+                    <option value="cm">centímetros</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="left-head">Cabezal izquierdo (Zona Emulsión):</label>
+                <select id="left-head">
+                    <option value="elliptical">Elíptico (2:1)</option>
+                    <option value="hemispherical">Semiesférico</option>
+                    <option value="torispherical">Toriesférico</option>
+                    <option value="flat">Plano</option>
+                    <option value="conical">Cónico</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="right-head">Cabezal derecho (Zona Crudo):</label>
+                <select id="right-head">
+                    <option value="elliptical">Elíptico (2:1)</option>
+                    <option value="hemispherical">Semiesférico</option>
+                    <option value="torispherical">Toriesférico</option>
+                    <option value="flat">Plano</option>
+                    <option value="conical">Cónico</option>
+                </select>
+            </div>
+
+            <div class="zone emulsion">
+                <h3>Zona de Emulsión (Izquierda)</h3>
+                <div class="form-group">
+                    <label for="emulsion-length">Longitud:</label>
+                    <input type="number" id="emulsion-length" step="0.1" min="0" value="20">
+                </div>
+                <div class="form-group">
+                    <label for="emulsion-height">Altura del fluido corrosivo:</label>
+                    <input type="number" id="emulsion-height" step="0.1" min="0" value="5.7">
+                </div>
+            </div>
+
+            <div class="zone crude">
+                <h3>Zona de Crudo (Derecha)</h3>
+                <div class="form-group">
+                    <label for="crude-length">Longitud:</label>
+                    <input type="number" id="crude-length" step="0.1" min="0" value="6">
+                </div>
+                <div class="form-group">
+                    <label for="crude-height">Altura del fluido corrosivo:</label>
+                    <input type="number" id="crude-height" step="0.1" min="0" value="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="unit-length-height">Unidad para longitudes y alturas:</label>
+                <select id="unit-length-height">
+                    <option value="ft">pies</option>
+                    <option value="m">metros</option>
+                    <option value="in">pulgadas</option>
+                    <option value="cm">centímetros</option>
+                </select>
+            </div>
+
+            <button id="calculate">Calcular Área Mojada</button>
+        </div>
+
+        <div class="results-section">
+            <h2>Resultados</h2>
+            
+            <div class="zone-title">Zona de Emulsión (Izquierda)</div>
+            
+            <div class="result-item">
+                <span>Ángulo theta (θ):</span>
+                <span class="result-value" id="emulsion-theta">-</span>
+                <span>radianes (</span>
+                <span class="result-value" id="emulsion-theta-deg">-</span>
+                <span>°)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>1. Área mojada del cabezal izquierdo:</span>
+                <span class="result-value" id="emulsion-head-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="emulsion-head-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>2. Área mojada del cuerpo cilíndrico:</span>
+                <span class="result-value" id="emulsion-cylinder-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="emulsion-cylinder-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>3. Área mojada del bafle:</span>
+                <span class="result-value" id="emulsion-baffle-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="emulsion-baffle-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>Área total zona emulsión:</span>
+                <span class="result-value" id="emulsion-total-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="emulsion-total-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="zone-title" style="margin-top: 20px;">Zona de Crudo (Derecha)</div>
+            
+            <div class="result-item">
+                <span>Ángulo theta (θ):</span>
+                <span class="result-value" id="crude-theta">-</span>
+                <span>radianes (</span>
+                <span class="result-value" id="crude-theta-deg">-</span>
+                <span>°)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>1. Área mojada del bafle:</span>
+                <span class="result-value" id="crude-baffle-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="crude-baffle-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>2. Área mojada del cuerpo cilíndrico:</span>
+                <span class="result-value" id="crude-cylinder-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="crude-cylinder-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>3. Área mojada del cabezal derecho:</span>
+                <span class="result-value" id="crude-head-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="crude-head-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item">
+                <span>Área total zona crudo:</span>
+                <span class="result-value" id="crude-total-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="crude-total-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+            
+            <div class="result-item" style="margin-top: 20px; background-color: #e8f4f8;">
+                <span>Área mojada total del separador:</span>
+                <span class="result-value" id="total-area">-</span>
+                <span> ft² (</span>
+                <span class="result-value" id="total-area-m2">-</span>
+                <span> m²)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="visualization">
+        <h2>Visualización del Separador</h2>
+        <canvas id="separator-canvas" width="900" height="350"></canvas>
+    </div>
+
+    <div class="formulas">
+        <h2>Fórmulas Utilizadas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Componente</th>
+                    <th>Fórmula</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ángulo theta (θ)</td>
+                    <td>θ = 2 × arccos(1 - 2H/D)</td>
+                </tr>
+                <tr>
+                    <td>Área mojada del cilindro</td>
+                    <td>A<sub>cil</sub> = (L × D/2) × (θ - sin(θ))</td>
+                </tr>
+                <tr>
+                    <td>Área mojada cabezal elíptico</td>
+                    <td>A<sub>elip</sub> = (π × r²)/2 × (θ/π - sin(θ)/θ)</td>
+                </tr>
+                <tr>
+                    <td>Área mojada cabezal semiesférico</td>
+                    <td>A<sub>semiesf</sub> = 2πr² × (1 - cos(θ/2))/2</td>
+                </tr>
+                <tr>
+                    <td>Área mojada bafle plano</td>
+                    <td>A<sub>bafle</sub> = (r² × θ/2) - (r² × sin(θ)/2)</td>
+                </tr>
+                <tr>
+                    <td>Área mojada cabezal toriesférico</td>
+                    <td>A<sub>tori</sub> ≈ A<sub>elip</sub> × 1.1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateButton = document.getElementById('calculate');
+            calculateButton.addEventListener('click', calculateWettedArea);
+
+            // Initial calculation
+            calculateWettedArea();
+
+            function calculateWettedArea() {
+                // Get input values
+                const diameter = parseFloat(document.getElementById('diameter').value);
+                const emulsionLength = parseFloat(document.getElementById('emulsion-length').value);
+                const emulsionHeight = parseFloat(document.getElementById('emulsion-height').value);
+                const crudeLength = parseFloat(document.getElementById('crude-length').value);
+                const crudeHeight = parseFloat(document.getElementById('crude-height').value);
+                const leftHeadType = document.getElementById('left-head').value;
+                const rightHeadType = document.getElementById('right-head').value;
+                
+                // Get units
+                const diameterUnit = document.getElementById('unit-diameter').value;
+                const lengthHeightUnit = document.getElementById('unit-length-height').value;
+
+                // Convert all measurements to the same unit (feet for calculation)
+                const diameterFt = convertToFeet(diameter, diameterUnit);
+                const emulsionLengthFt = convertToFeet(emulsionLength, lengthHeightUnit);
+                const emulsionHeightFt = convertToFeet(emulsionHeight, lengthHeightUnit);
+                const crudeLengthFt = convertToFeet(crudeLength, lengthHeightUnit);
+                const crudeHeightFt = convertToFeet(crudeHeight, lengthHeightUnit);
+
+                // Validate inputs
+                if (emulsionHeightFt > diameterFt || crudeHeightFt > diameterFt) {
+                    alert('Error: La altura del líquido no puede ser mayor que el diámetro.');
+                    return;
+                }
+
+                const radius = diameterFt / 2;
+                
+                // ---- ZONA DE EMULSIÓN ----
+                // Calculate theta angle for emulsion
+                const thetaEmulsion = 2 * Math.acos(1 - 2 * emulsionHeightFt / diameterFt);
+                const thetaEmulsionDeg = thetaEmulsion * 180 / Math.PI;
+
+                // Calculate wetted area of cylindrical body for emulsion
+                const emulsionCylinderArea = (emulsionLengthFt * radius) * (thetaEmulsion - Math.sin(thetaEmulsion));
+
+                // Calculate wetted area of left head for emulsion
+                const emulsionHeadArea = calculateHeadArea(leftHeadType, radius, thetaEmulsion);
+
+                // Calculate wetted area of baffle for emulsion
+                const emulsionBaffleArea = calculateFlatHeadArea(radius, thetaEmulsion);
+
+                // Calculate total wetted area for emulsion
+                const emulsionTotalAreaFt2 = emulsionCylinderArea + emulsionHeadArea + emulsionBaffleArea;
+                const emulsionTotalAreaM2 = emulsionTotalAreaFt2 * 0.0929;
+                
+                // ---- ZONA DE CRUDO ----
+                // Calculate theta angle for crude
+                const thetaCrude = 2 * Math.acos(1 - 2 * crudeHeightFt / diameterFt);
+                const thetaCrudeDeg = thetaCrude * 180 / Math.PI;
+
+                // Calculate wetted area of cylindrical body for crude
+                const crudeCylinderArea = (crudeLengthFt * radius) * (thetaCrude - Math.sin(thetaCrude));
+
+                // Calculate wetted area of right head for crude
+                const crudeHeadArea = calculateHeadArea(rightHeadType, radius, thetaCrude);
+
+                // Calculate wetted area of baffle for crude
+                const crudeBaffleArea = calculateFlatHeadArea(radius, thetaCrude);
+
+                // Calculate total wetted area for crude
+                const crudeTotalAreaFt2 = crudeCylinderArea + crudeHeadArea + crudeBaffleArea;
+                const crudeTotalAreaM2 = crudeTotalAreaFt2 * 0.0929;
+                
+                // Total wetted area of the separator
+                const totalAreaFt2 = emulsionTotalAreaFt2 + crudeTotalAreaFt2;
+                const totalAreaM2 = totalAreaFt2 * 0.0929;
+
+                // ---- DISPLAY RESULTS ----
+                // Emulsion zone
+                document.getElementById('emulsion-theta').textContent = thetaEmulsion.toFixed(4);
+                document.getElementById('emulsion-theta-deg').textContent = thetaEmulsionDeg.toFixed(2);
+                document.getElementById('emulsion-head-area').textContent = emulsionHeadArea.toFixed(2);
+                document.getElementById('emulsion-head-area-m2').textContent = (emulsionHeadArea * 0.0929).toFixed(2);
+                document.getElementById('emulsion-cylinder-area').textContent = emulsionCylinderArea.toFixed(2);
+                document.getElementById('emulsion-cylinder-area-m2').textContent = (emulsionCylinderArea * 0.0929).toFixed(2);
+                document.getElementById('emulsion-baffle-area').textContent = emulsionBaffleArea.toFixed(2);
+                document.getElementById('emulsion-baffle-area-m2').textContent = (emulsionBaffleArea * 0.0929).toFixed(2);
+                document.getElementById('emulsion-total-area').textContent = emulsionTotalAreaFt2.toFixed(2);
+                document.getElementById('emulsion-total-area-m2').textContent = emulsionTotalAreaM2.toFixed(2);
+                
+                // Crude zone
+                document.getElementById('crude-theta').textContent = thetaCrude.toFixed(4);
+                document.getElementById('crude-theta-deg').textContent = thetaCrudeDeg.toFixed(2);
+                document.getElementById('crude-baffle-area').textContent = crudeBaffleArea.toFixed(2);
+                document.getElementById('crude-baffle-area-m2').textContent = (crudeBaffleArea * 0.0929).toFixed(2);
+                document.getElementById('crude-cylinder-area').textContent = crudeCylinderArea.toFixed(2);
+                document.getElementById('crude-cylinder-area-m2').textContent = (crudeCylinderArea * 0.0929).toFixed(2);
+                document.getElementById('crude-head-area').textContent = crudeHeadArea.toFixed(2);
+                document.getElementById('crude-head-area-m2').textContent = (crudeHeadArea * 0.0929).toFixed(2);
+                document.getElementById('crude-total-area').textContent = crudeTotalAreaFt2.toFixed(2);
+                document.getElementById('crude-total-area-m2').textContent = crudeTotalAreaM2.toFixed(2);
+                
+                // Total
+                document.getElementById('total-area').textContent = totalAreaFt2.toFixed(2);
+                document.getElementById('total-area-m2').textContent = totalAreaM2.toFixed(2);
+
+                // Draw the separator
+                drawSeparator(
+                    diameterFt, 
+                    emulsionLengthFt,
+                    crudeLengthFt,
+                    emulsionHeightFt,
+                    crudeHeightFt,
+                    leftHeadType,
+                    rightHeadType
+                );
+            }
+
+            function calculateHeadArea(headType, radius, theta) {
+                switch(headType) {
+                    case 'elliptical':
+                        // 2:1 elliptical head wetted area
+                        return (Math.PI * radius * radius) / 2 * (theta / Math.PI - Math.sin(theta) / theta);
+                    case 'hemispherical':
+                        // Hemispherical head wetted area
+                        return 2 * Math.PI * radius * radius * (1 - Math.cos(theta / 2)) / 2;
+                    case 'torispherical':
+                        // Approximate torispherical as 1.1 times elliptical
+                        return 1.1 * (Math.PI * radius * radius) / 2 * (theta / Math.PI - Math.sin(theta) / theta);
+                    case 'flat':
+                        // Flat head wetted area (segment of circle)
+                        return calculateFlatHeadArea(radius, theta);
+                    case 'conical':
+                        // Approximation for conical head with 60° angle
+                        const coneHeight = radius * 1.73; // tan(60°) = 1.73
+                        const generatrix = Math.sqrt(radius * radius + coneHeight * coneHeight);
+                        const phi = Math.asin(radius * Math.sin(theta / 2) / generatrix);
+                        return Math.PI * radius * generatrix * (theta / (2 * Math.PI));
+                    default:
+                        return 0;
+                }
+            }
+            
+            function calculateFlatHeadArea(radius, theta) {
+                // Flat head (baffle) wetted area - segment of circle
+                return (radius * radius * theta / 2) - (radius * radius * Math.sin(theta) / 2);
+            }
+
+            function convertToFeet(value, unit) {
+                switch(unit) {
+                    case 'm':
+                        return value * 3.28084;
+                    case 'in':
+                        return value / 12;
+                    case 'cm':
+                        return value * 0.0328084;
+                    default: // ft
+                        return value;
+                }
+            }
+
+            function drawSeparator(diameter, emulsionLength, crudeLength, emulsionHeight, crudeHeight, leftHeadType, rightHeadType) {
+                const canvas = document.getElementById('separator-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Define drawing parameters
+                const totalLength = emulsionLength + crudeLength;
+                const scale = Math.min(canvas.width / (totalLength + diameter), canvas.height / (diameter * 2)) * 0.8;
+                const centerY = canvas.height / 2;
+                const startX = canvas.width * 0.1;
+                const baffleX = startX + emulsionLength * scale;
+                const endX = baffleX + crudeLength * scale;
+                const radius = diameter * scale / 2;
+                
+                // Draw cylindrical body outline
+                ctx.beginPath();
+                ctx.moveTo(startX, centerY - radius);
+                ctx.lineTo(endX, centerY - radius);
+                ctx.moveTo(startX, centerY + radius);
+                ctx.lineTo(endX, centerY + radius);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw baffle
+                ctx.beginPath();
+                ctx.moveTo(baffleX, centerY - radius);
+                ctx.lineTo(baffleX, centerY + radius);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw heads
+                drawHead(ctx, leftHeadType, startX, centerY, radius, true);
+                drawHead(ctx, rightHeadType, endX, centerY, radius, false);
+                
+                // Draw emulsion liquid level
+                const emulsionLevel = centerY + radius - emulsionHeight * scale;
+                ctx.beginPath();
+                ctx.moveTo(startX, emulsionLevel);
+                ctx.lineTo(baffleX, emulsionLevel);
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw crude liquid level
+                const crudeLevel = centerY + radius - crudeHeight * scale;
+                ctx.beginPath();
+                ctx.moveTo(baffleX, crudeLevel);
+                ctx.lineTo(endX, crudeLevel);
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Fill emulsion liquid area
+                ctx.beginPath();
+                
+                // Left head liquid fill (emulsion)
+                drawHeadLiquidFill(ctx, leftHeadType, startX, centerY, radius, emulsionLevel, true);
+                
+                // Emulsion body fill
+                ctx.fillRect(startX, emulsionLevel, baffleX - startX, centerY + radius - emulsionLevel);
+                
+                // Fill crude liquid area
+                ctx.beginPath();
+                
+                // Crude body fill
+                ctx.fillRect(baffleX, crudeLevel, endX - baffleX, centerY + radius - crudeLevel);
+                
+                // Right head liquid fill (crude)
+                drawHeadLiquidFill(ctx, rightHeadType, endX, centerY, radius, crudeLevel, false);
+                
+                // Add labels
+                ctx.fillStyle = '#333';
+                ctx.font = '14px Arial';
+                ctx.fillText(`D = ${(diameter / 3.28084).toFixed(2)} m (${diameter.toFixed(2)} ft)`, startX, centerY - radius - 30);
+                
+                // Emulsion labels
+                ctx.fillStyle = '#3498db';
+                ctx.fillText('ZONA DE EMULSIÓN', startX + (baffleX - startX) / 2 - 60, centerY - radius - 10);
+                ctx.fillText(`L = ${(emulsionLength / 3.28084).toFixed(2)} m (${emulsionLength.toFixed(2)} ft)`, startX + (baffleX - startX) / 2 - 60, centerY - radius - 30);
+                ctx.fillText(`H = ${(emulsionHeight / 3.28084).toFixed(2)} m (${emulsionHeight.toFixed(2)} ft)`, startX + 10, emulsionLevel - 10);
+                
+                // Crude labels
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillText('ZONA DE CRUDO', baffleX + (endX - baffleX) / 2 - 50, centerY - radius - 10);
+                ctx.fillText(`L = ${(crudeLength / 3.28084).toFixed(2)} m (${crudeLength.toFixed(2)} ft)`, baffleX + (endX - baffleX) / 2 - 50, centerY - radius - 30);
+                ctx.fillText(`H = ${(crudeHeight / 3.28084).toFixed(2)} m (${crudeHeight.toFixed(2)} ft)`, baffleX + 10, crudeLevel - 10);
+                
+                // Baffle label
+                ctx.fillStyle = '#333';
+                ctx.fillText('BAFLE', baffleX - 20, centerY);
+                
+                // Add color for sections
+                // Emulsion section
+                ctx.globalAlpha = 0.3;
+                ctx.fillStyle = '#3498db'; // Blue for emulsion
+                fillSection(ctx, startX, baffleX, centerY, radius, emulsionLevel);
+                
+                // Crude section
+                ctx.fillStyle = '#e74c3c'; // Red for crude
+                fillSection(ctx, baffleX, endX, centerY, radius, crudeLevel);
+                
+                ctx.globalAlpha = 1.0;
+            }
+            
+            function fillSection(ctx, startX, endX, centerY, radius, liquidLevel) {
+                ctx.fillRect(startX, liquidLevel, endX - startX, centerY + radius - liquidLevel);
+            }
+            
+            function drawHeadLiquidFill(ctx, headType, x, centerY, radius, liquidLevel, isLeft) {
+                if (headType === 'flat') return;
+                
+                const direction = isLeft ? -1 : 1;
+                const headWidth = radius * 0.5; // Approximate head width
+                
+                ctx.beginPath();
+                ctx.moveTo(x, liquidLevel);
+                
+                // Calculate points for the liquid level intersection with the head
+                if (headType === 'conical') {
+                    const coneHeight = radius;
+                    const yDiff = centerY + radius - liquidLevel;
+                    const xOffset =
