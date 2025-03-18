@@ -145,7 +145,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="left-head">Cabezal izquierdo (Zona Emulsión):</label>
+                <label for="right-head">Cabezal izquierdo (Zona Emulsión):</label>
                 <select id="left-head">
                     <option value="elliptical">Elíptico (2:1)</option>
                     <option value="hemispherical">Semiesférico</option>
@@ -155,7 +155,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="right-head">Cabezal derecho (Zona Crudo):</label>
+                <label for="left-head">Cabezal derecho (Zona Crudo):</label>
                 <select id="right-head">
                     <option value="elliptical">Elíptico (2:1)</option>
                     <option value="hemispherical">Semiesférico</option>
@@ -439,31 +439,46 @@
             }
 
             function calculateHeadArea(headType, radius, theta) {
+                // Protección para valores negativos o cero
+                if (theta <= 0) return 0;
+                
+                let result = 0;
+                
                 switch(headType) {
                     case 'elliptical':
                         // 2:1 elliptical head wetted area
-                        return (Math.PI * radius * radius) / 2 * (theta / Math.PI - Math.sin(theta) / theta);
+                        // La fórmula original puede dar valores negativos para ángulos pequeños
+                        result = (Math.PI * radius * radius) / 2 * Math.max(0, (theta / Math.PI - Math.sin(theta) / theta));
+                        break;
                     case 'hemispherical':
                         // Hemispherical head wetted area
-                        return 2 * Math.PI * radius * radius * (1 - Math.cos(theta / 2)) / 2;
+                        result = 2 * Math.PI * radius * radius * (1 - Math.cos(theta / 2)) / 2;
+                        break;
                     case 'torispherical':
                         // Approximate torispherical as 1.1 times elliptical
-                        return 1.1 * (Math.PI * radius * radius) / 2 * (theta / Math.PI - Math.sin(theta) / theta);
+                        result = 1.1 * (Math.PI * radius * radius) / 2 * Math.max(0, (theta / Math.PI - Math.sin(theta) / theta));
+                        break;
                     case 'flat':
                         // Flat head wetted area (segment of circle)
-                        return calculateFlatHeadArea(radius, theta);
+                        result = calculateFlatHeadArea(radius, theta);
+                        break;
                     case 'conical':
                         // Approximation for conical head with 60° angle
                         const coneHeight = radius * 1.73; // tan(60°) = 1.73
                         const generatrix = Math.sqrt(radius * radius + coneHeight * coneHeight);
-                        return Math.PI * radius * generatrix * (theta / (2 * Math.PI));
+                        result = Math.PI * radius * generatrix * (theta / (2 * Math.PI));
+                        break;
                     default:
-                        return 0;
+                        result = 0;
                 }
+                
+                // Aseguramos que el resultado sea siempre positivo
+                return Math.abs(result);
             }
             
             function calculateFlatHeadArea(radius, theta) {
                 // Flat head (baffle) wetted area - segment of circle
+                if (theta <= 0) return 0;
                 return (radius * radius * theta / 2) - (radius * radius * Math.sin(theta) / 2);
             }
 
