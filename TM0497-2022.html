@@ -93,6 +93,53 @@
             margin-left: 20px;
         }
 
+        /* Estilo para la cuadrícula de temas principales */
+        .key-topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Columnas responsivas */
+            gap: 20px;
+            margin-top: 15px;
+        }
+         .key-topic-item {
+            background-color: #e3f2fd; /* Color suave */
+            border: 1px solid #2196f3; /* Borde azul */
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Indica que es clickeable */
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .key-topic-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #bbdefb; /* Color más oscuro al pasar el ratón */
+        }
+         .key-topic-item.active {
+            background-color: #90caf9; /* Color al ser seleccionado */
+            border-color: #1976d2;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .key-topic-item i {
+            font-size: 1.8em;
+            color: #1565c0; /* Azul oscuro */
+            margin-right: 15px;
+        }
+        .key-topic-item div {
+            flex-grow: 1;
+        }
+        .key-topic-item h5 {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0d47a1; /* Azul muy oscuro */
+        }
+        .key-topic-item p {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+
         /* Estilo para los apéndices mejorados */
         .appendix-grid {
             display: grid;
@@ -109,11 +156,17 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             cursor: pointer; /* Indica que es clickeable */
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
         .appendix-item:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #b2ebf2; /* Color más oscuro al pasar el ratón */
+        }
+         .appendix-item.active {
+            background-color: #80deea; /* Color al ser seleccionado */
+            border-color: #00838f;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         .appendix-item i {
             font-size: 1.8em;
@@ -133,26 +186,41 @@
             color: #555;
         }
 
-        /* Estilo para el área de visualización de detalles del apéndice */
-        #appendix-details-display {
+        /* Estilo para el área de visualización de detalles */
+        #details-display {
             background-color: #fff;
-            border: 1px solid #00bcd4;
+            border: 1px solid #ccc; /* Borde neutro */
             border-radius: 8px;
             padding: 20px;
             margin-top: 20px;
             min-height: 100px; /* Altura mínima */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: none; /* Oculto por defecto */
+            animation: fadeIn 0.5s ease-in-out; /* Animación de entrada */
         }
-        #appendix-details-display h4 {
+        #details-display h4 {
             font-weight: bold;
             margin-bottom: 10px;
-            color: #006064;
+            color: #333; /* Color neutro */
+        }
+         #details-display h6 {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #333; /* Color neutro */
+            border-bottom: 1px solid #eee; /* Borde suave */
+            padding-bottom: 3px;
         }
 
         /* Estilo para ocultar las explicaciones detalladas inicialmente */
-        .appendix-explanation {
+        .detailed-explanation-content {
             display: none;
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -162,54 +230,89 @@
     <p class="mb-8 text-center">Técnicas de Medición para Protección Catódica en Tuberías Metálicas</p>
 
     <details>
-        <summary>Resumen General y Temas Clave</summary>
-        <p>El documento NACE TM0497-2022 de AMPP detalla las técnicas para medir la efectividad de la protección catódica (PC) en tuberías subterráneas/sumergidas. Se enfoca en medir potenciales estructura-electrolito para verificar criterios de PC. Cubre seguridad, instrumentación, causas de inexactitud, métodos de prueba específicos y apéndices sobre electrodos, encuestas, cupones y corrientes parásitas.</p>
-        <h3 class="font-semibold mt-4 mb-2">Ideas Clave:</h3>
-        <ul class="list-disc ml-6">
-            <li>Importancia de Mediciones Precisas</li>
-            <li>Potencial Estructura-Electrolito como Criterio Clave</li>
-            <li>Factores que Afectan las Mediciones</li>
-            <li>Métodos de Prueba Normalizados</li>
-            <li>La Importancia de la Polarización</li>
-            <li>Causas de Mediciones Inexactas y Soluciones</li>
-            <li>Consideraciones de Seguridad</li>
-            <li>Tipos de Instrumentación</li>
-            <li>Electrodos de Referencia</li>
-            <li>Caídas de Tensión (Voltage Drops)</li>
-            <li>Apéndices Detallados</li>
-        </ul>
+        <summary>Resumen General</summary>
+        <p>El documento NACE TM0497-2022 de AMPP detalla las técnicas para medir la efectividad de la protección catódica (PC) en tuberías subterráneas/sumergidas. Se enfoca en medir potenciales estructura-electrolito para verificar criterios de PC. Cubre seguridad, instrumentación, causas de inexactitud, métodos de prueba específicos y apéndices sobre electrodos, relevamientos, cupones y corrientes parásitas.</p>
+    </details>
+
+    <details open id="details-temas-principales"> <summary>Temas Principales</summary>
+        <p>Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento general.</p>
+        <div class="key-topics-grid">
+            <div class="key-topic-item" data-target-explanation="exp-importancia-mediciones">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <h5>Importancia de Mediciones Precisas</h5>
+                    <p>Por qué la exactitud es crucial.</p>
+                </div>
+            </div>
+            <div class="key-topic-item" data-target-explanation="exp-criterio-clave">
+                 <i class="fas fa-ruler-combined"></i>
+                <div>
+                    <h5>Potencial Estructura-Electrolito como Criterio Clave</h5>
+                    <p>La medida principal para evaluar la PC.</p>
+                </div>
+            </div>
+            <div class="key-topic-item" data-target-explanation="exp-factores-afectan">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h5>Factores que Afectan las Mediciones</h5>
+                    <p>Elementos que pueden causar inexactitud.</p>
+                </div>
+            </div>
+            <div class="key-topic-item" data-target-explanation="exp-metodos-prueba">
+                <i class="fas fa-clipboard-list"></i>
+                <div>
+                    <h5>Métodos de Prueba Normalizados</h5>
+                    <p>Los 3 métodos principales de la norma.</p>
+                </div>
+            </div>
+             <div class="key-topic-item" data-target-explanation="exp-importancia-polarizacion">
+                <i class="fas fa-battery-half"></i>
+                <div>
+                    <h5>La Importancia de la Polarización</h5>
+                    <p>El rol del cambio de potencial.</p>
+                </div>
+            </div>
+             <div class="key-topic-item" data-target-explanation="exp-causas-soluciones">
+                <i class="fas fa-tools"></i>
+                <div>
+                    <h5>Causas de Mediciones Inexactas y Soluciones</h5>
+                    <p>Identificación y corrección de errores.</p>
+                </div>
+            </div>
+             <div class="key-topic-item" data-target-explanation="exp-consideraciones-seguridad">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h5>Consideraciones de Seguridad</h5>
+                    <p>Precauciones esenciales en campo.</p>
+                </div>
+            </div>
+             <div class="key-topic-item" data-target-explanation="exp-instrumentacion">
+                <i class="fas fa-tachometer-alt"></i>
+                <div>
+                    <h5>Tipos de Instrumentación</h5>
+                    <p>Guía para seleccionar equipos.</p>
+                </div>
+            </div>
+             <div class="key-topic-item" data-target-explanation="exp-electrodos-ref">
+                <i class="fas fa-flask"></i>
+                <div>
+                    <h5>Electrodos de Referencia</h5>
+                    <p>Tipos, uso y verificación.</p>
+                </div>
+            </div>
+             <div class="key-topic-item" data-target-explanation="exp-caidas-tension">
+                <i class="fas fa-bolt"></i>
+                <div>
+                    <h5>Caídas de Tensión (Voltage Drops)</h5>
+                    <p>Impacto del IR Drop en las mediciones.</p>
+                </div>
+            </div>
+        </div>
     </details>
 
     <details>
-        <summary>Importancia de Mediciones Precisas</summary>
-        <p>La precisión y fiabilidad de las mediciones de potencial estructura-electrolito son fundamentales. Mediciones inexactas pueden llevar a evaluaciones erróneas de la protección catódica y posibles fallas en la integridad de la tubería.</p>
-    </details>
-
-    <details>
-        <summary>Potencial Estructura-Electrolito como Criterio Clave</summary>
-        <p>Este potencial es la medida principal para determinar si un sistema de tuberías está adecuadamente protegido catódicamente. La norma detalla cómo medirlo de manera efectiva en diversas condiciones.</p>
-    </details>
-
-    <details>
-        <summary>Factores que Afectan las Mediciones</summary>
-        <p>Numerosos factores pueden influir en la precisión. Aquí se listan algunos:</p>
-        <ul class="factors-list">
-            <li>Características del instrumento</li>
-            <li>Contacto del electrodo de referencia con el electrolito</li>
-            <li>Presencia de corrientes parásitas</li>
-            <li>Caídas de tensión (IR Drop)</li>
-            <li>Interferencia eléctrica</li>
-            <li>Condiciones ambientales y de construcción</li>
-            <li>Cables de prueba dañados</li>
-            <li>Electrodos de referencia contaminados</li>
-            <li>Mal contacto con la estructura metálica</li>
-        </ul>
-    </details>
-
-    <details>
-        <summary>Métodos de Prueba Normalizados y Polarización</summary>
-        <p>El documento describe tres métodos principales para evaluar el potencial y la polarización.</p>
-
+        <summary>Diagrama de Métodos de Prueba</summary>
+         <p>Visualización conceptual de los principales métodos de prueba y los potenciales medidos.</p>
         <div class="visualization-container" id="test-method-viz">
             <h4 class="text-lg font-semibold mb-4 text-center">Diagrama Conceptual de Métodos de Prueba y Potenciales</h4>
             <div class="test-method-diagram">
@@ -239,64 +342,39 @@
         </div>
     </details>
 
-     <details>
-        <summary>Causas de Mediciones Inexactas y Soluciones</summary>
-        <p>La norma detalla causas comunes como cables dañados, electrodos contaminados, mal contacto y sugiere formas de minimizarlos, enfatizando la verificación y el mantenimiento del equipo.</p>
-    </details>
 
-    <details>
-        <summary>Consideraciones de Seguridad</summary>
-        <p>Se destacan precauciones esenciales al trabajar cerca de líneas de alto voltaje, cruces de carreteras y excavaciones para garantizar la seguridad del personal.</p>
-    </details>
-
-    <details>
-        <summary>Tipos de Instrumentación</summary>
-        <p>Se recomiendan voltímetros con alta impedancia de entrada. Se discuten instrumentos analógicos vs. digitales y la importancia crítica de la calibración regular.</p>
-    </details>
-
-    <details>
-        <summary>Electrodos de Referencia</summary>
-        <p>Se describen electrodos comunes (CSE, SSC, SCE), su selección, uso adecuado y métodos para verificar su precisión y estado.</p>
-    </details>
-
-    <details>
-        <summary>Caídas de Tensión (Voltage Drops)</summary>
-        <p>Se explica cómo las caídas de tensión (IR Drop), especialmente en el electrolito, afectan las mediciones de potencial ON y por qué el método instantáneo OFF es crucial para obtener el potencial polarizado verdadero al eliminar esta caída.</p>
-    </details>
-
-    <details>
-        <summary>Apéndices Detallados</summary>
-        <p>Los apéndices proporcionan información adicional valiosa sobre temas específicos que complementan la norma principal. Haz clic en cada tarjeta para ver la explicación detallada.</p>
+    <details id="details-apendices"> <summary>Apéndices Detallados</summary>
+        <p>Los apéndices proporcionan información adicional valiosa. Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento.</p>
         <div class="appendix-grid">
-            <div class="appendix-item" data-target-explanation="exp-electrodos">
+            <div class="appendix-item" data-target-explanation="exp-electrodos-ap">
                 <i class="fas fa-flask"></i>
                 <div>
                     <h5>Electrodos de Referencia</h5>
-                    <p>Información sobre electrodos comunes.</p>
+                    <p>Información obligatoria sobre electrodos.</p>
                 </div>
             </div>
-            <div class="appendix-item" data-target-explanation="exp-encuestas">
+            <div class="appendix-item" data-target-explanation="exp-relevamientos-ap">
                  <i class="fas fa-chart-line"></i>
                 <div>
-                    <h5>Encuestas de Gradiente de Potencial DC</h5>
-                    <p>Detalles sobre encuestas DCVG/célula a célula.</p>
+                    <h5>Relevamientos de Gradiente de Potencial DC</h5>
+                    <p>Detalles sobre relevamientos DCVG/celda a celda.</p>
                 </div>
             </div>
-            <div class="appendix-item" data-target-explanation="exp-cupones">
+            <div class="appendix-item" data-target-explanation="exp-cupones-ap">
                 <i class="fas fa-tags"></i>
                 <div>
                     <h5>Uso de Cupones</h5>
                     <p>Cómo utilizar cupones para evaluar la PC.</p>
                 </div>
             </div>
-            <div class="appendix-item" data-target-explanation="exp-interferencia">
+            <div class="appendix-item" data-target-explanation="exp-interferencia-ap">
                 <i class="fas fa-bolt"></i>
                 <div>
                     <h5>Interferencia de Corrientes Parásitas</h5>
                     <p>Pruebas para identificar interferencia.</p>
                 </div>
             </div>
-             <div class="appendix-item" data-target-explanation="exp-instant-off">
+             <div class="appendix-item" data-target-explanation="exp-instant-off-ap">
                 <i class="fas fa-clock"></i>
                 <div>
                     <h5>Evaluación del Potencial Instantáneo OFF</h5>
@@ -304,33 +382,201 @@
                 </div>
             </div>
         </div>
-
-        <div id="appendix-details-display">
-            </div>
-
-        <div id="detailed-explanations" class="appendix-explanation">
-            <div id="exp-electrodos">
-                <h4>Electrodos de Referencia</h4>
-                <p>Este apéndice proporciona información esencial y obligatoria sobre los electrodos de referencia utilizados en las mediciones de protección catódica. Detalla los tipos más comunes, como el electrodo de sulfato de cobre saturado (CSE), el electrodo de cloruro de plata/cloruro de plata (SSC) para agua de mar, y el electrodo de cloruro de potasio saturado (SCE). Se explican los criterios para su selección adecuada según el entorno, los procedimientos para su uso correcto y, de manera crucial, los métodos para verificar su precisión y estado a lo largo del tiempo. Mantener la precisión de los electrodos de referencia es vital para obtener mediciones de potencial fiables.</p>
-            </div>
-            <div id="exp-encuestas">
-                <h4>Encuestas de Gradiente de Potencial DC</h4>
-                <p>Este apéndice aborda las técnicas para realizar encuestas de gradiente de potencial de corriente continua (DCVG - DC Voltage Gradient) o encuestas célula a célula a lo largo de la tubería. Estas encuestas son herramientas valiosas para identificar y localizar áreas específicas donde la protección catódica puede ser inadecuada o donde el recubrimiento de la tubería está dañado. La técnica se basa en medir los pequeños gradientes de potencial que se forman en el suelo debido al flujo de corriente de PC hacia los defectos del recubrimiento. Analizar estos gradientes ayuda a priorizar las reparaciones y el mantenimiento.</p>
-            </div>
-            <div id="exp-cupones">
-                <h4>Uso de Cupones</h4>
-                <p>Este apéndice describe cómo se pueden utilizar los cupones de prueba para ayudar a evaluar la adecuación de la protección catódica. Los cupones son pequeñas secciones de metal con un área de superficie conocida, enterradas cerca de la tubería y conectadas eléctricamente a ella. Permiten simular el comportamiento electroquímico de la tubería en un punto específico. Su principal ventaja es que facilitan la medición del potencial polarizado sin la influencia de la caída de tensión (IR Drop) asociada a la corriente de PC en la tubería principal, lo que proporciona una evaluación más precisa del nivel de protección alcanzado.</p>
-            </div>
-            <div id="exp-interferencia">
-                <h4>Interferencia de Corrientes Parásitas</h4>
-                <p>Este apéndice detalla los procedimientos para identificar, medir y evaluar la interferencia en las mediciones de potencial causada por corrientes parásitas. Estas corrientes provienen de fuentes externas, como sistemas de tracción eléctrica (trenes, tranvías), otras estructuras metálicas con sistemas de PC activos, o líneas de transmisión eléctrica (que pueden inducir corrientes AC). La interferencia puede distorsionar significativamente las mediciones de potencial, llevando a conclusiones erróneas sobre la efectividad de la PC. El apéndice explica cómo detectar la presencia de estas corrientes y cómo realizar mediciones que minimicen su impacto o permitan cuantificar su efecto.</p>
-            </div>
-            <div id="exp-instant-off">
-                <h4>Evaluación del Potencial Instantáneo OFF</h4>
-                <p>Este apéndice profundiza en la técnica de interrupción de corriente para medir el potencial instantáneo OFF. Reitera la importancia de este potencial como una medida más precisa del potencial polarizado de la estructura, ya que elimina la caída de tensión (IR Drop) en el electrolito. Se discuten aspectos clave como la necesidad de una interrupción rápida y, si es posible, sincronizada de la fuente de corriente de PC. También se abordan factores que pueden afectar la lectura instantánea OFF, como la capacitancia de los DC Decouplers, y cómo interpretar las lecturas para una evaluación correcta de la protección catódica.</p>
-            </div>
-        </div>
     </details>
+
+    <div id="details-display">
+        </div>
+
+    <div id="key-topic-explanations" class="detailed-explanation-content">
+        <div id="exp-importancia-mediciones">
+            <h4>Importancia de Mediciones Precisas</h4>
+            <p>La precisión y fiabilidad de las mediciones de potencial estructura-electrolito son fundamentales para evaluar correctamente la efectividad de la protección catódica. Mediciones inexactas pueden llevar a conclusiones erróneas sobre el estado de la protección, resultando en una protección insuficiente (riesgo de corrosión) o excesiva (riesgo de daños al recubrimiento o fragilización por hidrógeno), y potencialmente a fallas en la integridad de la tubería. Por ello, seguir los procedimientos normalizados y asegurar la calidad de los datos es indispensable.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Utilizar equipos de medición calibrados y en buen estado.</li>
+                <li>Asegurar conexiones eléctricas firmes y correctas.</li>
+                <li>Garantizar un buen contacto iónico del electrodo de referencia con el electrolito.</li>
+                <li>Realizar mediciones múltiples en puntos de prueba y, si es necesario, a lo largo del trazado de la tubería.</li>
+                <li>Documentar cuidadosamente todas las lecturas, condiciones ambientales y cualquier factor que pueda influir en la medición.</li>
+                <li>Comparar las mediciones con los criterios de protección catódica aplicables.</li>
+            </ol>
+        </div>
+        <div id="exp-criterio-clave">
+            <h4>Potencial Estructura-Electrolito como Criterio Clave</h4>
+            <p>El potencial estructura-electrolito es la medida principal utilizada para determinar si un sistema de tuberías metálicas está adecuadamente protegido catódicamente según los estándares de la industria (como NACE/AMPP). Este potencial mide la diferencia de voltaje entre la superficie de la tubería y el electrolito circundante (suelo o agua) utilizando un electrodo de referencia. Los criterios de protección catódica se basan en alcanzar y mantener un potencial estructura-electrolito igual o más negativo que un valor específico (por ejemplo, -850 mV C.S.E. con la PC aplicada o -850 mV C.S.E. potencial polarizado).</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Conectar el terminal negativo de un voltímetro de alta impedancia a la estructura metálica (tubería) en un punto de prueba.</li>
+                <li>Colocar el electrodo de referencia en contacto iónico con el electrolito lo más cerca posible de la tubería.</li>
+                <li>Conectar el terminal positivo del voltímetro al electrodo de referencia.</li>
+                <li>Leer y registrar la medición de voltaje.</li>
+                <li>Interpretar la lectura comparándola con el criterio de protección catódica relevante para determinar si la tubería está protegida.</li>
+            </ol>
+        </div>
+        <div id="exp-factores-afectan">
+            <h4>Factores que Afectan las Mediciones</h4>
+            <p>La precisión de las mediciones de potencial estructura-electrolito puede verse afectada por una variedad de factores. Estos incluyen las características técnicas del instrumento de medición (como la impedancia de entrada), la calidad del contacto entre el electrodo de referencia y el electrolito, la presencia de corrientes parásitas (DC o AC), las caídas de tensión (IR Drop) en el electrolito, la interferencia eléctrica de fuentes externas, y las condiciones ambientales (humedad del suelo, temperatura). Ignorar estos factores puede llevar a mediciones engañosas.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Inspeccionar visualmente el equipo de medición y los cables antes de su uso.</li>
+                <li>Asegurar que el electrodo de referencia esté en buen estado y haga un contacto firme con el electrolito.</li>
+                <li>Estar atento a posibles fuentes de interferencia en el área de trabajo.</li>
+                <li>Utilizar técnicas de medición (como el Instantáneo OFF) para minimizar el impacto del IR Drop.</li>
+                <li>Documentar cualquier condición inusual o potencial fuente de error observada durante las mediciones.</li>
+            </ol>
+        </div>
+        <div id="exp-metodos-prueba">
+            <h4>Métodos de Prueba Normalizados</h4>
+            <p>La norma NACE TM0497-2022 describe tres métodos de prueba principales para evaluar la protección catódica y la polarización de tuberías: Método 1 (Potencial Estructura-Electrolito con PC Aplicada o Potencial ON), Método 2 (Potencial Estructura-Electrolito Polarizado de Metal o Potencial Instantáneo OFF) y Método 3 (Protección Catódica de Metal, que evalúa la polarización lograda). Estos métodos proporcionan enfoques estandarizados para obtener mediciones de potencial fiables en diferentes escenarios de operación del sistema de PC.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Seleccionar el método de prueba adecuado en función del objetivo de la evaluación (por ejemplo, verificación rutinaria vs. evaluación de la polarización).</li>
+                <li>Seguir los pasos específicos detallados en la norma para el método seleccionado.</li>
+                <li>Asegurar que el sistema de PC esté operando en las condiciones requeridas por el método (PC activada para Potencial ON, PC interrumpida para Instantáneo OFF).</li>
+                <li>Registrar las mediciones obtenidas según el método.</li>
+                <li>Interpretar los resultados del método de prueba en el contexto de los criterios de protección catódica.</li>
+            </ol>
+        </div>
+        <div id="exp-importancia-polarizacion">
+            <h4>La Importancia de la Polarización</h4>
+            <p>La polarización es el cambio en el potencial estructura-electrolito de una estructura metálica causado por el flujo de corriente de protección catódica. Es el fenómeno electroquímico clave que indica que la PC está funcionando y reduciendo la tasa de corrosión. Medir y evaluar la cantidad de polarización lograda es fundamental para confirmar que se ha alcanzado un estado de protección adecuado. El potencial polarizado (el potencial de la estructura sin la influencia del IR Drop en el electrolito) es la medida más representativa del nivel de protección.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Medir el potencial nativo de la estructura (sin PC aplicada).</li>
+                <li>Aplicar la corriente de protección catódica y permitir que la estructura se polarice.</li>
+                <li>Medir el potencial polarizado utilizando una técnica que elimine el IR Drop (preferiblemente el método Instantáneo OFF).</li>
+                <li>Calcular la cantidad de polarización como la diferencia entre el potencial polarizado y el potencial nativo.</li>
+                <li>Verificar que el potencial polarizado cumpla con el criterio de protección catódica requerido.</li>
+            </ol>
+        </div>
+        <div id="exp-causas-soluciones">
+            <h4>Causas de Mediciones Inexactas y Soluciones</h4>
+            <p>Este punto se centra en identificar las fuentes comunes de error en las mediciones de potencial y proporcionar soluciones prácticas para mitigar su impacto. Las causas típicas incluyen cables de prueba dañados o conexiones deficientes, electrodos de referencia contaminados o secos, mal contacto del electrodo con el suelo, interferencia eléctrica de fuentes externas, y la presencia de caídas de tensión significativas. La norma enfatiza la importancia de la inspección regular del equipo y la adherencia a procedimientos de campo cuidadosos.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Inspeccionar y probar regularmente los cables de prueba y las conexiones en los puntos de prueba.</li>
+                <li>Mantener los electrodos de referencia limpios, húmedos (si aplica) y verificar su precisión periódicamente.</li>
+                <li>Asegurar que el electrodo de referencia se coloque en un área con buen contacto iónico con el electrolito.</li>
+                <li>Identificar y, si es posible, mitigar las fuentes de interferencia eléctrica.</li>
+                <li>Utilizar el método Instantáneo OFF para eliminar el IR Drop en el electrolito.</li>
+                <li>Repetir mediciones si los resultados parecen inconsistentes.</li>
+            </ol>
+        </div>
+         <div id="exp-consideraciones-seguridad">
+            <h4>Consideraciones de Seguridad</h4>
+            <p>La seguridad del personal es una prioridad absoluta al realizar mediciones de campo en sistemas de tuberías subterráneas o sumergidas. La norma destaca los peligros potenciales, que incluyen la proximidad a líneas eléctricas de alto voltaje, el trabajo cerca de carreteras con tráfico vehicular, y los riesgos asociados con excavaciones (colapsos, servicios enterrados). Se deben seguir procedimientos de seguridad estrictos para prevenir accidentes.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Realizar una evaluación de riesgos del sitio antes de comenzar cualquier trabajo.</li>
+                <li>Identificar y marcar la ubicación de servicios públicos enterrados (cables eléctricos, otras tuberías).</li>
+                <li>Establecer señalización y control de tráfico adecuados si se trabaja cerca de carreteras.</li>
+                <li>Seguir los procedimientos de bloqueo/etiquetado (lockout/tagout) si se trabaja cerca de equipos eléctricos.</li>
+                <li>Utilizar el equipo de protección personal (EPP) adecuado.</li>
+                <li>Mantener comunicación constante con el equipo de trabajo y supervisores.</li>
+                <li>Estar preparado para emergencias.</li>
+            </ol>
+        </div>
+         <div id="exp-instrumentacion">
+            <h4>Tipos de Instrumentación</h4>
+            <p>La selección y el uso adecuados de los instrumentos de medición son cruciales para obtener datos fiables. La norma recomienda específicamente el uso de voltímetros con alta impedancia de entrada (generalmente 10 MΩ o superior). Una alta impedancia minimiza la cantidad de corriente extraída del circuito de medición, lo que evita alterar el potencial real de la estructura. También se discuten las diferencias entre voltímetros analógicos y digitales y la importancia de la calibración regular de todos los instrumentos.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Seleccionar un voltímetro con la impedancia de entrada y los rangos de voltaje adecuados para las mediciones de PC.</li>
+                <li>Asegurar que el instrumento tenga un certificado de calibración válido y esté dentro de su período de calibración.</li>
+                <li>Familiarizarse con el funcionamiento específico del instrumento.</li>
+                <li>Utilizar el rango de voltaje más sensible que permita la lectura dentro de la escala.</li>
+                <li>Proteger el instrumento de condiciones ambientales adversas (humedad, temperatura extrema).</li>
+            </ol>
+        </div>
+         <div id="exp-electrodos-ref">
+            <h4>Electrodos de Referencia</h4>
+            <p>Los electrodos de referencia son componentes esenciales en las mediciones de potencial estructura-electrolito, ya que proporcionan un potencial de referencia estable contra el cual se mide el potencial de la estructura. Este apéndice (y también tratado como un tema principal) cubre los tipos comunes (CSE, SSC, SCE), los criterios para su selección según el entorno (suelo, agua), los procedimientos para su preparación y mantenimiento, y la importancia crítica de verificar su precisión periódicamente para asegurar la fiabilidad de las mediciones.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Seleccionar el tipo de electrodo adecuado para el electrolito.</li>
+                <li>Preparar el electrodo según las especificaciones (ej. saturar con solución).</li>
+                <li>Asegurar un buen contacto iónico con el electrolito y un buen contacto eléctrico con el voltímetro.</li>
+                <li>Verificar la precisión del electrodo comparándolo con un estándar conocido.</li>
+                <li>Almacenar y mantener el electrodo correctamente para preservar su estabilidad.</li>
+            </ol>
+        </div>
+         <div id="exp-caidas-tension">
+            <h4>Caídas de Tensión (Voltage Drops)</h4>
+            <p>Las caídas de tensión, particularmente la caída óhmica (IR Drop) que ocurre en el electrolito entre la superficie de la estructura y el electrodo de referencia, son una fuente significativa de error en las mediciones de potencial "ON" (con la PC aplicada). Esta caída de voltaje hace que el potencial medido parezca más negativo de lo que realmente es el potencial polarizado de la estructura. Comprender el IR Drop es crucial para interpretar correctamente las mediciones, y la técnica del Potencial Instantáneo OFF es el método preferido para eliminar esta componente del IR Drop y obtener el verdadero potencial polarizado.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Reconocer que las mediciones de potencial ON incluyen el IR Drop en el electrolito.</li>
+                <li>Utilizar la técnica de interrupción de corriente para medir el Potencial Instantáneo OFF.</li>
+                <li>Colocar el electrodo de referencia lo más cerca posible de la tubería para minimizar la distancia a través del electrolito.</li>
+                <li>Si solo se dispone de mediciones ON, ser cauteloso en la interpretación y considerar otros indicadores de protección.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div id="appendix-detailed-explanations" class="detailed-explanation-content">
+        <div id="exp-electrodos-ap">
+            <h4>Electrodos de Referencia (Apéndice)</h4>
+            <p>Este apéndice proporciona información esencial y obligatoria sobre los electrodos de referencia utilizados en las mediciones de protección catódica. Detalla los tipos más comunes, como el electrodo de sulfato de cobre saturado (CSE), el electrodo de cloruro de plata/cloruro de plata (SSC) para agua de mar, y el electrodo de cloruro de potasio saturado (SCE). Se explican los criterios para su selección adecuada según el entorno, los procedimientos para su uso correcto y, de manera crucial, los métodos para verificar su precisión y estado a lo largo del tiempo. Mantener la precisión de los electrodos de referencia es vital para obtener mediciones de potencial fiables.</p>
+            <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Seleccionar el tipo de electrodo adecuado para el entorno (suelo, agua dulce, agua de mar).</li>
+                <li>Preparar el electrodo según las instrucciones del fabricante (por ejemplo, saturar con la solución química adecuada).</li>
+                <li>Asegurar un buen contacto eléctrico con el voltímetro y un buen contacto iónico con el electrolito (suelo o agua).</li>
+                <li>Verificar periódicamente la precisión del electrodo comparándolo con un electrodo de referencia certificado o mediante otras técnicas de verificación estándar.</li>
+                <li>Almacenar el electrodo correctamente para mantener su estado y precisión.</li>
+            </ol>
+        </div>
+        <div id="exp-relevamientos-ap">
+            <h4>Relevamientos de Gradiente de Potencial DC (Apéndice)</h4>
+            <p>Este apéndice aborda las técnicas para realizar relevamientos de gradiente de potencial de corriente continua (DCVG - DC Voltage Gradient) o relevamientos celda a celda a lo largo de la tubería. Estas técnicas son herramientas valiosas para identificar y localizar áreas específicas donde la protección catódica puede ser inadecuada o donde el recubrimiento de la tubería está dañado. La técnica se basa en medir los pequeños gradientes de potencial que se forman en el suelo debido al flujo de corriente de PC hacia los defectos del recubrimiento. Analizar estos gradientes ayuda a priorizar las reparaciones y el mantenimiento.</p>
+             <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Establecer un punto de interrupción de corriente en la fuente de PC para crear un ciclo ON/OFF.</li>
+                <li>Utilizar dos electrodos de referencia espaciados a una distancia fija y moverlos a lo largo de la tubería.</li>
+                <li>Medir la diferencia de potencial (gradiente de voltaje) entre los dos electrodos durante el ciclo OFF.</li>
+                <li>Un gradiente significativo indica un punto donde la corriente está saliendo del suelo hacia la tubería (un defecto en el recubrimiento).</li>
+                <li>Registrar la ubicación y magnitud de los gradientes para identificar y mapear los defectos.</li>
+            </ol>
+        </div>
+        <div id="exp-cupones-ap">
+            <h4>Uso de Cupones (Apéndice)</h4>
+            <p>Este apéndice describe cómo se pueden utilizar los cupones de prueba para ayudar a evaluar la adecuación de la protección catódica. Los cupones son pequeñas secciones de metal con un área de superficie conocida, enterradas cerca de la tubería y conectadas eléctricamente a ella. Permiten simular el comportamiento electroquímico de la tubería en un punto específico. Su principal ventaja es que facilitan la medición del potencial polarizado sin la influencia de la caída de tensión (IR Drop) asociada a la corriente de PC en la tubería principal, lo que proporciona una evaluación más precisa del nivel de protección alcanzado.</p>
+             <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Instalar un cupón de material similar al de la tubería a la misma profundidad y en el mismo entorno.</li>
+                <li>Conectar el cupón eléctricamente a la tubería a través de un cable y un punto de prueba.</li>
+                <li>Utilizar un interruptor para conectar y desconectar el cupón de la tubería.</li>
+                <li>Medir el potencial del cupón con respecto a un electrodo de referencia mientras el cupón está desconectado de la tubería (simulando el potencial polarizado sin IR Drop).</li>
+                <li>Comparar el potencial del cupón con los criterios de protección catódica para evaluar la efectividad de la PC en esa ubicación.</li>
+            </ol>
+        </div>
+        <div id="exp-interferencia-ap">
+            <h4>Interferencia de Corrientes Parásitas (Apéndice)</h4>
+            <p>Este apéndice detalla los procedimientos para identificar, medir y evaluar la interferencia en las mediciones de potencial causada por corrientes parásitas. Estas corrientes provienen de fuentes externas, como sistemas de tracción eléctrica (trenes, tranvías), otras estructuras metálicas con sistemas de PC activos, o líneas de transmisión eléctrica (que pueden inducir corrientes AC). La interferencia puede distorsionar significativamente las mediciones de potencial, llevando a conclusiones erróneas sobre la efectividad de la PC. El apéndice explica cómo detectar la presencia de estas corrientes y cómo realizar mediciones que minimicen su impacto o permitan cuantificar su efecto.</p>
+             <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Identificar posibles fuentes de corrientes parásitas cercanas a la tubería (vías de tren, subestaciones eléctricas, otras tuberías con PC).</li>
+                <li>Realizar mediciones de potencial estructura-electrolito en la tubería afectada mientras las fuentes de interferencia están operando y no operando (si es posible).</li>
+                <li>Observar las fluctuaciones o cambios significativos en el potencial que coincidan con la operación de la fuente de interferencia.</li>
+                <li>Utilizar técnicas de medición específicas, como la medición sincronizada con la fuente de interferencia o el análisis de forma de onda, para cuantificar el impacto de la interferencia.</li>
+                <li>Implementar medidas correctivas si la interferencia compromete la efectividad de la PC o causa corrosión (por ejemplo, drenajes eléctricos).</li>
+            </ol>
+        </div>
+        <div id="exp-instant-off-ap">
+            <h4>Evaluación del Potencial Instantáneo OFF (Apéndice)</h4>
+            <p>Este apéndice profundiza en la técnica de interrupción de corriente para medir el potencial instantáneo OFF. Reitera la importancia de este potencial como una medida más precisa del potencial polarizado de la estructura, ya que elimina la caída de tensión (IR Drop) en el electrolito. Se discuten aspectos clave como la necesidad de una interrupción rápida y, si es posible, sincronizada de la fuente de corriente de PC. También se abordan factores que pueden afectar la lectura instantánea OFF, como la capacitancia de los DC Decouplers, y cómo interpretar las lecturas para una evaluación correcta de la protección catódica.</p>
+             <h6>Procedimiento General:</h6>
+            <ol class="list-decimal ml-6">
+                <li>Instalar un interruptor de corriente (interrupter) en la fuente de alimentación del sistema de PC (rectificador o ánodo de sacrificio).</li>
+                <li>Configurar el interruptor para que cíclicamente encienda y apague la corriente de PC con un patrón definido (por ejemplo, 1 segundo ON, 1 segundo OFF).</li>
+                <li>Utilizar un voltímetro con capacidad de muestreo rápido y, si es posible, sincronizado con el interruptor.</li>
+                <li>Medir el potencial estructura-electrolito con respecto a un electrodo de referencia ubicado lo más cerca posible de la tubería.</li>
+                <li>Registrar el potencial inmediatamente después de que la corriente se apague (el potencial "instantáneo OFF") antes de que la polarización comience a decaer.</li>
+                <li>Comparar el potencial instantáneo OFF con los criterios de protección catódica.</li>
+            </ol>
+        </div>
+    </div>
+
 
     <script>
         // Función para expandir/colapsar la visualización del diagrama
@@ -345,16 +591,31 @@
             }
         }
 
-        // Lógica para mostrar la explicación del apéndice al hacer clic
+        // Lógica para mostrar la explicación detallada al hacer clic en cualquier tarjeta interactiva
         document.addEventListener('DOMContentLoaded', () => {
-            const appendixItems = document.querySelectorAll('.appendix-item');
-            const detailsDisplay = document.getElementById('appendix-details-display');
-            const detailedExplanations = document.getElementById('detailed-explanations');
+            const interactiveItems = document.querySelectorAll('.key-topic-item, .appendix-item');
+            const detailsDisplay = document.getElementById('details-display');
+            const keyTopicExplanations = document.getElementById('key-topic-explanations');
+            const appendixExplanations = document.getElementById('appendix-detailed-explanations');
+            const apendicesDetailsElement = document.getElementById('details-apendices'); // Referencia al details de Apéndices
 
-            appendixItems.forEach(item => {
+            interactiveItems.forEach(item => {
                 item.addEventListener('click', () => {
                     const targetId = item.getAttribute('data-target-explanation');
-                    const explanationElement = document.getElementById(targetId);
+                    let explanationElement = null;
+
+                    // Buscar la explicación en ambos contenedores
+                    if (keyTopicExplanations.querySelector('#' + targetId)) {
+                         explanationElement = keyTopicExplanations.querySelector('#' + targetId);
+                    } else if (appendixExplanations.querySelector('#' + targetId)) {
+                         explanationElement = appendixExplanations.querySelector('#' + targetId);
+                    }
+
+
+                    // Remover la clase 'active' de todos los items
+                    interactiveItems.forEach(i => i.classList.remove('active'));
+                    // Añadir la clase 'active' al item clickeado
+                    item.classList.add('active');
 
                     if (explanationElement) {
                         // Limpiar el área de visualización actual
@@ -363,13 +624,38 @@
                         detailsDisplay.innerHTML = explanationElement.innerHTML;
                         // Mostrar el área de visualización
                         detailsDisplay.style.display = 'block';
+                         // Scroll suave hacia el área de visualización
+                        detailsDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     } else {
                         // Si no se encuentra la explicación, mostrar un mensaje de error o limpiar
-                        detailsDisplay.innerHTML = '<h4>Error</h4><p>No se encontró la explicación detallada para este apéndice.</p>';
+                        detailsDisplay.innerHTML = '<h4>Error</h4><p>No se encontró la explicación detallada para este tema.</p>';
                         detailsDisplay.style.display = 'block';
+                         detailsDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 });
             });
+
+            // Lógica para ocultar el display de detalles cuando se cierra el details de Apéndices
+            apendicesDetailsElement.addEventListener('toggle', () => {
+                if (!apendicesDetailsElement.open) {
+                    // Si el details de Apéndices se cierra
+                    detailsDisplay.style.display = 'none'; // Ocultar el área de visualización
+                     // Remover la clase 'active' de todos los items de apéndice
+                    document.querySelectorAll('.appendix-item').forEach(item => item.classList.remove('active'));
+                }
+            });
+
+             // Lógica para ocultar el display de detalles cuando se cierra el details de Temas Principales
+            const temasPrincipalesDetailsElement = document.getElementById('details-temas-principales'); // Referencia al details de Temas Principales
+             temasPrincipalesDetailsElement.addEventListener('toggle', () => {
+                if (!temasPrincipalesDetailsElement.open) {
+                    // Si el details de Temas Principales se cierra
+                     detailsDisplay.style.display = 'none'; // Ocultar el área de visualización
+                     // Remover la clase 'active' de todos los items de temas principales
+                    document.querySelectorAll('.key-topic-item').forEach(item => item.classList.remove('active'));
+                }
+            });
+
         });
     </script>
 
