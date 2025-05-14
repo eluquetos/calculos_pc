@@ -715,6 +715,20 @@
                 }
             });
 
+            // Nuevo: Lógica para cerrar otros details cuando uno se abre
+            const allDetails = document.querySelectorAll('details');
+            allDetails.forEach(details => {
+                details.addEventListener('toggle', (event) => {
+                    if (event.target.open) {
+                        allDetails.forEach(otherDetails => {
+                            if (otherDetails !== event.target && otherDetails.open) {
+                                otherDetails.open = false;
+                            }
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 
