@@ -234,8 +234,7 @@
         <p>El documento NACE TM0497-2022 de AMPP detalla las técnicas para medir la efectividad de la protección catódica (PC) en tuberías subterráneas/sumergidas. Se enfoca en medir potenciales estructura-electrolito para verificar criterios de PC. Cubre seguridad, instrumentación, causas de inexactitud, métodos de prueba específicos y apéndices sobre electrodos, relevamientos, cupones y corrientes parásitas.</p>
     </details>
 
-    <details open id="details-temas-principales"> <summary>Temas Principales</summary>
-        <p>Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento general.</p>
+    <details id="details-temas-principales"> <summary>Temas Principales</summary> <p>Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento general.</p>
         <div class="key-topics-grid">
             <div class="key-topic-item" data-target-explanation="exp-importancia-mediciones">
                 <i class="fas fa-check-circle"></i>
@@ -337,14 +336,12 @@
                 </div>
             </div>
              <button class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block" onclick="toggleExpand('test-method-viz')">
-                Expandir Diagrama
-            </button>
+                Expandir Diagrama</button>
         </div>
     </details>
 
 
-    <details id="details-apendices"> <summary>Apéndices Detallados</summary>
-        <p>Los apéndices proporcionan información adicional valiosa. Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento.</p>
+    <details id="details-apendices"> <summary>Apéndices Detallados</summary> <p>Los apéndices proporcionan información adicional valiosa. Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento.</p>
         <div class="appendix-grid">
             <div class="appendix-item" data-target-explanation="exp-electrodos-ap">
                 <i class="fas fa-flask"></i>
@@ -598,6 +595,8 @@
             const keyTopicExplanations = document.getElementById('key-topic-explanations');
             const appendixExplanations = document.getElementById('appendix-detailed-explanations');
             const apendicesDetailsElement = document.getElementById('details-apendices'); // Referencia al details de Apéndices
+            const temasPrincipalesDetailsElement = document.getElementById('details-temas-principales'); // Referencia al details de Temas Principales
+
 
             interactiveItems.forEach(item => {
                 item.addEventListener('click', () => {
@@ -646,7 +645,6 @@
             });
 
              // Lógica para ocultar el display de detalles cuando se cierra el details de Temas Principales
-            const temasPrincipalesDetailsElement = document.getElementById('details-temas-principales'); // Referencia al details de Temas Principales
              temasPrincipalesDetailsElement.addEventListener('toggle', () => {
                 if (!temasPrincipalesDetailsElement.open) {
                     // Si el details de Temas Principales se cierra
