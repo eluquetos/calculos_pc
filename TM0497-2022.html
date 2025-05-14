@@ -108,6 +108,12 @@
             display: flex;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Indica que es clickeable */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .appendix-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .appendix-item i {
             font-size: 1.8em;
@@ -125,6 +131,28 @@
         .appendix-item p {
             font-size: 0.9em;
             color: #555;
+        }
+
+        /* Estilo para el área de visualización de detalles del apéndice */
+        #appendix-details-display {
+            background-color: #fff;
+            border: 1px solid #00bcd4;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 100px; /* Altura mínima */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: none; /* Oculto por defecto */
+        }
+        #appendix-details-display h4 {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #006064;
+        }
+
+        /* Estilo para ocultar las explicaciones detalladas inicialmente */
+        .appendix-explanation {
+            display: none;
         }
     </style>
 </head>
@@ -238,43 +266,74 @@
 
     <details>
         <summary>Apéndices Detallados</summary>
-        <p>Los apéndices proporcionan información adicional valiosa sobre temas específicos que complementan la norma principal.</p>
+        <p>Los apéndices proporcionan información adicional valiosa sobre temas específicos que complementan la norma principal. Haz clic en cada tarjeta para ver la explicación detallada.</p>
         <div class="appendix-grid">
-            <div class="appendix-item">
-                <i class="fas fa-flask"></i> <div>
+            <div class="appendix-item" data-target-explanation="exp-electrodos">
+                <i class="fas fa-flask"></i>
+                <div>
                     <h5>Electrodos de Referencia</h5>
-                    <p>Información obligatoria sobre tipos, selección, uso y verificación de precisión de electrodos comunes (CSE, SSC, SCE).</p>
+                    <p>Información sobre electrodos comunes.</p>
                 </div>
             </div>
-            <div class="appendix-item">
-                 <i class="fas fa-chart-line"></i> <div>
+            <div class="appendix-item" data-target-explanation="exp-encuestas">
+                 <i class="fas fa-chart-line"></i>
+                <div>
                     <h5>Encuestas de Gradiente de Potencial DC</h5>
-                    <p>Detalles sobre encuestas de gradiente de potencial DC célula a célula para identificar áreas problemáticas.</p>
+                    <p>Detalles sobre encuestas DCVG/célula a célula.</p>
                 </div>
             </div>
-            <div class="appendix-item">
-                <i class="fas fa-tags"></i> <div>
+            <div class="appendix-item" data-target-explanation="exp-cupones">
+                <i class="fas fa-tags"></i>
+                <div>
                     <h5>Uso de Cupones</h5>
-                    <p>Cómo utilizar cupones para evaluar la adecuación de la protección catódica en puntos específicos.</p>
+                    <p>Cómo utilizar cupones para evaluar la PC.</p>
                 </div>
             </div>
-            <div class="appendix-item">
-                <i class="fas fa-bolt"></i> <div>
+            <div class="appendix-item" data-target-explanation="exp-interferencia">
+                <i class="fas fa-bolt"></i>
+                <div>
                     <h5>Interferencia de Corrientes Parásitas</h5>
-                    <p>Pruebas para identificar y evaluar la interferencia causada por corrientes parásitas DC y AC.</p>
+                    <p>Pruebas para identificar interferencia.</p>
                 </div>
             </div>
-             <div class="appendix-item">
-                <i class="fas fa-clock"></i> <div>
+             <div class="appendix-item" data-target-explanation="exp-instant-off">
+                <i class="fas fa-clock"></i>
+                <div>
                     <h5>Evaluación del Potencial Instantáneo OFF</h5>
-                    <p>Detalles sobre la evaluación precisa del potencial instantáneo OFF durante la interrupción de corriente.</p>
+                    <p>Detalles sobre la técnica instantánea OFF.</p>
                 </div>
+            </div>
+        </div>
+
+        <div id="appendix-details-display">
+            </div>
+
+        <div id="detailed-explanations" class="appendix-explanation">
+            <div id="exp-electrodos">
+                <h4>Electrodos de Referencia</h4>
+                <p>Este apéndice proporciona información esencial y obligatoria sobre los electrodos de referencia utilizados en las mediciones de protección catódica. Detalla los tipos más comunes, como el electrodo de sulfato de cobre saturado (CSE), el electrodo de cloruro de plata/cloruro de plata (SSC) para agua de mar, y el electrodo de cloruro de potasio saturado (SCE). Se explican los criterios para su selección adecuada según el entorno, los procedimientos para su uso correcto y, de manera crucial, los métodos para verificar su precisión y estado a lo largo del tiempo. Mantener la precisión de los electrodos de referencia es vital para obtener mediciones de potencial fiables.</p>
+            </div>
+            <div id="exp-encuestas">
+                <h4>Encuestas de Gradiente de Potencial DC</h4>
+                <p>Este apéndice aborda las técnicas para realizar encuestas de gradiente de potencial de corriente continua (DCVG - DC Voltage Gradient) o encuestas célula a célula a lo largo de la tubería. Estas encuestas son herramientas valiosas para identificar y localizar áreas específicas donde la protección catódica puede ser inadecuada o donde el recubrimiento de la tubería está dañado. La técnica se basa en medir los pequeños gradientes de potencial que se forman en el suelo debido al flujo de corriente de PC hacia los defectos del recubrimiento. Analizar estos gradientes ayuda a priorizar las reparaciones y el mantenimiento.</p>
+            </div>
+            <div id="exp-cupones">
+                <h4>Uso de Cupones</h4>
+                <p>Este apéndice describe cómo se pueden utilizar los cupones de prueba para ayudar a evaluar la adecuación de la protección catódica. Los cupones son pequeñas secciones de metal con un área de superficie conocida, enterradas cerca de la tubería y conectadas eléctricamente a ella. Permiten simular el comportamiento electroquímico de la tubería en un punto específico. Su principal ventaja es que facilitan la medición del potencial polarizado sin la influencia de la caída de tensión (IR Drop) asociada a la corriente de PC en la tubería principal, lo que proporciona una evaluación más precisa del nivel de protección alcanzado.</p>
+            </div>
+            <div id="exp-interferencia">
+                <h4>Interferencia de Corrientes Parásitas</h4>
+                <p>Este apéndice detalla los procedimientos para identificar, medir y evaluar la interferencia en las mediciones de potencial causada por corrientes parásitas. Estas corrientes provienen de fuentes externas, como sistemas de tracción eléctrica (trenes, tranvías), otras estructuras metálicas con sistemas de PC activos, o líneas de transmisión eléctrica (que pueden inducir corrientes AC). La interferencia puede distorsionar significativamente las mediciones de potencial, llevando a conclusiones erróneas sobre la efectividad de la PC. El apéndice explica cómo detectar la presencia de estas corrientes y cómo realizar mediciones que minimicen su impacto o permitan cuantificar su efecto.</p>
+            </div>
+            <div id="exp-instant-off">
+                <h4>Evaluación del Potencial Instantáneo OFF</h4>
+                <p>Este apéndice profundiza en la técnica de interrupción de corriente para medir el potencial instantáneo OFF. Reitera la importancia de este potencial como una medida más precisa del potencial polarizado de la estructura, ya que elimina la caída de tensión (IR Drop) en el electrolito. Se discuten aspectos clave como la necesidad de una interrupción rápida y, si es posible, sincronizada de la fuente de corriente de PC. También se abordan factores que pueden afectar la lectura instantánea OFF, como la capacitancia de los DC Decouplers, y cómo interpretar las lecturas para una evaluación correcta de la protección catódica.</p>
             </div>
         </div>
     </details>
 
     <script>
-        // Función para expandir/colapsar la visualización
+        // Función para expandir/colapsar la visualización del diagrama
         function toggleExpand(elementId) {
             const element = document.getElementById(elementId);
             element.classList.toggle('expanded');
@@ -285,6 +344,33 @@
                 button.textContent = 'Expandir Diagrama';
             }
         }
+
+        // Lógica para mostrar la explicación del apéndice al hacer clic
+        document.addEventListener('DOMContentLoaded', () => {
+            const appendixItems = document.querySelectorAll('.appendix-item');
+            const detailsDisplay = document.getElementById('appendix-details-display');
+            const detailedExplanations = document.getElementById('detailed-explanations');
+
+            appendixItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetId = item.getAttribute('data-target-explanation');
+                    const explanationElement = document.getElementById(targetId);
+
+                    if (explanationElement) {
+                        // Limpiar el área de visualización actual
+                        detailsDisplay.innerHTML = '';
+                        // Copiar el contenido de la explicación al área de visualización
+                        detailsDisplay.innerHTML = explanationElement.innerHTML;
+                        // Mostrar el área de visualización
+                        detailsDisplay.style.display = 'block';
+                    } else {
+                        // Si no se encuentra la explicación, mostrar un mensaje de error o limpiar
+                        detailsDisplay.innerHTML = '<h4>Error</h4><p>No se encontró la explicación detallada para este apéndice.</p>';
+                        detailsDisplay.style.display = 'block';
+                    }
+                });
+            });
+        });
     </script>
 
 </body>
