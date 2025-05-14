@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NACE TM0497-2022 - Visualización</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilo básico para el cuerpo */
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        /* Estilo para los detalles expandibles */
+        details {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            padding: 5px 0;
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        summary::before {
+            content: '+';
+            margin-right: 10px;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        details[open] summary::before {
+            content: '-';
+            transform: rotate(0deg);
+        }
+        /* Estilo para las visualizaciones */
+        .visualization-container {
+            background-color: #e9e9e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            overflow-x: auto; /* Permite scroll si la visualización es muy ancha */
+        }
+        .visualization-container.expanded {
+            width: 100%; /* O un valor mayor si se desea */
+            height: auto; /* O un valor mayor */
+        }
+        /* Estilo para el diagrama de métodos de prueba */
+        .test-method-diagram {
+            display: flex;
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .method-box {
+            background-color: #c3e6cb; /* Color suave */
+            border: 2px solid #4CAF50; /* Borde verde */
+            border-radius: 8px;
+            padding: 15px;
+            width: 250px; /* Ancho fijo para las cajas */
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .method-box:hover {
+            transform: translateY(-5px); /* Efecto hover */
+        }
+        .method-box h4 {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2e7d32; /* Verde oscuro */
+        }
+        .arrow {
+            font-size: 2em;
+            color: #4CAF50;
+            align-self: center;
+        }
+
+        /* Estilo para la lista de factores */
+        .factors-list {
+            list-style: disc;
+            margin-left: 20px;
+        }
+
+        /* Estilo para los apéndices mejorados */
+        .appendix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Columnas responsivas */
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .appendix-item {
+            background-color: #e0f7fa; /* Color suave */
+            border: 1px solid #00bcd4; /* Borde cian */
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .appendix-item i {
+            font-size: 1.8em;
+            color: #00838f; /* Cian oscuro */
+            margin-right: 15px;
+        }
+        .appendix-item div {
+            flex-grow: 1;
+        }
+        .appendix-item h5 {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #006064; /* Cian muy oscuro */
+        }
+        .appendix-item p {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="text-2xl font-bold mb-6 text-center">Visualización: NACE TM0497-2022</h1>
+    <p class="mb-8 text-center">Técnicas de Medición para Protección Catódica en Tuberías Metálicas</p>
+
+    <details>
+        <summary>Resumen General y Temas Clave</summary>
+        <p>El documento NACE TM0497-2022 de AMPP detalla las técnicas para medir la efectividad de la protección catódica (PC) en tuberías subterráneas/sumergidas. Se enfoca en medir potenciales estructura-electrolito para verificar criterios de PC. Cubre seguridad, instrumentación, causas de inexactitud, métodos de prueba específicos y apéndices sobre electrodos, encuestas, cupones y corrientes parásitas.</p>
+        <h3 class="font-semibold mt-4 mb-2">Ideas Clave:</h3>
+        <ul class="list-disc ml-6">
+            <li>Importancia de Mediciones Precisas</li>
+            <li>Potencial Estructura-Electrolito como Criterio Clave</li>
+            <li>Factores que Afectan las Mediciones</li>
+            <li>Métodos de Prueba Normalizados</li>
+            <li>La Importancia de la Polarización</li>
+            <li>Causas de Mediciones Inexactas y Soluciones</li>
+            <li>Consideraciones de Seguridad</li>
+            <li>Tipos de Instrumentación</li>
+            <li>Electrodos de Referencia</li>
+            <li>Caídas de Tensión (Voltage Drops)</li>
+            <li>Apéndices Detallados</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Importancia de Mediciones Precisas</summary>
+        <p>La precisión y fiabilidad de las mediciones de potencial estructura-electrolito son fundamentales. Mediciones inexactas pueden llevar a evaluaciones erróneas de la protección catódica y posibles fallas en la integridad de la tubería.</p>
+    </details>
+
+    <details>
+        <summary>Potencial Estructura-Electrolito como Criterio Clave</summary>
+        <p>Este potencial es la medida principal para determinar si un sistema de tuberías está adecuadamente protegido catódicamente. La norma detalla cómo medirlo de manera efectiva en diversas condiciones.</p>
+    </details>
+
+    <details>
+        <summary>Factores que Afectan las Mediciones</summary>
+        <p>Numerosos factores pueden influir en la precisión. Aquí se listan algunos:</p>
+        <ul class="factors-list">
+            <li>Características del instrumento</li>
+            <li>Contacto del electrodo de referencia con el electrolito</li>
+            <li>Presencia de corrientes parásitas</li>
+            <li>Caídas de tensión (IR Drop)</li>
+            <li>Interferencia eléctrica</li>
+            <li>Condiciones ambientales y de construcción</li>
+            <li>Cables de prueba dañados</li>
+            <li>Electrodos de referencia contaminados</li>
+            <li>Mal contacto con la estructura metálica</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>Métodos de Prueba Normalizados y Polarización</summary>
+        <p>El documento describe tres métodos principales para evaluar el potencial y la polarización.</p>
+
+        <div class="visualization-container" id="test-method-viz">
+            <h4 class="text-lg font-semibold mb-4 text-center">Diagrama Conceptual de Métodos de Prueba y Potenciales</h4>
+            <div class="test-method-diagram">
+                <div class="method-box">
+                    <h4>Potencial ON</h4>
+                    <p>Potencial Estructura-Electrolito con PC Aplicada (Método 1)</p>
+                    <p class="text-sm mt-2">Incluye caída de tensión (IR Drop).</p>
+                </div>
+                <div class="arrow">&#8594;</div> <div class="method-box">
+                    <h4>Interrupción de Corriente</h4>
+                    <p>Se interrumpe la corriente de PC.</p>
+                </div>
+                 <div class="arrow">&#8594;</div> <div class="method-box">
+                    <h4>Potencial Instantáneo OFF</h4>
+                    <p>Potencial Estructura-Electrolito Polarizado de Metal (Método 2)</p>
+                    <p class="text-sm mt-2">Medido inmediatamente después de interrumpir la PC. Elimina la caída de tensión en el electrolito.</p>
+                </div>
+                 <div class="arrow">&#8594;</div> <div class="method-box">
+                    <h4>Potencial Polarizado</h4>
+                    <p>Potencial verdadero de la estructura sin la influencia de la caída de tensión del electrolito.</p>
+                    <p class="text-sm mt-2">Base para evaluar los criterios de protección (Método 3).</p>
+                </div>
+            </div>
+             <button class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-auto block" onclick="toggleExpand('test-method-viz')">
+                Expandir Diagrama
+            </button>
+        </div>
+    </details>
+
+     <details>
+        <summary>Causas de Mediciones Inexactas y Soluciones</summary>
+        <p>La norma detalla causas comunes como cables dañados, electrodos contaminados, mal contacto y sugiere formas de minimizarlos, enfatizando la verificación y el mantenimiento del equipo.</p>
+    </details>
+
+    <details>
+        <summary>Consideraciones de Seguridad</summary>
+        <p>Se destacan precauciones esenciales al trabajar cerca de líneas de alto voltaje, cruces de carreteras y excavaciones para garantizar la seguridad del personal.</p>
+    </details>
+
+    <details>
+        <summary>Tipos de Instrumentación</summary>
+        <p>Se recomiendan voltímetros con alta impedancia de entrada. Se discuten instrumentos analógicos vs. digitales y la importancia crítica de la calibración regular.</p>
+    </details>
+
+    <details>
+        <summary>Electrodos de Referencia</summary>
+        <p>Se describen electrodos comunes (CSE, SSC, SCE), su selección, uso adecuado y métodos para verificar su precisión y estado.</p>
+    </details>
+
+    <details>
+        <summary>Caídas de Tensión (Voltage Drops)</summary>
+        <p>Se explica cómo las caídas de tensión (IR Drop), especialmente en el electrolito, afectan las mediciones de potencial ON y por qué el método instantáneo OFF es crucial para obtener el potencial polarizado verdadero al eliminar esta caída.</p>
+    </details>
+
+    <details>
+        <summary>Apéndices Detallados</summary>
+        <p>Los apéndices proporcionan información adicional valiosa sobre temas específicos que complementan la norma principal.</p>
+        <div class="appendix-grid">
+            <div class="appendix-item">
+                <i class="fas fa-flask"></i> <div>
+                    <h5>Electrodos de Referencia</h5>
+                    <p>Información obligatoria sobre tipos, selección, uso y verificación de precisión de electrodos comunes (CSE, SSC, SCE).</p>
+                </div>
+            </div>
+            <div class="appendix-item">
+                 <i class="fas fa-chart-line"></i> <div>
+                    <h5>Encuestas de Gradiente de Potencial DC</h5>
+                    <p>Detalles sobre encuestas de gradiente de potencial DC célula a célula para identificar áreas problemáticas.</p>
+                </div>
+            </div>
+            <div class="appendix-item">
+                <i class="fas fa-tags"></i> <div>
+                    <h5>Uso de Cupones</h5>
+                    <p>Cómo utilizar cupones para evaluar la adecuación de la protección catódica en puntos específicos.</p>
+                </div>
+            </div>
+            <div class="appendix-item">
+                <i class="fas fa-bolt"></i> <div>
+                    <h5>Interferencia de Corrientes Parásitas</h5>
+                    <p>Pruebas para identificar y evaluar la interferencia causada por corrientes parásitas DC y AC.</p>
+                </div>
+            </div>
+             <div class="appendix-item">
+                <i class="fas fa-clock"></i> <div>
+                    <h5>Evaluación del Potencial Instantáneo OFF</h5>
+                    <p>Detalles sobre la evaluación precisa del potencial instantáneo OFF durante la interrupción de corriente.</p>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <script>
+        // Función para expandir/colapsar la visualización
+        function toggleExpand(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.toggle('expanded');
+            const button = element.querySelector('button');
+            if (element.classList.contains('expanded')) {
+                button.textContent = 'Colapsar Diagrama';
+            } else {
+                button.textContent = 'Expandir Diagrama';
+            }
+        }
+    </script>
+
+</body>
+</html>
