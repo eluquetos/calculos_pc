@@ -234,7 +234,8 @@
         <p>El documento NACE TM0497-2022 de AMPP detalla las técnicas para medir la efectividad de la protección catódica (PC) en tuberías subterráneas/sumergidas. Se enfoca en medir potenciales estructura-electrolito para verificar criterios de PC. Cubre seguridad, instrumentación, causas de inexactitud, métodos de prueba específicos y apéndices sobre electrodos, relevamientos, cupones y corrientes parásitas.</p>
     </details>
 
-    <details id="details-temas-principales"> <summary>Temas Principales</summary> <p>Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento general.</p>
+    <details id="details-temas-principales"> <summary>Temas Principales</summary>
+        <p>Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento general.</p>
         <div class="key-topics-grid">
             <div class="key-topic-item" data-target-explanation="exp-importancia-mediciones">
                 <i class="fas fa-check-circle"></i>
@@ -341,41 +342,47 @@
     </details>
 
 
-    <details id="details-apendices"> <summary>Apéndices Detallados</summary> <p>Los apéndices proporcionan información adicional valiosa. Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento.</p>
+    <details id="details-apendices"> <summary>Apéndices Detallados</summary>
+        <p>Los apéndices proporcionan información adicional valiosa. Haz clic en cada tarjeta para ver la explicación detallada y el procedimiento.</p>
         <div class="appendix-grid">
             <div class="appendix-item" data-target-explanation="exp-electrodos-ap">
                 <i class="fas fa-flask"></i>
                 <div>
                     <h5>Electrodos de Referencia</h5>
-                    <p>Información obligatoria sobre electrodos.</p>
+                    <p>Apéndice A (Obligatorio): Tipos, uso y verificación.</p>
                 </div>
             </div>
             <div class="appendix-item" data-target-explanation="exp-relevamientos-ap">
                  <i class="fas fa-chart-line"></i>
                 <div>
                     <h5>Relevamientos de Gradiente de Potencial DC</h5>
-                    <p>Detalles sobre relevamientos DCVG/celda a celda.</p>
+                    <p>Apéndice B (No Obligatorio): Identificación de defectos.</p>
                 </div>
             </div>
             <div class="appendix-item" data-target-explanation="exp-cupones-ap">
                 <i class="fas fa-tags"></i>
                 <div>
                     <h5>Uso de Cupones</h5>
-                    <p>Cómo utilizar cupones para evaluar la PC.</p>
+                    <p>Apéndice C (No Obligatorio): Evaluación de PC sin IR Drop.</p>
                 </div>
             </div>
             <div class="appendix-item" data-target-explanation="exp-interferencia-ap">
                 <i class="fas fa-bolt"></i>
                 <div>
                     <h5>Interferencia de Corrientes Parásitas</h5>
-                    <p>Pruebas para identificar interferencia.</p>
+                    <p>Apéndice D (No Obligatorio): Manejo de corrientes dinámicas.</p>
+                </div>
+            </div>
+             <div class="appendix-item" data-target-explanation="exp-corrosion-ca-ap"> <i class="fas fa-wave-square"></i> <div>
+                    <h5>Pruebas de Corrosión CA</h5>
+                    <p>Apéndice E (No Obligatorio): Impacto de CA y desacopladores.</p>
                 </div>
             </div>
              <div class="appendix-item" data-target-explanation="exp-instant-off-ap">
                 <i class="fas fa-clock"></i>
                 <div>
                     <h5>Evaluación del Potencial Instantáneo OFF</h5>
-                    <p>Detalles sobre la técnica instantánea OFF.</p>
+                    <p>Apéndice F (No Obligatorio): Adecuación de la interrupción.</p>
                 </div>
             </div>
         </div>
@@ -512,64 +519,124 @@
 
     <div id="appendix-detailed-explanations" class="detailed-explanation-content">
         <div id="exp-electrodos-ap">
-            <h4>Electrodos de Referencia (Apéndice)</h4>
-            <p>Este apéndice proporciona información esencial y obligatoria sobre los electrodos de referencia utilizados en las mediciones de protección catódica. Detalla los tipos más comunes, como el electrodo de sulfato de cobre saturado (CSE), el electrodo de cloruro de plata/cloruro de plata (SSC) para agua de mar, y el electrodo de cloruro de potasio saturado (SCE). Se explican los criterios para su selección adecuada según el entorno, los procedimientos para su uso correcto y, de manera crucial, los métodos para verificar su precisión y estado a lo largo del tiempo. Mantener la precisión de los electrodos de referencia es vital para obtener mediciones de potencial fiables.</p>
-            <h6>Procedimiento General:</h6>
+            <h4>Electrodos de Referencia (Apéndice A - Obligatorio)</h4>
+            <p>El Apéndice A, de carácter **obligatorio** según el estándar NACE TM0497-2022, proporciona información detallada sobre los electrodos de referencia utilizados para medir potenciales estructura-electrolito. Los electrodos más comunes mencionados son el de sulfato de cobre saturado (CSE) típicamente usado en suelo o agua dulce, y el de cloruro de plata/ploruro de plata (Ag/AgCl) o cloruro de potasio saturado (SSC), adecuados para agua de mar o salobre. Otros electrodos estándar también pueden ser utilizados. El apéndice discute sus potenciales, coeficientes de temperatura (a menudo presentados en una tabla como la Tabla A1), y describe la composición y características de algunos, como el CSE y el SCE.</p>
+            <p>El apéndice enfatiza la **estabilidad y verificación** de estos electrodos. Distingue entre electrodos de referencia de estación (posición fija) y portátiles (ubicación variable). Es **esencial** verificar la precisión de los electrodos de referencia de forma rutinaria comparándolos con un electrodo patrón de referencia certificado. En campo, esto puede implicar comparar el electrodo de trabajo con un patrón en un entorno similar, o comparando dos electrodos patrón idénticos. Una diferencia de potencial de **5 mV o menos** entre un electrodo de referencia de trabajo y un electrodo patrón se considera **aceptable**. El Apéndice A también remite a NACE TM0113 para una evaluación más profunda de la precisión de los electrodos de campo.</p>
+            <h6>Procedimiento General (Basado en Apéndice A):</h6>
             <ol class="list-decimal ml-6">
-                <li>Seleccionar el tipo de electrodo adecuado para el entorno (suelo, agua dulce, agua de mar).</li>
-                <li>Preparar el electrodo según las instrucciones del fabricante (por ejemplo, saturar con la solución química adecuada).</li>
-                <li>Asegurar un buen contacto eléctrico con el voltímetro y un buen contacto iónico con el electrolito (suelo o agua).</li>
-                <li>Verificar periódicamente la precisión del electrodo comparándolo con un electrodo de referencia certificado o mediante otras técnicas de verificación estándar.</li>
-                <li>Almacenar el electrodo correctamente para mantener su estado y precisión.</li>
+                <li>**Selección del Electrodo:** Elegir el tipo de electrodo de referencia adecuado basado en el entorno de la medición (suelo/agua dulce para CSE; agua de mar/salobre para Ag/AgCl o SSC).</li>
+                <li>**Preparación:** Preparar el electrodo según las instrucciones específicas del fabricante y el Apéndice A (ej., asegurar que la solución esté saturada).</li>
+                <li>**Uso en Campo:** Asegurar un buen contacto eléctrico entre el electrodo y el voltímetro y un contacto iónico efectivo entre el electrodo y el electrolito (suelo húmedo o agua).</li>
+                <li>**Verificación Rutinaria:** Antes de usar, y periódicamente durante las mediciones, verificar la precisión del electrodo de referencia de trabajo. Esto se hace comparándolo con un electrodo patrón certificado.</li>
+                <li>**Criterio de Aceptación:** La diferencia de potencial entre el electrodo de trabajo y el patrón debe ser de 5 mV o menos para que el electrodo de trabajo se considere preciso.</li>
+                <li>**Mantenimiento y Almacenamiento:** Mantener los electrodos limpios y almacenarlos correctamente (siguiendo las recomendaciones del fabricante y del estándar) para preservar su estabilidad y precisión a largo plazo.</li>
             </ol>
         </div>
         <div id="exp-relevamientos-ap">
-            <h4>Relevamientos de Gradiente de Potencial DC (Apéndice)</h4>
-            <p>Este apéndice aborda las técnicas para realizar relevamientos de gradiente de potencial de corriente continua (DCVG - DC Voltage Gradient) o relevamientos celda a celda a lo largo de la tubería. Estas técnicas son herramientas valiosas para identificar y localizar áreas específicas donde la protección catódica puede ser inadecuada o donde el recubrimiento de la tubería está dañado. La técnica se basa en medir los pequeños gradientes de potencial que se forman en el suelo debido al flujo de corriente de PC hacia los defectos del recubrimiento. Analizar estos gradientes ayuda a priorizar las reparaciones y el mantenimiento.</p>
-             <h6>Procedimiento General:</h6>
+            <h4>Relevamientos de Gradiente de Potencial DC (Apéndice B - No Obligatorio)</h4>
+            <p>El Apéndice B, de carácter **no obligatorio**, describe las técnicas para realizar relevamientos de gradiente de potencial de corriente continua (DCVG - DC Voltage Gradient) o relevamientos celda a celda a lo largo de la tubería. El **propósito** de estas técnicas es utilizar los gradientes de potencial de superficie de CC para **predecir la corrosión o la corriente de protección catódica (CP) en el suelo**. Aunque no son obligatorias, son herramientas de diagnóstico valiosas que requieren interpretación por parte de personal capacitado y experimentado.</p>
+            <p>El apéndice describe **dos tipos principales** de relevamientos de gradiente de potencial de superficie de celda a celda: los que miden gradientes **a lo largo de la tubería** (útiles para identificar secciones anódicas o "hot-spots") y los que miden gradientes **normales (perpendiculares) a la tubería**, también conocidos como relevamientos "side drain" (que evalúan la dirección del flujo de corriente y ayudan a localizar actividad anódica de largo plazo). Estas técnicas pueden usarse de forma independiente o combinada con relevamientos de intervalo cerrado de potencial de superficie (CIPS).</p>
+            <p>La instrumentación requerida incluye un **voltímetro de alta impedancia y dos electrodos de referencia emparejados o balanceados**. Se subraya la importancia de la sensibilidad a los pequeños gradientes y la necesidad de electrodos emparejados. La identificación clara de la polaridad es crucial para la interpretación.</p>
+            <p>Es importante notar que si hay un sistema de PC activo, el potencial medido puede incluir su influencia. Por lo tanto, los relevamientos deben **evaluarse con la corriente de PC interrumpida**. También se deben considerar otras posibles fuentes de corriente parásita que puedan afectar las mediciones.</p>
+            <p>La **interpretación de los datos** es compleja y debe ser realizada por personal cualificado. Factores clave para la interpretación incluyen la polaridad y magnitud de los gradientes, la distancia entre electrodos, la resistividad del suelo, el pH, las características ambientales, la presencia de ánodos galvánicos o estructuras externas, la resistencia de la tubería y los defectos del recubrimiento. Es fundamental identificar y omitir las lecturas erróneas.</p>
+             <h6>Procedimiento General (Basado en Apéndice B):</h6>
             <ol class="list-decimal ml-6">
-                <li>Establecer un punto de interrupción de corriente en la fuente de PC para crear un ciclo ON/OFF.</li>
-                <li>Utilizar dos electrodos de referencia espaciados a una distancia fija y moverlos a lo largo de la tubería.</li>
-                <li>Medir la diferencia de potencial (gradiente de voltaje) entre los dos electrodos durante el ciclo OFF.</li>
-                <li>Un gradiente significativo indica un punto donde la corriente está saliendo del suelo hacia la tubería (un defecto en el recubrimiento).</li>
-                <li>Registrar la ubicación y magnitud de los gradientes para identificar y mapear los defectos.</li>
+                <li>**Preparación del Sitio:** Si hay un sistema de PC, establecer un punto de interrupción de corriente para crear un ciclo ON/OFF.</li>
+                <li>**Instrumentación:** Utilizar un voltímetro de alta impedancia y dos electrodos de referencia emparejados y calibrados.</li>
+                <li>**Realización del Relevamiento:**
+                    <ul>
+                        <li>Para relevamientos a lo largo: Mover los dos electrodos espaciados a una distancia fija a lo largo del trazado de la tubería, midiendo el gradiente de potencial.</li>
+                        <li>Para relevamientos normales: Colocar los electrodos perpendicularmente a la tubería para evaluar la dirección del flujo de corriente.</li>
+                    </ul>
+                </li>
+                <li>**Medición:** Registrar la diferencia de potencial entre los electrodos, idealmente durante el ciclo OFF si hay PC presente. Identificar claramente la polaridad de los gradientes.</li>
+                <li>**Documentación:** Registrar las lecturas, su ubicación precisa a lo largo de la tubería, y cualquier observación relevante del sitio.</li>
+                <li>**Interpretación:** Analizar los datos de gradiente (polaridad, magnitud, ubicación) en conjunto con otros factores (resistividad del suelo, etc.) para identificar y caracterizar los defectos del recubrimiento o áreas anódicas.</li>
+                <li>**Reporte:** Documentar los hallazgos, incluyendo la ubicación de los defectos identificados, para informar las decisiones de mantenimiento o reparación.</li>
             </ol>
         </div>
         <div id="exp-cupones-ap">
-            <h4>Uso de Cupones (Apéndice)</h4>
-            <p>Este apéndice describe cómo se pueden utilizar los cupones de prueba para ayudar a evaluar la adecuación de la protección catódica. Los cupones son pequeñas secciones de metal con un área de superficie conocida, enterradas cerca de la tubería y conectadas eléctricamente a ella. Permiten simular el comportamiento electroquímico de la tubería en un punto específico. Su principal ventaja es que facilitan la medición del potencial polarizado sin la influencia de la caída de tensión (IR Drop) asociada a la corriente de PC en la tubería principal, lo que proporciona una evaluación más precisa del nivel de protección alcanzado.</p>
-             <h6>Procedimiento General:</h6>
+            <h4>Uso de Cupones (Apéndice C - No Obligatorio)</h4>
+            <p>El Apéndice C, de carácter **no obligatorio**, describe el uso de cupones para evaluar si se cumple el criterio de protección catódica en un sitio de prueba. Un cupón es una **muestra metálica** que representa la estructura (tubería) en el sitio de prueba, utilizada para **evaluar la adecuación de la protección catódica aplicada** según el criterio NACE SP0169. Son pequeños, hechos del mismo metal que la tubería, y se colocan a la profundidad de la estructura, idealmente en ubicaciones con revestimiento ineficaz y minimizando la influencia de gradientes de ánodos.</p>
+            <p>La medición se realiza con un **voltímetro de alta impedancia y un electrodo de referencia emparejado**. La conexión entre el cupón y la tubería puede incluir un interruptor para permitir mediciones ON (conectado) e instantáneas OFF (desconectado). Este método es útil para obtener una evaluación más precisa de la polarización sin la influencia de las caídas de voltaje (IR drop) a través del suelo, especialmente en defectos del revestimiento.</p>
+            <p>El método de cupón es especialmente útil con el Test Method 1 (con CP aplicada) y el Test Method 2 (potencial polarizado) para determinar la adecuación de la PC.</p>
+            <h6>Ventajas:</h6>
+            <ul class="list-disc ml-6">
+                <li>Pueden proporcionar un potencial cupón-electrólito polarizado, libre de caída de voltaje con un drenaje mínimo de corriente.</li>
+                <li>Pueden ofrecer una **evaluación más completa de la polarización** en el sitio de prueba.</li>
+            </ul>
+            <h6>Desventajas:</h6>
+            <ul class="list-disc ml-6">
+                <li>Puede requerirse **equipo adicional, personal y vehículos**.</li>
+                <li>Se necesita tiempo para instalar y realizar las mediciones.</li>
+                <li>Los resultados pueden ser **difíciles o imposibles de analizar** si todas las fuentes de corriente que influyen no se interrumpen.</li>
+            </ul>
+            <p>En el contexto de los apéndices, Apéndice C es una **herramienta de diagnóstico avanzada o alternativa** para evaluar la CP cuando el IR drop es una preocupación, complementando los métodos principales de la norma.</p>
+             <h6>Procedimiento General (Basado en Apéndice C):</h6>
             <ol class="list-decimal ml-6">
-                <li>Instalar un cupón de material similar al de la tubería a la misma profundidad y en el mismo entorno.</li>
-                <li>Conectar el cupón eléctricamente a la tubería a través de un cable y un punto de prueba.</li>
-                <li>Utilizar un interruptor para conectar y desconectar el cupón de la tubería.</li>
-                <li>Medir el potencial del cupón con respecto a un electrodo de referencia mientras el cupón está desconectado de la tubería (simulando el potencial polarizado sin IR Drop).</li>
-                <li>Comparar el potencial del cupón con los criterios de protección catódica para evaluar la efectividad de la PC en esa ubicación.</li>
+                <li>**Instalación del Cupón:** Enterrar un cupón de material similar al de la tubería a la misma profundidad y en el mismo entorno, idealmente cerca de un defecto de recubrimiento si se conoce.</li>
+                <li>**Conexión:** Conectar eléctricamente el cupón a la tubería principal a través de un cable y un punto de prueba, incluyendo un interruptor en la conexión.</li>
+                <li>**Medición:** Utilizar un voltímetro de alta impedancia y un electrodo de referencia emparejado. Medir el potencial del cupón con respecto al electrolito mientras el cupón está desconectado de la tubería (Potencial Instantáneo OFF del cupón).</li>
+                <li>**Evaluación:** Comparar el potencial instantáneo OFF del cupón con los criterios de protección catódica (ej., -850 mV CSE) para evaluar la adecuación de la PC en ese punto, libre de la influencia del IR Drop de la tubería principal.</li>
+                <li>**Documentación:** Registrar el potencial medido, la ubicación del cupón y cualquier otra condición relevante.</li>
             </ol>
         </div>
         <div id="exp-interferencia-ap">
-            <h4>Interferencia de Corrientes Parásitas (Apéndice)</h4>
-            <p>Este apéndice detalla los procedimientos para identificar, medir y evaluar la interferencia en las mediciones de potencial causada por corrientes parásitas. Estas corrientes provienen de fuentes externas, como sistemas de tracción eléctrica (trenes, tranvías), otras estructuras metálicas con sistemas de PC activos, o líneas de transmisión eléctrica (que pueden inducir corrientes AC). La interferencia puede distorsionar significativamente las mediciones de potencial, llevando a conclusiones erróneas sobre la efectividad de la PC. El apéndice explica cómo detectar la presencia de estas corrientes y cómo realizar mediciones que minimicen su impacto o permitan cuantificar su efecto.</p>
-             <h6>Procedimiento General:</h6>
+            <h4>Interferencia de Corrientes Parásitas (Apéndice D - No Obligatorio)</h4>
+            <p>El Apéndice D, de carácter **no obligatorio**, proporciona guía sobre cómo manejar relevamientos en lugares donde se han identificado o se anticipan **condiciones de corriente parásita dinámica**. Estas corrientes son fuentes **externas** (no del sistema de PC de la tubería) que varían en magnitud y dirección con el tiempo y pueden distorsionar las mediciones de potencial.</p>
+            <p>Identifica dos fuentes principales:</p>
+            <ul class="list-disc ml-6">
+                <li>**Corriente Telúrica:** Corriente natural por fluctuaciones geomagnéticas. Se maneja con registradores de datos sincronizados para monitorear potenciales a lo largo del tiempo y ubicación.</li>
+                <li>**Sistemas de Tránsito/Mina (CC):** Corriente de retorno de sistemas eléctricos (trenes, etc.) que puede usar la tubería como trayectoria. Se utiliza la técnica de **Curva Beta**, midiendo simultáneamente potencial estructura-electrólito y potencial tubería-riel (u otra estructura) durante un período (ej., 24 horas) con dataloggers sincronizados. Trazar la correlación ayuda a identificar puntos de máxima exposición (recogida de corriente).</li>
+            </ul>
+            <p>El apéndice también discute el **uso de cupones** en este contexto. El potencial Instant-OFF esperado puede no ser estático con corriente parásita dinámica. Se pueden usar cupones o sondas de resistencia del suelo. Es importante medir el potencial instantáneo OFF **con interrupción**. Los cupones pueden ayudar a obtener mediciones de polarización libres de IR drop, pero se requieren mediciones a largo plazo para evaluar la PC bajo diferentes condiciones de operación de la fuente de corriente parásita.</p>
+            <p>En el contexto de los apéndices, Apéndice D es una **técnica especializada** para diagnosticar y evaluar el impacto de fuentes de corriente externas dinámicas, a diferencia del Apéndice B que se enfoca en gradientes locales o del Apéndice E que trata con CA.</p>
+             <h6>Procedimiento General (Basado en Apéndice D):</h6>
             <ol class="list-decimal ml-6">
-                <li>Identificar posibles fuentes de corrientes parásitas cercanas a la tubería (vías de tren, subestaciones eléctricas, otras tuberías con PC).</li>
-                <li>Realizar mediciones de potencial estructura-electrolito en la tubería afectada mientras las fuentes de interferencia están operando y no operando (si es posible).</li>
-                <li>Observar las fluctuaciones o cambios significativos en el potencial que coincidan con la operación de la fuente de interferencia.</li>
-                <li>Utilizar técnicas de medición específicas, como la medición sincronizada con la fuente de interferencia o el análisis de forma de onda, para cuantificar el impacto de la interferencia.</li>
-                <li>Implementar medidas correctivas si la interferencia compromete la efectividad de la PC o causa corrosión (por ejemplo, drenajes eléctricos).</li>
+                <li>**Identificación de Fuentes:** Determinar si hay fuentes potenciales de corriente parásita dinámica cercanas (ej., vías de tren, líneas de transmisión).</li>
+                <li>**Monitoreo (Corriente Telúrica):** Utilizar registradores de datos (dataloggers) estacionarios y portátiles sincronizados para registrar potenciales estructura-electrolito a lo largo del tiempo en diferentes ubicaciones.</li>
+                <li>**Medición de Curva Beta (Sistemas CC):** Instalar dataloggers sincronizados para medir simultáneamente el potencial estructura-electrólito y el potencial entre la tubería y la estructura fuente de interferencia (ej., riel) durante un período representativo (ej., 24 horas).</li>
+                <li>**Análisis de Datos:**
+                    <ul>
+                        <li>Para corriente telúrica: Analizar las variaciones de potencial a lo largo del tiempo y la distancia.</li>
+                        <li>Para sistemas CC: Trazar los datos para crear una Curva Beta y identificar los rangos de potencial y los puntos de máxima recogida de corriente.</li>
+                    </ul>
+                </li>
+                 <li>**Uso de Cupones (Opcional):** Si se utilizan cupones, realizar mediciones de potencial instantáneo OFF del cupón con interrupción de la fuente de PC y, si es posible, bajo diferentes condiciones de operación de la fuente de corriente parásita.</li>
+                <li>**Interpretación y Mitigación:** Interpretar los resultados para evaluar el impacto de la corriente parásita en la protección catódica y determinar si se necesitan medidas de mitigación (ej., drenajes eléctricos).</li>
+            </ol>
+        </div>
+         <div id="exp-corrosion-ca-ap">
+            <h4>Pruebas de Corrosión CA (Apéndice E - No Obligatorio)</h4>
+            <p>El Apéndice E, de carácter **no obligatorio**, proporciona guía sobre la **evaluación de potenciales OFF en tuberías que utilizan Desacopladores de CC** y aborda la **corrosión por CA**. Es información suplementaria y no obligatoria.</p>
+            <p>Discute la **corrosión por CA**, indicando que debe investigarse considerando las densidades de corriente CA (remite a NACE SP0177 y SP2142). Menciona que no se recomienda una densidad de corriente CA de CC superior a 100 A/m² cuando las densidades de corriente de CC son inferiores a 1 A/m². La corriente CA total se puede calcular si se utiliza un cupón.</p>
+            <p>Describe los **Desacopladores de CC** como dispositivos para conectar estructuras protegidas por CC a tierra CA sin aumentar la demanda del sistema de PC. Están diseñados para aislar eléctricamente de la CA. Su **capacitancia afecta el tiempo de Instant-OFF retardado**, pudiendo requerir ciclos de interrupción más largos para la despolarización.</p>
+            <p>Para **Encuestas Interrumpidas con Desacopladores**, sugiere usar pruebas como el **análisis de forma de onda** (con/sin desacopladores, con capacitancia eliminada) y el **análisis de cupones** para determinar el ciclo de interrupción adecuado y evaluar las lecturas Instant-OFF. Remite a SP2142 y SP0207 para guía adicional.</p>
+            <p>En el contexto de los apéndices, Apéndice E es una **técnica especializada** para manejar el impacto de la CA y los desacopladores en las mediciones de potencial, complementando otros apéndices no obligatorios.</p>
+             <h6>Procedimiento General (Basado en Apéndice E):</h6>
+            <ol class="list-decimal ml-6">
+                <li>**Evaluación Inicial (Corrosión CA):** Investigar la corrosión por CA considerando las densidades de corriente CA, refiriéndose a estándares como NACE SP0177 y SP2142.</li>
+                <li>**Análisis de Desacopladores:** Comprender el funcionamiento y la capacitancia de los desacopladores de CC instalados, ya que afectan las mediciones Instant-OFF.</li>
+                <li>**Determinación del Ciclo de Interrupción:** Realizar pruebas de análisis de forma de onda (con desacopladores, sin desacopladores, con capacitancia eliminada) para determinar el ciclo de interrupción ON-OFF adecuado que permita obtener un potencial Instantáneo OFF representativo.</li>
+                <li>**Uso de Cupones (Opcional):** Considerar el uso de cupones en ubicaciones con desacopladores para ayudar a evaluar las lecturas Instant-OFF y tener en cuenta los cambios en el potencial de la tubería.</li>
+                <li>**Medición Interrumpida:** Realizar encuestas de potencial interrumpidas siguiendo los procedimientos relevantes (ej., NACE SP0207), asegurando que la interrupción sea efectiva a pesar de la presencia de desacopladores.</li>
+                <li>**Interpretación:** Interpretar los potenciales Instantáneos OFF obtenidos, considerando la influencia potencial de la capacitancia de los desacopladores y la corriente CA.</li>
             </ol>
         </div>
         <div id="exp-instant-off-ap">
-            <h4>Evaluación del Potencial Instantáneo OFF (Apéndice)</h4>
-            <p>Este apéndice profundiza en la técnica de interrupción de corriente para medir el potencial instantáneo OFF. Reitera la importancia de este potencial como una medida más precisa del potencial polarizado de la estructura, ya que elimina la caída de tensión (IR Drop) en el electrolito. Se discuten aspectos clave como la necesidad de una interrupción rápida y, si es posible, sincronizada de la fuente de corriente de PC. También se abordan factores que pueden afectar la lectura instantánea OFF, como la capacitancia de los DC Decouplers, y cómo interpretar las lecturas para una evaluación correcta de la protección catódica.</p>
-             <h6>Procedimiento General:</h6>
+            <h4>Evaluación del Potencial Instantáneo OFF (Apéndice F - No Obligatorio)</h4>
+            <p>El Apéndice F, de carácter **no obligatorio**, proporciona orientación sobre la **evaluación de potenciales estructura-electrólito considerando la adecuación de la interrupción de corriente**. Se centra en la dificultad de obtener potenciales instantáneos OFF precisos al interrumpir las fuentes de corriente y cómo interpretar estas mediciones.</p>
+            <p>Indica que el potencial instantáneo OFF es el **potencial polarizado**. Referencia investigaciones (Payer, Husock) que muestran una relación entre la corriente aplicada y la polarización. Menciona que las limitaciones prácticas de los sistemas de PC suelen limitar los potenciales polarizados a aproximadamente -1,20 V<sub>CSE</sub>.</p>
+            <p>Subraya la importancia de evaluar cuidadosamente el error asociado con el potencial instantáneo OFF cuando la interrupción de corriente no es 100% efectiva, especialmente en presencia de corriente parásita. Recomienda revisar cuidadosamente cualquier potencial instantáneo OFF más electronegativo que aproximadamente -1,200 mV<sub>CSE</sub> para verificar que la interrupción de corriente fue adecuada, ya que potenciales mucho más negativos podrían indicar problemas con la medición o la interrupción misma.</p>
+            <p>En el contexto de los apéndices, Apéndice F complementa a otros que utilizan la interrupción (como C, D, E) al proporcionar una **guía para interpretar la calidad y fiabilidad** de la medición del potencial instantáneo OFF obtenida por interrupción.</p>
+             <h6>Procedimiento General (Basado en Apéndice F):</h6>
             <ol class="list-decimal ml-6">
-                <li>Instalar un interruptor de corriente (interrupter) en la fuente de alimentación del sistema de PC (rectificador o ánodo de sacrificio).</li>
-                <li>Configurar el interruptor para que cíclicamente encienda y apague la corriente de PC con un patrón definido (por ejemplo, 1 segundo ON, 1 segundo OFF).</li>
-                <li>Utilizar un voltímetro con capacidad de muestreo rápido y, si es posible, sincronizado con el interruptor.</li>
-                <li>Medir el potencial estructura-electrolito con respecto a un electrodo de referencia ubicado lo más cerca posible de la tubería.</li>
-                <li>Registrar el potencial inmediatamente después de que la corriente se apague (el potencial "instantáneo OFF") antes de que la polarización comience a decaer.</li>
-                <li>Comparar el potencial instantáneo OFF con los criterios de protección catódica.</li>
+                <li>**Realizar Interrupción de Corriente:** Implementar la técnica de interrupción de corriente en la fuente de PC (y otras fuentes de corriente que influyan, si es posible) utilizando un interruptor.</li>
+                <li>**Medir Potencial Instantáneo OFF:** Utilizar un voltímetro con capacidad de muestreo rápido y, si es posible, sincronizado con el interruptor, para medir el potencial estructura-electrolito inmediatamente después de que la corriente se apague.</li>
+                <li>**Evaluar la Adecuación de la Interrupción:** Observar la estabilidad de la lectura instantánea OFF. Una interrupción inadecuada puede resultar en lecturas que decaen rápidamente o son inconsistentes.</li>
+                <li>**Considerar Factores de Influencia:** Tener en cuenta factores como la capacitancia (ej. de DC Decouplers) o la presencia de corriente parásita dinámica (Apéndice D) que pueden afectar la lectura instantánea OFF.</li>
+                <li>**Interpretar el Potencial Instantáneo OFF:** Comparar el potencial instantáneo OFF obtenido con los criterios de protección catódica.</li>
+                <li>**Validar Lecturas Muy Negativas:** Si el potencial instantáneo OFF es significativamente más negativo que -1,20 V<sub>CSE</sub>, revisar cuidadosamente el proceso de interrupción y la medición para identificar posibles errores o influencias externas.</li>
             </ol>
         </div>
     </div>
@@ -627,7 +694,7 @@
                         detailsDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     } else {
                         // Si no se encuentra la explicación, mostrar un mensaje de error o limpiar
-                        detailsDisplay.innerHTML = '<h4>Error</h4><p>No se encontró la explicación detallada para este tema.</p>';
+                        detailsDisplay.innerHTML = '<h4>Error</h4><p>No se encontró la explicación detallada para este tema.</p>Más información sobre este tema no está disponible en este momento.</h4></p>';
                         detailsDisplay.style.display = 'block';
                          detailsDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
