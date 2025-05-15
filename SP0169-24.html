@@ -1,485 +1,739 @@
 
-import React, { useState } from 'react';
-
-// Definimos íconos manualmente para evitar problemas de importación
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M15 18l-6-6 6-6" />
-  </svg>
-);
-
-const ChevronRight = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 18l6-6-6-6" />
-  </svg>
-);
-
-const Home = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-    <polyline points="9 22 9 12 15 12 15 22" />
-  </svg>
-);
-
-const Menu = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="3" y1="12" x2="21" y2="12" />
-    <line x1="3" y1="6" x2="21" y2="6" />
-    <line x1="3" y1="18" x2="21" y2="18" />
-  </svg>
-);
-
-const NacePresentation = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  // Definición de los colores principales
-  const colors = {
-    primary: '#1a5f7a',
-    secondary: '#57c5b6',
-    accent: '#159895',
-    danger: '#e74c3c',
-    warning: '#f39c12',
-    success: '#27ae60',
-    light: '#f5f5f5',
-    dark: '#333333',
-    background: '#f0f9ff'
-  };
-
-  // Contenido de las diapositivas
-  const slides = [
-    {
-      title: 'Norma AMPP NACE SP0169-2024',
-      content: (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-center">Control de la Corrosión Externa en Sistemas de Tuberías Metálicas Subterráneas o Sumergidas</h2>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <p className="mb-2">Esta norma presenta:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Métodos y prácticas para el control efectivo de la corrosión externa</li>
-              <li>Destinada a personal competente en control de corrosión</li>
-              <li>Aplicable a tuberías enterradas en tierra o sumergidas en agua</li>
-              <li>Materiales cubiertos: acero, acero inoxidable, hierro fundido, hierro dúctil, cobre y aluminio</li>
-            </ul>
-          </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norma AMPP NACE SP0169-2024</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f9ff;
+            color: #333;
+        }
+        
+        /* Barra de navegación */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .title {
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-button {
+            background: none;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .nav-button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Contenido principal */
+        .main-container {
+            display: flex;
+            position: relative;
+            height: calc(100vh - 64px);
+        }
+        
+        /* Menú lateral */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .menu-items {
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+        }
+        
+        .menu-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+        
+        .menu-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .menu-item.active {
+            background-color: #e0f0ff;
+            color: #1a5f7a;
+        }
+        
+        /* Overlay para cerrar el menú */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.3);
+            display: none;
+            z-index: 5;
+        }
+        
+        .overlay.open {
+            display: block;
+        }
+        
+        /* Contenido de las diapositivas */
+        .slide-container {
+            flex-grow: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            width: 100%;
+        }
+        
+        .slide-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .slide-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid;
+        }
+        
+        /* Estilos de tarjetas */
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Colores */
+        .primary-color { color: #1a5f7a; }
+        .primary-border { border-color: #1a5f7a; }
+        .primary-bg { background-color: #e6f3f7; }
+        
+        .secondary-color { color: #57c5b6; }
+        .secondary-border { border-color: #57c5b6; }
+        .secondary-bg { background-color: #eaf9f7; }
+        
+        .success-color { color: #27ae60; }
+        .success-border { border-color: #27ae60; }
+        .success-bg { background-color: #e6f7ef; }
+        
+        .warning-color { color: #f39c12; }
+        .warning-border { border-color: #f39c12; }
+        .warning-bg { background-color: #fdf2e3; }
+        
+        .danger-color { color: #e74c3c; }
+        .danger-border { border-color: #e74c3c; }
+        .danger-bg { background-color: #fae9e7; }
+        
+        .purple-color { color: #8e44ad; }
+        .purple-border { border-color: #8e44ad; }
+        .purple-bg { background-color: #f5eef8; }
+        
+        /* Utilidades */
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mt-4 { margin-top: 1rem; }
+        
+        .font-bold { font-weight: bold; }
+        .font-medium { font-weight: 500; }
+        
+        .hidden { display: none; }
+        
+        ul.styled-list {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert {
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-warning {
+            background-color: #fdf2e3;
+            border-left: 4px solid #f39c12;
+            color: #9a6309;
+        }
+        
+        .alert-danger {
+            background-color: #fae9e7;
+            border-left: 4px solid #e74c3c;
+            color: #a82315;
+        }
+        
+        .alert-info {
+            background-color: #e6f3f7;
+            border-left: 4px solid #1a5f7a;
+            color: #0d3642;
+        }
+        
+        .alert-success {
+            background-color: #e6f7ef;
+            border-left: 4px solid #27ae60;
+            color: #1a6a3c;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .grid-item {
+            background-color: #e6f3f7;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-align: center;
+        }
+        
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .flex-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .border-left {
+            border-left: 4px solid;
+            padding-left: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <div class="navbar">
+        <div class="nav-left">
+            <button id="menu-toggle" class="nav-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <span class="title">Norma AMPP NACE SP0169-2024</span>
         </div>
-      ),
-      color: colors.primary
-    },
-    {
-      title: 'Ámbito de Aplicación',
-      content: (
-        <div className="space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="bg-white p-4 rounded-lg shadow-md flex-1">
-              <h3 className="font-semibold text-lg mb-2 text-green-700">Incluye:</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Tuberías subterráneas enterradas</li>
-                <li>Tuberías sumergidas en lagos, ríos y arroyos</li>
-                <li>Corrosión externa</li>
-              </ul>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-md flex-1">
-              <h3 className="font-semibold text-lg mb-2 text-red-700">No Incluye:</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Corrosión interna</li>
-                <li>Tuberías y estructuras marinas</li>
-              </ul>
-            </div>
-          </div>
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <p className="text-blue-800">El control efectivo de la corrosión externa se logra mediante:</p>
-            <ul className="list-disc pl-6 space-y-1 text-blue-800">
-              <li>Recubrimientos eléctricamente aislantes</li>
-              <li>Aislamiento eléctrico</li>
-              <li>Protección catódica (PC)</li>
-            </ul>
-          </div>
+        <div class="nav-buttons">
+            <button id="home-button" class="nav-button" title="Ir al inicio">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </button>
+            <button id="prev-button" class="nav-button" title="Anterior">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
+            </button>
+            <span id="slide-counter">1/11</span>
+            <button id="next-button" class="nav-button" title="Siguiente">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6"></path>
+                </svg>
+            </button>
         </div>
-      ),
-      color: colors.secondary
-    },
-    {
-      title: 'Necesidad de Control de Corrosión',
-      content: (
-        <div className="space-y-4">
-          <p className="bg-amber-100 p-3 rounded-lg border-l-4 border-amber-500">
-            <strong>Importante:</strong> La ausencia de fugas por sí sola NO es suficiente para determinar que el control de la corrosión no es necesario.
-          </p>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <p className="mb-2">La necesidad de control debe basarse en datos de:</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="bg-blue-50 p-2 rounded">Encuestas de corrosión</div>
-              <div className="bg-blue-50 p-2 rounded">Registros operativos</div>
-              <div className="bg-blue-50 p-2 rounded">Observaciones visuales</div>
-              <div className="bg-blue-50 p-2 rounded">Pruebas en sistemas similares</div>
-              <div className="bg-blue-50 p-2 rounded">Inspecciones en línea</div>
-              <div className="bg-blue-50 p-2 rounded">Especificaciones técnicas</div>
-              <div className="bg-blue-50 p-2 rounded">Evaluación de riesgos</div>
-              <div className="bg-blue-50 p-2 rounded">Exposición ambiental</div>
-              <div className="bg-blue-50 p-2 rounded">Condiciones operativas</div>
-              <div className="bg-blue-50 p-2 rounded">Seguridad y economía</div>
-            </div>
-          </div>
-        </div>
-      ),
-      color: colors.warning
-    },
-    {
-      title: 'Criterios para Protección Catódica',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-            <p className="text-green-800 font-medium">Referencia para control eficaz de corrosión externa:</p>
-            <p className="text-green-700">Reducción de la velocidad general de corrosión a <strong>0.025 mm por año</strong> (1 mil por año) o menos</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <p className="mb-2 font-medium">Consideraciones importantes:</p>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Se puede lograr PC adecuada en varios niveles de polarización catódica</li>
-              <li>Un solo criterio podría no ser satisfactorio para todas las condiciones</li>
-              <li>Es responsabilidad del usuario determinar el nivel necesario de control</li>
-              <li>La efectividad del control debe estar documentada</li>
-            </ul>
-          </div>
-        </div>
-      ),
-      color: colors.success
-    },
-    {
-      title: 'Criterios para Tuberías de Acero y Hierro',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold text-lg mb-2 text-blue-700">Criterios principales:</h3>
-            <div className="space-y-3">
-              <div className="border-l-4 border-blue-500 pl-3 py-1">
-                <p className="font-medium">Evidencia empírica</p>
-                <p className="text-sm">Criterios documentados que demuestren la efectividad del control de la corrosión en sistemas específicos</p>
-              </div>
-              <div className="border-l-4 border-blue-500 pl-3 py-1">
-                <p className="font-medium">Potencial polarizado</p>
-                <p className="text-sm">Un potencial polarizado de <strong>-850 mV</strong> con respecto a un electrodo CSE o más negativo</p>
-              </div>
-              <div className="border-l-4 border-blue-500 pl-3 py-1">
-                <p className="font-medium">Polarización catódica</p>
-                <p className="text-sm">Un mínimo de <strong>100 mV</strong> de polarización catódica entre la superficie y un electrodo de referencia</p>
-              </div>
-              <div className="border-l-4 border-blue-500 pl-3 py-1">
-                <p className="font-medium">Potencial con corriente aplicada</p>
-                <p className="text-sm">Igual o más negativo que el potencial medido cuando se ha logrado el criterio de polarización</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-      color: colors.primary
-    },
-    {
-      title: 'Condiciones Especiales',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold text-lg mb-2 text-purple-700">Situaciones especiales para tuberías de acero y hierro:</h3>
-            <div className="space-y-3">
-              <div className="border-l-4 border-purple-500 pl-3 py-1">
-                <p className="font-medium">MIC (Corrosión influenciada por microorganismos)</p>
-                <p className="text-sm">En ambientes anaeróbicos: <strong>-950 mV CSE</strong> o más negativo, o hasta <strong>300 mV</strong> de polarización catódica</p>
-              </div>
-              <div className="border-l-4 border-purple-500 pl-3 py-1">
-                <p className="font-medium">Temperaturas elevadas</p>
-                <p className="text-sm">A temperaturas > 40°C y especialmente > 60°C: <strong>-950 mV CSE</strong> o más negativo</p>
-              </div>
-              <div className="border-l-4 border-purple-500 pl-3 py-1">
-                <p className="font-medium">Ambientes ácidos débiles</p>
-                <p className="text-sm">Podría requerirse un potencial polarizado de <strong>-950 mV CSE</strong> o más negativo</p>
-              </div>
-              <div className="border-l-4 border-purple-500 pl-3 py-1">
-                <p className="font-medium">Resistividad del suelo</p>
-                <p className="text-sm">Considerar variaciones estacionales al aplicar los criterios</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-      color: colors.accent
-    },
-    {
-      title: 'Fisuración por Corrosión bajo Tensión (SCC)',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold text-lg mb-2">Tipos de SCC externa en tuberías enterradas:</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-                <p className="font-medium text-amber-800">SCC de pH casi neutro</p>
-              </div>
-              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
-                <p className="font-medium text-amber-800">SCC de pH alto</p>
-              </div>
-            </div>
-            <div className="mt-4 bg-blue-50 p-3 rounded-lg">
-              <p className="text-blue-800">Para mitigar SCC de pH alto: Potencial polarizado de <strong>-850 mV CSE</strong> o más negativo</p>
-            </div>
-            <div className="mt-4 bg-red-50 p-3 rounded-lg border-l-4 border-red-400">
-              <p className="text-red-800"><strong>¡Importante!</strong> Para tuberías con SCC identificada, aumentar el potencial de PC por sí solo no es suficiente. Se debe desarrollar un programa de mitigación completo.</p>
-            </div>
-          </div>
-        </div>
-      ),
-      color: colors.warning
-    },
-    {
-      title: 'Sobreprotección Catódica',
-      content: (
-        <div className="space-y-4">
-          <p className="bg-red-50 p-3 rounded-lg border border-red-200 text-red-800">
-            La sobreprotección se refiere a niveles de PC que pueden causar daño a la tubería o al recubrimiento.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="font-semibold text-orange-700 mb-2">Sobreprotección cáustica</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Genera ambiente altamente cáustico (pH > 13)</li>
-                <li>Puede degradar la adhesión del recubrimiento</li>
-                <li>No hay límites definidos de potencial o densidad de corriente</li>
-                <li>Susceptibilidad varía según condiciones</li>
-              </ul>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="font-semibold text-orange-700 mb-2">Sobreprotección metalúrgica</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Generación excesiva de gas hidrógeno en el cátodo</li>
-                <li>Puede aumentar la absorción de hidrógeno en el metal</li>
-                <li>Causa pérdida de ductilidad en el material</li>
-                <li>Sistemas de tuberías antiguos son más susceptibles</li>
-              </ul>
-            </div>
-          </div>
-          <div className="bg-red-50 p-3 rounded-lg">
-            <p className="font-medium text-red-800">Para acero y hierro fundido: un potencial polarizado más negativo que <strong>-1,200 mV CSE</strong> no debe usarse sin pruebas previas</p>
-          </div>
-        </div>
-      ),
-      color: colors.danger
-    },
-    {
-      title: 'Consideraciones para Aplicar Criterios de PC',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold text-lg mb-2">Factores a considerar:</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Tipo de electrolito</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Resistividad</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">pH</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Presencia de MIC</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Temperatura</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Susceptibilidad a SCC</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Otras estructuras</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Corrientes parásitas</p>
-              </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <p className="text-blue-800">Pesos y anclajes</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-            <p className="text-yellow-800">Se requiere una <strong>reevaluación periódica</strong> de los potenciales objetivo para tener en cuenta los cambios ambientales y operativos a lo largo del tiempo.</p>
-          </div>
-        </div>
-      ),
-      color: colors.accent
-    },
-    {
-      title: 'Monitoreo y Mantenimiento',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold text-lg mb-2 text-green-700">Monitoreo continuo:</h3>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Verificar que los sistemas de PC están operativos</li>
-              <li>Confirmar que se cumplen los criterios de PC</li>
-              <li>Evaluar efectividad de accesorios de aislamiento</li>
-              <li>Verificar uniones de continuidad</li>
-              <li>Comprobar aislamiento de las cubiertas</li>
-            </ul>
-          </div>
-          <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
-            <p className="text-blue-800">Una vez lograda la protección catódica efectiva, los potenciales mínimos correspondientes en ubicaciones de monitoreo adyacentes pueden usarse como <strong>potenciales objetivo</strong> para el monitoreo futuro.</p>
-          </div>
-          <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-            <p className="text-green-800 font-medium">El diseño de sistemas de PC debe asegurar que se cumplan los criterios seleccionados, considerando:</p>
-            <ul className="list-disc pl-6 space-y-1 text-green-800">
-              <li>Especificaciones del sistema de tuberías</li>
-              <li>Material, recubrimientos, aislamiento, etc.</li>
-              <li>Condiciones del sitio y entorno</li>
-              <li>Estructuras vecinas</li>
-              <li>Interferencia de corrientes parásitas</li>
-            </ul>
-          </div>
-        </div>
-      ),
-      color: colors.success
-    },
-    {
-      title: 'Resumen de la Norma',
-      content: (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="font-semibold text-lg mb-2 text-blue-700">AMPP NACE SP0169-2024 establece que:</h3>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>El control de la corrosión externa en tuberías enterradas o sumergidas implica el uso coordinado de:
-                <ul className="list-disc pl-6 mt-1">
-                  <li>Recubrimientos</li>
-                  <li>Aislamiento eléctrico</li>
-                  <li>Protección catódica</li>
-                </ul>
-              </li>
-              <li>Los criterios para determinar la efectividad de la PC varían según:
-                <ul className="list-disc pl-6 mt-1">
-                  <li>Material de la tubería</li>
-                  <li>Condiciones ambientales</li>
-                  <li>Condiciones especiales (MIC, alta temperatura, etc.)</li>
-                </ul>
-              </li>
-              <li>La selección y aplicación de criterios requiere:
-                <ul className="list-disc pl-6 mt-1">
-                  <li>Dirección de personal competente</li>
-                  <li>Documentación adecuada</li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      ),
-      color: colors.primary
-    },
-  ];
-
-  // Navegar a la diapositiva anterior
-  const goToPrevSlide = () => {
-    setCurrentSlide(prev => (prev > 0 ? prev - 1 : 0));
-  };
-
-  // Navegar a la diapositiva siguiente
-  const goToNextSlide = () => {
-    setCurrentSlide(prev => (prev < slides.length - 1 ? prev + 1 : prev));
-  };
-
-  // Navegar a la diapositiva inicial
-  const goToHome = () => {
-    setCurrentSlide(0);
-  };
-
-  // Navegación a una diapositiva específica desde el menú
-  const goToSlide = (index) => {
-    setCurrentSlide(index);
-    setMenuOpen(false);
-  };
-
-  return (
-    <div className="flex flex-col h-screen" style={{ backgroundColor: colors.background }}>
-      {/* Barra de navegación */}
-      <div className="bg-white shadow-md p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <button 
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="p-2 rounded-full hover:bg-gray-100"
-          >
-            <Menu />
-          </button>
-          <h1 className="text-xl font-bold text-gray-800">Norma AMPP NACE SP0169-2024</h1>
-        </div>
-        <div className="flex items-center space-x-2">
-          <button 
-            onClick={goToHome}
-            className="p-2 rounded-full hover:bg-gray-100"
-            title="Ir al inicio"
-          >
-            <Home />
-          </button>
-          <button 
-            onClick={goToPrevSlide}
-            className={`p-2 rounded-full hover:bg-gray-100 ${currentSlide === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={currentSlide === 0}
-            title="Anterior"
-          >
-            <ChevronLeft />
-          </button>
-          <span className="text-gray-600">{currentSlide + 1}/{slides.length}</span>
-          <button 
-            onClick={goToNextSlide}
-            className={`p-2 rounded-full hover:bg-gray-100 ${currentSlide === slides.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={currentSlide === slides.length - 1}
-            title="Siguiente"
-          >
-            <ChevronRight />
-          </button>
-        </div>
-      </div>
-
-      {/* Contenedor principal */}
-      <div className="flex flex-1 relative overflow-hidden">
-        {/* Menú lateral */}
-        <div 
-          className={`absolute top-0 left-0 w-64 h-full bg-white shadow-lg z-10 transform transition-transform duration-300 ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        >
-          <div className="p-4 bg-gray-50 border-b">
-            <h2 className="font-bold text-gray-800">Contenido</h2>
-          </div>
-          <ul className="p-2">
-            {slides.map((slide, index) => (
-              <li key={index}>
-                <button 
-                  onClick={() => goToSlide(index)}
-                  className={`block w-full text-left p-3 rounded-md ${currentSlide === index ? 'bg-blue-100 text-blue-800' : 'hover:bg-gray-100'}`}
-                >
-                  {index + 1}. {slide.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Contenido de la diapositiva */}
-        <div className="flex-1 p-6 overflow-auto">
-          <div className="max-w-4xl mx-auto">
-            <h2 
-              className="text-2xl font-bold mb-6 pb-2 border-b-2" 
-              style={{ color: slides[currentSlide].color, borderColor: slides[currentSlide].color }}
-            >
-              {slides[currentSlide].title}
-            </h2>
-            {slides[currentSlide].content}
-          </div>
-        </div>
-      </div>
-
-      {/* Overlay para cerrar el menú cuando está abierto */}
-      {menuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-30 z-0"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
     </div>
-  );
-};
 
-export default NacePresentation;
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        <!-- Menú lateral -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="font-bold">Contenido</h2>
+            </div>
+            <ul class="menu-items" id="menu-items">
+                <!-- Los items del menú se generarán dinámicamente con JavaScript -->
+            </ul>
+        </div>
+
+        <!-- Overlay para cerrar el menú -->
+        <div id="overlay" class="overlay"></div>
+
+        <!-- Contenido de las diapositivas -->
+        <div class="slide-container">
+            <div class="slide-content">
+                <!-- Slide 1 -->
+                <div id="slide-1" class="slide">
+                    <h2 class="slide-title primary-color primary-border">
+                        Norma AMPP NACE SP0169-2024
+                    </h2>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-center mb-2">Control de la Corrosión Externa en Sistemas de Tuberías Metálicas Subterráneas o Sumergidas</h3>
+                        <div class="card">
+                            <p class="mb-2">Esta norma presenta:</p>
+                            <ul class="styled-list">
+                                <li>Métodos y prácticas para el control efectivo de la corrosión externa</li>
+                                <li>Destinada a personal competente en control de corrosión</li>
+                                <li>Aplicable a tuberías enterradas en tierra o sumergidas en agua</li>
+                                <li>Materiales cubiertos: acero, acero inoxidable, hierro fundido, hierro dúctil, cobre y aluminio</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div id="slide-2" class="slide hidden">
+                    <h2 class="slide-title secondary-color secondary-border">
+                        Ámbito de Aplicación
+                    </h2>
+                    <div class="mb-4">
+                        <div class="flex-container">
+                            <div class="card flex-item">
+                                <h3 class="font-medium mb-2 success-color">Incluye:</h3>
+                                <ul class="styled-list">
+                                    <li>Tuberías subterráneas enterradas</li>
+                                    <li>Tuberías sumergidas en lagos, ríos y arroyos</li>
+                                    <li>Corrosión externa</li>
+                                </ul>
+                            </div>
+                            <div class="card flex-item">
+                                <h3 class="font-medium mb-2 danger-color">No Incluye:</h3>
+                                <ul class="styled-list">
+                                    <li>Corrosión interna</li>
+                                    <li>Tuberías y estructuras marinas</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="primary-bg p-4 mt-4 rounded" style="border-radius: 0.5rem;">
+                            <p class="primary-color">El control efectivo de la corrosión externa se logra mediante:</p>
+                            <ul class="styled-list primary-color">
+                                <li>Recubrimientos eléctricamente aislantes</li>
+                                <li>Aislamiento eléctrico</li>
+                                <li>Protección catódica (PC)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div id="slide-3" class="slide hidden">
+                    <h2 class="slide-title warning-color warning-border">
+                        Necesidad de Control de Corrosión
+                    </h2>
+                    <div class="mb-4">
+                        <div class="alert alert-warning">
+                            <strong>Importante:</strong> La ausencia de fugas por sí sola NO es suficiente para determinar que el control de la corrosión no es necesario.
+                        </div>
+                        <div class="card">
+                            <p class="mb-2">La necesidad de control debe basarse en datos de:</p>
+                            <div class="grid">
+                                <div class="grid-item">Encuestas de corrosión</div>
+                                <div class="grid-item">Registros operativos</div>
+                                <div class="grid-item">Observaciones visuales</div>
+                                <div class="grid-item">Pruebas en sistemas similares</div>
+                                <div class="grid-item">Inspecciones en línea</div>
+                                <div class="grid-item">Especificaciones técnicas</div>
+                                <div class="grid-item">Evaluación de riesgos</div>
+                                <div class="grid-item">Exposición ambiental</div>
+                                <div class="grid-item">Condiciones operativas</div>
+                                <div class="grid-item">Seguridad y economía</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div id="slide-4" class="slide hidden">
+                    <h2 class="slide-title success-color success-border">
+                        Criterios para Protección Catódica
+                    </h2>
+                    <div class="mb-4">
+                        <div class="alert alert-success">
+                            <p class="font-medium">Referencia para control eficaz de corrosión externa:</p>
+                            <p>Reducción de la velocidad general de corrosión a <strong>0.025 mm por año</strong> (1 mil por año) o menos</p>
+                        </div>
+                        <div class="card">
+                            <p class="mb-2 font-medium">Consideraciones importantes:</p>
+                            <ul class="styled-list">
+                                <li>Se puede lograr PC adecuada en varios niveles de polarización catódica</li>
+                                <li>Un solo criterio podría no ser satisfactorio para todas las condiciones</li>
+                                <li>Es responsabilidad del usuario determinar el nivel necesario de control</li>
+                                <li>La efectividad del control debe estar documentada</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 5 -->
+                <div id="slide-5" class="slide hidden">
+                    <h2 class="slide-title primary-color primary-border">
+                        Criterios para Tuberías de Acero y Hierro
+                    </h2>
+                    <div class="mb-4">
+                        <div class="card">
+                            <h3 class="font-medium mb-2 primary-color">Criterios principales:</h3>
+                            <div class="border-left primary-border">
+                                <p class="font-medium">Evidencia empírica</p>
+                                <p>Criterios documentados que demuestren la efectividad del control de la corrosión en sistemas específicos</p>
+                            </div>
+                            <div class="border-left primary-border">
+                                <p class="font-medium">Potencial polarizado</p>
+                                <p>Un potencial polarizado de <strong>-850 mV</strong> con respecto a un electrodo CSE o más negativo</p>
+                            </div>
+                            <div class="border-left primary-border">
+                                <p class="font-medium">Polarización catódica</p>
+                                <p>Un mínimo de <strong>100 mV</strong> de polarización catódica entre la superficie y un electrodo de referencia</p>
+                            </div>
+                            <div class="border-left primary-border">
+                                <p class="font-medium">Potencial con corriente aplicada</p>
+                                <p>Igual o más negativo que el potencial medido cuando se ha logrado el criterio de polarización</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 6 -->
+                <div id="slide-6" class="slide hidden">
+                    <h2 class="slide-title purple-color purple-border">
+                        Condiciones Especiales
+                    </h2>
+                    <div class="mb-4">
+                        <div class="card">
+                            <h3 class="font-medium mb-2 purple-color">Situaciones especiales para tuberías de acero y hierro:</h3>
+                            <div class="border-left purple-border">
+                                <p class="font-medium">MIC (Corrosión influenciada por microorganismos)</p>
+                                <p>En ambientes anaeróbicos: <strong>-950 mV CSE</strong> o más negativo, o hasta <strong>300 mV</strong> de polarización catódica</p>
+                            </div>
+                            <div class="border-left purple-border">
+                                <p class="font-medium">Temperaturas elevadas</p>
+                                <p>A temperaturas > 40°C y especialmente > 60°C: <strong>-950 mV CSE</strong> o más negativo</p>
+                            </div>
+                            <div class="border-left purple-border">
+                                <p class="font-medium">Ambientes ácidos débiles</p>
+                                <p>Podría requerirse un potencial polarizado de <strong>-950 mV CSE</strong> o más negativo</p>
+                            </div>
+                            <div class="border-left purple-border">
+                                <p class="font-medium">Resistividad del suelo</p>
+                                <p>Considerar variaciones estacionales al aplicar los criterios</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 7 -->
+                <div id="slide-7" class="slide hidden">
+                    <h2 class="slide-title warning-color warning-border">
+                        Fisuración por Corrosión bajo Tensión (SCC)
+                    </h2>
+                    <div class="mb-4">
+                        <div class="card">
+                            <h3 class="font-medium mb-2">Tipos de SCC externa en tuberías enterradas:</h3>
+                            <div class="flex-container">
+                                <div class="warning-bg p-3 flex-item" style="border-radius: 0.5rem; border: 1px solid #f39c12;">
+                                    <p class="font-medium warning-color">SCC de pH casi neutro</p>
+                                </div>
+                                <div class="warning-bg p-3 flex-item" style="border-radius: 0.5rem; border: 1px solid #f39c12;">
+                                    <p class="font-medium warning-color">SCC de pH alto</p>
+                                </div>
+                            </div>
+                            <div class="primary-bg p-3 mt-4" style="border-radius: 0.5rem;">
+                                <p class="primary-color">Para mitigar SCC de pH alto: Potencial polarizado de <strong>-850 mV CSE</strong> o más negativo</p>
+                            </div>
+                            <div class="alert alert-danger mt-4">
+                                <p><strong>¡Importante!</strong> Para tuberías con SCC identificada, aumentar el potencial de PC por sí solo no es suficiente. Se debe desarrollar un programa de mitigación completo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 8 -->
+                <div id="slide-8" class="slide hidden">
+                    <h2 class="slide-title danger-color danger-border">
+                        Sobreprotección Catódica
+                    </h2>
+                    <div class="mb-4">
+                        <div class="alert alert-danger">
+                            La sobreprotección se refiere a niveles de PC que pueden causar daño a la tubería o al recubrimiento.
+                        </div>
+                        <div class="flex-container">
+                            <div class="card flex-item">
+                                <h3 class="font-medium warning-color mb-2">Sobreprotección cáustica</h3>
+                                <ul class="styled-list">
+                                    <li>Genera ambiente altamente cáustico (pH > 13)</li>
+                                    <li>Puede degradar la adhesión del recubrimiento</li>
+                                    <li>No hay límites definidos de potencial o densidad de corriente</li>
+                                    <li>Susceptibilidad varía según condiciones</li>
+                                </ul>
+                            </div>
+                            <div class="card flex-item">
+                                <h3 class="font-medium warning-color mb-2">Sobreprotección metalúrgica</h3>
+                                <ul class="styled-list">
+                                    <li>Generación excesiva de gas hidrógeno en el cátodo</li>
+                                    <li>Puede aumentar la absorción de hidrógeno en el metal</li>
+                                    <li>Causa pérdida de ductilidad en el material</li>
+                                    <li>Sistemas de tuberías antiguos son más susceptibles</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="danger-bg p-3 mt-4" style="border-radius: 0.5rem;">
+                            <p class="font-medium danger-color">Para acero y hierro fundido: un potencial polarizado más negativo que <strong>-1,200 mV CSE</strong> no debe usarse sin pruebas previas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 9 -->
+                <div id="slide-9" class="slide hidden">
+                    <h2 class="slide-title secondary-color secondary-border">
+                        Consideraciones para Aplicar Criterios de PC
+                    </h2>
+                    <div class="mb-4">
+                        <div class="card">
+                            <h3 class="font-medium mb-2">Factores a considerar:</h3>
+                            <div class="grid">
+                                <div class="grid-item">Tipo de electrolito</div>
+                                <div class="grid-item">Resistividad</div>
+                                <div class="grid-item">pH</div>
+                                <div class="grid-item">Presencia de MIC</div>
+                                <div class="grid-item">Temperatura</div>
+                                <div class="grid-item">Susceptibilidad a SCC</div>
+                                <div class="grid-item">Otras estructuras</div>
+                                <div class="grid-item">Corrientes parásitas</div>
+                                <div class="grid-item">Pesos y anclajes</div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning mt-4">
+                            <p>Se requiere una <strong>reevaluación periódica</strong> de los potenciales objetivo para tener en cuenta los cambios ambientales y operativos a lo largo del tiempo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 10 -->
+                <div id="slide-10" class="slide hidden">
+                    <h2 class="slide-title success-color success-border">
+                        Monitoreo y Mantenimiento
+                    </h2>
+                    <div class="mb-4">
+                        <div class="card">
+                            <h3 class="font-medium mb-2 success-color">Monitoreo continuo:</h3>
+                            <ul class="styled-list">
+                                <li>Verificar que los sistemas de PC están operativos</li>
+                                <li>Confirmar que se cumplen los criterios de PC</li>
+                                <li>Evaluar efectividad de accesorios de aislamiento</li>
+                                <li>Verificar uniones de continuidad</li>
+                                <li>Comprobar aislamiento de las cubiertas</li>
+                            </ul>
+                        </div>
+                        <div class="alert alert-info mt-4">
+                            <p>Una vez lograda la protección catódica efectiva, los potenciales mínimos correspondientes en ubicaciones de monitoreo adyacentes pueden usarse como <strong>potenciales objetivo</strong> para el monitoreo futuro.</p>
+                        </div>
+                        <div class="success-bg p-3 mt-4" style="border-radius: 0.5rem; border: 1px solid #27ae60;">
+                            <p class="success-color font-medium">El diseño de sistemas de PC debe asegurar que se cumplan los criterios seleccionados, considerando:</p>
+                            <ul class="styled-list success-color">
+                                <li>Especificaciones del sistema de tuberías</li>
+                                <li>Material, recubrimientos, aislamiento, etc.</li>
+                                <li>Condiciones del sitio y entorno</li>
+                                <li>Estructuras vecinas</li>
+                                <li>Interferencia de corrientes parásitas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 11 -->
+                <div id="slide-11" class="slide hidden">
+                    <h2 class="slide-title primary-color primary-border">
+                        Resumen de la Norma
+                    </h2>
+                    <div class="mb-4">
+                        <div class="card">
+                            <h3 class="font-medium mb-2 primary-color">AMPP NACE SP0169-2024 establece que:</h3>
+                            <ul class="styled-list">
+                                <li>El control de la corrosión externa en tuberías enterradas o sumergidas implica el uso coordinado de:
+                                    <ul class="styled-list">
+                                        <li>Recubrimientos</li>
+                                        <li>Aislamiento eléctrico</li>
+                                        <li>Protección catódica</li>
+                                    </ul>
+                                </li>
+                                <li>Los criterios para determinar la efectividad de la PC varían según:
+                                    <ul class="styled-list">
+                                        <li>Material de la tubería</li>
+                                        <li>Condiciones ambientales</li>
+                                        <li>Condiciones especiales (MIC, alta temperatura, etc.)</li>
+                                    </ul>
+                                </li>
+                                <li>La selección y aplicación de criterios requiere:
+                                    <ul class="styled-list">
+                                        <li>Dirección de personal competente</li>
+                                        <li>Documentación adecuada</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Definición de las diapositivas (títulos para el menú)
+        const slides = [
+            'Norma AMPP NACE SP0169-2024',
+            'Ámbito de Aplicación',
+            'Necesidad de Control de Corrosión',
+            'Criterios para Protección Catódica',
+            'Criterios para Tuberías de Acero y Hierro',
+            'Condiciones Especiales',
+            'Fisuración por Corrosión bajo Tensión (SCC)',
+            'Sobreprotección Catódica',
+            'Consideraciones para Aplicar Criterios de PC',
+            'Monitoreo y Mantenimiento',
+            'Resumen de la Norma'
+        ];
+
+        // Variables para controlar la navegación
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        // Elementos DOM
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const homeButton = document.getElementById('home-button');
+        const slideCounter = document.getElementById('slide-counter');
+        const menuItems = document.getElementById('menu-items');
+
+        // Generar los items del menú
+        slides.forEach((slideTitle, index) => {
+            const menuItem = document.createElement('li');
+            menuItem.classList.add('menu-item');
+            if (index === 0) menuItem.classList.add('active');
+            menuItem.textContent = `${index + 1}. ${slideTitle}`;
+            menuItem.addEventListener('click', () => goToSlide(index));
+            menuItems.appendChild(menuItem);
+        });
+
+        // Funciones para la navegación
+        function toggleMenu() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        function goToSlide(index) {
+            // Ocultar diapositiva actual
+            document.getElementById(`slide-${currentSlide + 1}`).classList.add('hidden');
+            
+            // Actualizar índice actual
+            currentSlide = index;
+            
+            // Mostrar nueva diapositiva
+            document.getElementById(`slide-${currentSlide + 1}`).classList.remove('hidden');
+            
+            // Actualizar contador
+            slideCounter.textContent = `${currentSlide + 1}/${totalSlides}`;
+            
+            // Actualizar estados de botones
+            prevButton.disabled = currentSlide === 0;
+            nextButton.disabled = currentSlide === totalSlides - 1;
+            
+            // Actualizar menú
+            document.querySelectorAll('.menu-item').forEach((item, i) => {
+                if (i === currentSlide) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Cerrar menú en dispositivos móviles
+            if (window.innerWidth < 768) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        }
+
+        function goToHome() {
+            goToSlide(0);
+        }
+
+        function goToPrev() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function goToNext() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        // Event listeners
+        menuToggle.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+        prevButton.addEventListener('click', goToPrev);
+        nextButton.addEventListener('click', goToNext);
+        homeButton.addEventListener('click', goToHome);
+
+        // Inicialización
+        goToSlide(0);
+    </script>
+</body>
+</html>
