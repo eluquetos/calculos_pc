@@ -1,432 +1,424 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Ejecutivo: NACE SP0169-2024</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Panel Analítico: NACE SP0169-2024</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .timeline-bar {
-            position: absolute;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light grayish-blue background */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* md:rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .icon-bg {
+            background-color: #e0e7ff; /* Light indigo background for icons */
+            color: #3730a3; /* Indigo text color for icons */
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-title {
+            color: #1e3a8a; /* Dark blue for titles */
+        }
+        .section-title {
+            color: #1e40af; /* Medium blue for section titles */
+            border-bottom: 2px solid #93c5fd; /* Light blue border */
+            padding-bottom: 0.5rem;
+        }
+        .kpi-value {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+            color: #1d4ed8; /* Blue-700 */
+        }
+        .kpi-label {
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* Gray-500 */
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 280px; 
+            width: 280px;  
+        }
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            height: 100%;
-            width: 4px;
-            background-color: #BFDBFE;
+            background-color: #1e40af;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 1rem;
+            text-align: center;
         }
-        .timeline-point {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 4px solid #BFDBFE;
-        }
-        .section-content {
+        .hidden {
             display: none;
         }
-        .section-content.active {
-            display: block;
+        .menu-button {
+            background-color: #2563eb; /* Blue-600 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+        .menu-button:hover {
+            background-color: #1d4ed8; /* Blue-700 */
+        }
+        .home-button {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .home-button:hover {
+            background-color: #3730a3; /* Indigo-800 */
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 200px;
+                width: 200px;
+            }
+            .kpi-value {
+                font-size: 1.875rem; /* text-3xl */
+            }
+            .grid-cols-3 { /* For cards in generalidades */
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+             .md\:grid-cols-2 { /* For cards in aplicacion and revision */
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+            .menu-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 1.5rem; /* text-2xl */
+            }
+            .section-title {
+                font-size: 1.125rem; /* text-lg */
+            }
+             .card {
+                padding: 1rem; /* p-4 */
+            }
         }
     </style>
 </head>
-<body class="bg-slate-50">
-    <!-- Header -->
-    <header class="bg-blue-900 text-white p-6 shadow-lg">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold mb-2">NACE SP0169-2024</h1>
-            <p class="text-blue-200">Control de Corrosión Externa en Sistemas de Tuberías Metálicas</p>
-        </div>
+<body class="p-4 md:p-8">
+
+    <div id="customMessageBox" class="message-box">Mensaje</div>
+
+    <header class="text-center mb-8 md:mb-12 relative">
+        <h1 class="text-3xl md:text-4xl font-bold header-title">NACE SP0169-2024: Control de Corrosión Externa</h1>
+        <p class="text-lg md:text-xl text-gray-600 mt-2">Panel Analítico Ejecutivo</p>
+        <button id="homeBtn" class="home-button absolute top-0 right-0 mt-2 mr-2 md:mt-0 md:mr-0">Inicio</button>
     </header>
 
-    <!-- Main Content -->
-    <div class="flex flex-1 container mx-auto p-6">
-        <!-- Sidebar Navigation -->
-        <nav class="w-64 pr-6">
-            <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-                <h2 class="font-bold text-lg mb-4 text-blue-900 border-b pb-2">Navegación</h2>
-                <ul class="space-y-2">
-                    <li>
-                        <button 
-                            class="nav-btn w-full text-left p-2 rounded-md flex items-center bg-blue-100 text-blue-800" 
-                            data-target="overview"
-                        >
-                            <i class="fas fa-book mr-2"></i>
-                            <span>Generalidades</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button 
-                            class="nav-btn w-full text-left p-2 rounded-md flex items-center hover:bg-gray-100" 
-                            data-target="governance"
-                        >
-                            <i class="fas fa-users mr-2"></i>
-                            <span>Gobernanza</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button 
-                            class="nav-btn w-full text-left p-2 rounded-md flex items-center hover:bg-gray-100" 
-                            data-target="timeline"
-                        >
-                            <i class="fas fa-clock mr-2"></i>
-                            <span>Ciclo de Revisión</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button 
-                            class="nav-btn w-full text-left p-2 rounded-md flex items-center hover:bg-gray-100" 
-                            data-target="applications"
-                        >
-                            <i class="fas fa-layer-group mr-2"></i>
-                            <span>Aplicaciones</span>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <div class="flex items-start">
-                    <i class="fas fa-triangle-exclamation text-amber-500 mr-2 mt-1"></i>
-                    <p class="text-sm text-amber-800">
-                        Esta norma representa requisitos mínimos y debe ser aplicada por personal cualificado. Asegúrese de obtener la última edición vigente.
-                    </p>
-                </div>
-            </div>
-        </nav>
+    <div id="menuContainer" class="mb-8 md:mb-12">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title text-center">Menú Principal</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <button class="menu-button" data-section="generalidades">1. Generalidades de la Norma</button>
+            <button class="menu-button" data-section="aplicacion">2. Aplicación y Responsabilidad</button>
+            <button class="menu-button" data-section="revision">3. Revisión Periódica y Relevancia</button>
+        </div>
+    </div>
 
-        <!-- Main Content Area -->
-        <div class="flex-1 bg-white rounded-lg shadow-md p-6">
-            <!-- OVERVIEW SECTION -->
-            <div id="overview" class="section-content active">
-                <h2 class="text-2xl font-bold mb-6 text-blue-900">Características Principales</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="border rounded-lg p-4 bg-blue-50 border-blue-200">
-                        <h3 class="font-bold text-lg text-blue-800 mb-2">Definición</h3>
-                        <p>Métodos y prácticas aceptados para el control de la corrosión externa en sistemas de tuberías metálicas enterradas o sumergidas.</p>
+    <main class="space-y-8 md:space-y-12">
+        <section id="generalidades" class="content-section hidden">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">1. Generalidades de la Norma</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="icon-bg mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Objetivo Principal</h3>
                     </div>
-                    
-                    <div class="border rounded-lg p-4 bg-green-50 border-green-200">
-                        <h3 class="font-bold text-lg text-green-800 mb-2">Función</h3>
-                        <p>Actúa como guía para establecer requisitos de control de corrosión en sistemas nuevos y existentes.</p>
+                    <p class="text-gray-600">Presentar métodos y prácticas para el control de la corrosión externa en sistemas de tuberías metálicas.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="icon-bg mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 9v.906a2.25 2.25 0 0 1-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 0 0 1.183 1.981l6.478 3.488m8.839 2.51-4.66-2.51m0 0-1.023-.55a2.25 2.25 0 0 0-2.134 0l-1.023.55m0 0-4.661 2.51m16.5 1.615a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V8.844a2.25 2.25 0 0 1 1.183-1.981l7.5-4.039a2.25 2.25 0 0 1 2.134 0l7.5 4.039a2.25 2.25 0 0 1 1.183 1.98V19.5Z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Alcance de Aplicación</h3>
+                    </div>
+                    <p class="text-gray-600">Tuberías metálicas (acero, inox, hierro, cobre, aluminio) enterradas o sumergidas.</p>
+                    <div class="mt-3 text-sm text-gray-500">
+                        <span class="font-medium">Metales:</span> Acero, Ac. Inoxidable, Hierro Fundido/Dúctil, Cobre, Aluminio.
                     </div>
                 </div>
-                
-                <div class="bg-gray-50 rounded-lg p-6 mb-8">
-                    <h3 class="font-bold text-lg mb-4">Materiales Cubiertos</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div class="bg-white rounded-md p-3 shadow-sm border flex items-center justify-center">
-                            <span class="font-medium">Acero</span>
+                <div class="card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="icon-bg mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                            </svg>
                         </div>
-                        <div class="bg-white rounded-md p-3 shadow-sm border flex items-center justify-center">
-                            <span class="font-medium">Acero Inoxidable</span>
-                        </div>
-                        <div class="bg-white rounded-md p-3 shadow-sm border flex items-center justify-center">
-                            <span class="font-medium">Hierro Fundido</span>
-                        </div>
-                        <div class="bg-white rounded-md p-3 shadow-sm border flex items-center justify-center">
-                            <span class="font-medium">Hierro Dúctil</span>
-                        </div>
-                        <div class="bg-white rounded-md p-3 shadow-sm border flex items-center justify-center">
-                            <span class="font-medium">Cobre</span>
-                        </div>
-                        <div class="bg-white rounded-md p-3 shadow-sm border flex items-center justify-center">
-                            <span class="font-medium">Aluminio</span>
-                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Naturaleza de la Norma</h3>
                     </div>
-                </div>
-                
-                <div class="border-t pt-6">
-                    <h3 class="font-bold text-lg mb-4">Principios de Aplicación</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-start">
-                            <i class="fas fa-circle-check text-green-600 mr-3 mt-1"></i>
-                            <p>Requisitos mínimos, no restrictivos para mejores procedimientos</p>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fas fa-circle-check text-green-600 mr-3 mt-1"></i>
-                            <p>Documento de consenso entre miembros de AMPP</p>
-                        </div>
-                        <div class="flex items-start">
-                            <i class="fas fa-circle-check text-green-600 mr-3 mt-1"></i>
-                            <p>Debe usarse junto con otras normas y publicaciones relevantes</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GOVERNANCE SECTION -->
-            <div id="governance" class="section-content">
-                <h2 class="text-2xl font-bold mb-6 text-blue-900">Gobernanza y Dirección</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
-                        <div class="flex justify-center mb-6">
-                            <div class="bg-blue-700 p-4 rounded-full">
-                                <i class="fas fa-users fa-2x text-white"></i>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-center font-bold text-xl mb-4 text-blue-800">Personas Competentes</h3>
-                        
-                        <p class="text-center text-blue-900">
-                            La norma debe ser aplicada bajo la dirección de profesionales con conocimiento y experiencia adecuados en control de corrosión.
-                        </p>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6">
-                        <div class="flex justify-center mb-6">
-                            <div class="bg-indigo-700 p-4 rounded-full">
-                                <i class="fas fa-file-lines fa-2x text-white"></i>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-center font-bold text-xl mb-4 text-indigo-800">Documento de Consenso</h3>
-                        
-                        <p class="text-center text-indigo-900">
-                            Desarrollado y mantenido a través del acuerdo entre los miembros de AMPP, garantizando estándares reconocidos por la industria.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="bg-slate-50 rounded-lg p-6 mt-6">
-                    <h3 class="font-bold text-lg mb-4 border-b pb-2">Limitaciones de Aplicabilidad</h3>
-                    
-                    <div class="flex items-start mt-4">
-                        <i class="fas fa-triangle-exclamation text-amber-500 mr-3 mt-1"></i>
-                        <p>
-                            No pretende aplicarse a todas las situaciones específicas debido a la complejidad de las condiciones de los sistemas de tuberías.
-                        </p>
-                    </div>
-                    
-                    <div class="flex flex-col md:flex-row mt-6 bg-white p-4 rounded-lg shadow-sm">
-                        <div class="flex-1 md:border-r px-4 mb-4 md:mb-0">
-                            <h4 class="font-medium text-center mb-2">Uso Complementario</h4>
-                            <p class="text-sm text-center">
-                                Debe utilizarse junto con otras normas y publicaciones relevantes
-                            </p>
-                        </div>
-                        <div class="flex-1 px-4">
-                            <h4 class="font-medium text-center mb-2">Versiones</h4>
-                            <p class="text-sm text-center">
-                                Siempre debe consultarse la última revisión disponible
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TIMELINE SECTION -->
-            <div id="timeline" class="section-content">
-                <h2 class="text-2xl font-bold mb-6 text-blue-900">Ciclo de Actualización</h2>
-                
-                <div class="flex justify-center mb-8">
-                    <div class="bg-blue-700 w-16 h-16 rounded-full flex items-center justify-center">
-                        <i class="fas fa-arrows-rotate fa-2x text-white"></i>
-                    </div>
-                </div>
-                
-                <h3 class="text-xl font-bold text-center mb-8">Revisión Periódica: Cada 5 Años</h3>
-                
-                <div class="relative py-8">
-                    <!-- Timeline bar -->
-                    <div class="timeline-bar"></div>
-                    
-                    <!-- Timeline points -->
-                    <div class="relative z-10">
-                        <div class="mb-16 flex flex-col md:flex-row items-center">
-                            <div class="w-full md:w-1/2 pr-0 md:pr-10 text-center md:text-right mb-4 md:mb-0">
-                                <h4 class="font-bold text-blue-800">Publicación Inicial</h4>
-                                <p class="text-sm text-gray-600 mt-1">Establecimiento de la norma NACE SP0169-2024</p>
-                            </div>
-                            
-                            <div class="timeline-point bg-blue-600"></div>
-                            
-                            <div class="w-full md:w-1/2 pl-0 md:pl-10">
-                                <p class="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                                    Definición de métodos y prácticas para el control de corrosión
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-16 flex flex-col md:flex-row items-center">
-                            <div class="w-full md:w-1/2 pr-0 md:pr-10 text-center md:text-right mb-4 md:mb-0">
-                                <p class="bg-green-50 p-3 rounded-lg border border-green-100">
-                                    Revisión obligatoria dentro de los 5 años posteriores
-                                </p>
-                            </div>
-                            
-                            <div class="timeline-point bg-green-600"></div>
-                            
-                            <div class="w-full md:w-1/2 pl-0 md:pl-10">
-                                <h4 class="font-bold text-green-800">Primera Revisión</h4>
-                                <p class="text-sm text-gray-600 mt-1">Evaluación y actualización de la norma</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col md:flex-row items-center">
-                            <div class="w-full md:w-1/2 pr-0 md:pr-10 text-center md:text-right mb-4 md:mb-0">
-                                <h4 class="font-bold text-indigo-800">Revisiones Subsecuentes</h4>
-                                <p class="text-sm text-gray-600 mt-1">Ciclo continuo de mejora</p>
-                            </div>
-                            
-                            <div class="timeline-point bg-indigo-600"></div>
-                            
-                            <div class="w-full md:w-1/2 pl-0 md:pl-10">
-                                <p class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
-                                    Cada 5 años desde la última revisión o reafirmación
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-12 bg-blue-50 p-6 rounded-lg border border-blue-100">
-                    <h3 class="font-bold mb-3 text-blue-800">¿Por qué es importante el ciclo de revisión?</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-arrow-right text-blue-600 mr-2 mt-1"></i>
-                            <span>Mantiene la norma actualizada con avances tecnológicos</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-arrow-right text-blue-600 mr-2 mt-1"></i>
-                            <span>Incorpora nuevas investigaciones y lecciones aprendidas</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-arrow-right text-blue-600 mr-2 mt-1"></i>
-                            <span>Asegura adaptación a cambios en regulaciones</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-arrow-right text-blue-600 mr-2 mt-1"></i>
-                            <span>Garantiza la fiabilidad y utilidad de las directrices</span>
-                        </li>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Guía de referencia.</li>
+                        <li>Establece requisitos mínimos.</li>
+                        <li>Documento de consenso AMPP.</li>
                     </ul>
                 </div>
             </div>
+            <div class="mt-8 card p-6">
+                 <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Sistemas de Tuberías Cubiertos</h3>
+                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <div class="icon-bg mx-auto mb-2 w-12 h-12">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                            </svg>
+                        </div>
+                        <p class="font-medium text-blue-700">Nuevos</p>
+                    </div>
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <div class="icon-bg mx-auto mb-2 w-12 h-12 !bg-green-100 !text-green-700">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296A3.745 3.745 0 0 1 16.5 21a3.745 3.745 0 0 1-3.296-1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043A3.745 3.745 0 0 1 3 16.5a3.745 3.745 0 0 1 1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296A3.745 3.745 0 0 1 7.5 3a3.745 3.745 0 0 1 3.296 1.043A3.745 3.745 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043A3.745 3.745 0 0 1 21 7.5c0 1.268-.63 2.39-1.593 3.068A3.745 3.745 0 0 1 21 12Z" />
+                            </svg>
+                        </div>
+                        <p class="font-medium text-green-700">Existentes con Recubrimiento</p>
+                    </div>
+                    <div class="p-4 bg-yellow-50 rounded-lg">
+                        <div class="icon-bg mx-auto mb-2 w-12 h-12 !bg-yellow-100 !text-yellow-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                               <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10.5 11.25h3M12 15V3.75m0 0L10.5 2.25M12 3.75l1.5-1.5M20.25 7.5H3.75" />
+                            </svg>
+                        </div>
+                        <p class="font-medium text-yellow-700">Existentes sin Recubrimiento</p>
+                    </div>
+                 </div>
+            </div>
+        </section>
 
-            <!-- APPLICATIONS SECTION -->
-            <div id="applications" class="section-content">
-                <h2 class="text-2xl font-bold mb-6 text-blue-900">Ámbitos de Aplicación</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-blue-50 rounded-lg p-5 border border-blue-100 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-blue-700 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-shield-halved text-white fa-lg"></i>
+        <section id="aplicacion" class="content-section hidden">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">2. Aplicación y Responsabilidad</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="icon-bg mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l-2.25 2.25m0-10.5-2.25 2.25m2.25-2.25L15 4.5M6.75 9.75 4.5 12m0 0l-2.25 2.25M4.5 12l2.25 2.25M6.75 15l-2.25-2.25m15-6-2.25-2.25" />
+                            </svg>
                         </div>
-                        <h3 class="font-bold text-center mb-2">Sistemas Nuevos</h3>
-                        <p class="text-sm text-center">Establece requisitos de diseño y protección inicial</p>
+                        <h3 class="text-xl font-semibold text-gray-800">Personal Competente</h3>
                     </div>
-                    
-                    <div class="bg-green-50 rounded-lg p-5 border border-green-100 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-green-700 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-shield-halved text-white fa-lg"></i>
-                        </div>
-                        <h3 class="font-bold text-center mb-2">Sistemas Existentes con Recubrimiento</h3>
-                        <p class="text-sm text-center">Mantenimiento y mejora de la protección</p>
-                    </div>
-                    
-                    <div class="bg-amber-50 rounded-lg p-5 border border-amber-100 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-amber-700 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-shield-halved text-white fa-lg"></i>
-                        </div>
-                        <h3 class="font-bold text-center mb-2">Sistemas Existentes sin Recubrimiento</h3>
-                        <p class="text-sm text-center">Soluciones para protección contra corrosión</p>
-                    </div>
+                    <p class="text-gray-600">La aplicación de la norma debe ser dirigida por personal con conocimiento y experiencia adecuados en control de corrosión.</p>
                 </div>
-                
-                <div class="bg-slate-50 p-6 rounded-lg">
-                    <h3 class="font-bold text-lg mb-4">Entornos Cubiertos</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white p-4 rounded-lg shadow-sm border flex items-center">
-                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                <div class="w-6 h-6 bg-blue-700 rounded-full"></div>
-                            </div>
-                            <div>
-                                <h4 class="font-medium">Sistemas Enterrados</h4>
-                                <p class="text-sm text-gray-600">Tuberías bajo tierra en diversos suelos</p>
-                            </div>
+                <div class="card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="icon-bg mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 11.667 0l3.181-3.183m-4.991-2.696V7.965M12 12v5.952m0 0H9m3 0h3m-3 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
+                            </svg>
                         </div>
-                        
-                        <div class="bg-white p-4 rounded-lg shadow-sm border flex items-center">
-                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                <div class="w-6 h-6 bg-blue-700 rounded-full"></div>
-                            </div>
-                            <div>
-                                <h4 class="font-medium">Sistemas Sumergidos</h4>
-                                <p class="text-sm text-gray-600">Tuberías en ambientes acuáticos</p>
-                            </div>
-                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Actualización y Uso Conjunto</h3>
                     </div>
+                    <p class="text-gray-600">Es crucial utilizar la <strong>última edición</strong> de la norma. Debe usarse junto con otras publicaciones relevantes de AMPP, NACE y SSPC para abordar situaciones específicas.</p>
                 </div>
-                
-                <div class="mt-8">
-                    <h3 class="font-bold text-lg mb-4">Valor de la Norma</h3>
-                    <div class="relative pt-1">
-                        <div class="flex mb-2 items-center justify-between">
-                            <div>
-                                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
-                                    Requisito Mínimo
-                                </span>
-                            </div>
-                            <div>
-                                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
-                                    Mejores Prácticas
-                                </span>
-                            </div>
+            </div>
+        </section>
+
+        <section id="revision" class="content-section hidden">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">3. Revisión Periódica y Relevancia Continua</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div class="card p-6 flex flex-col items-center justify-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Ciclo de Revisión Normativa</h3>
+                    <div class="chart-container">
+                        <canvas id="revisionCycleChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-gray-600">Acción requerida (reafirmar, revisar o retirar) a más tardar cada <strong>5 años</strong>.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="icon-bg mr-4">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                            </svg>
                         </div>
-                        <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
-                            <div style="width: 40%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-700">
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 italic text-center">
-                            La norma establece el umbral mínimo pero fomenta la implementación de prácticas superiores cuando sea posible
+                        <h3 class="text-xl font-semibold text-gray-800">Propósito e Impacto de la Revisión</h3>
+                    </div>
+                    <p class="text-gray-700 mb-3">La revisión periódica es fundamental para:</p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                        <li>Mantener la norma <strong>actualizada y relevante</strong>.</li>
+                        <li>Incorporar <strong>avances tecnológicos</strong> y nuevas investigaciones.</li>
+                        <li>Reflejar cambios en <strong>regulaciones</strong> y lecciones aprendidas.</li>
+                        <li>Asegurar que los profesionales usen la <strong>información más reciente</strong>.</li>
+                    </ul>
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <p class="font-semibold text-blue-700 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 align-text-bottom">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                            La revisión respalda la <strong>fiabilidad y utilidad</strong> de la norma, manteniéndola como una fuente autorizada.
                         </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Footer -->
-    <footer class="bg-gray-100 p-4 border-t">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-            <p class="text-sm text-gray-600 mb-2 md:mb-0">NACE SP0169-2024 | AMPP - Association for Materials Protection and Performance</p>
-            <p class="text-sm text-gray-500">Actualización Requerida: 2029</p>
-        </div>
+        </section>
+    </main>
+
+    <footer class="text-center mt-12 pt-8 border-t border-gray-300">
+        <p class="text-sm text-gray-500">Panel generado basado en NACE SP0169-2024 (Generalidades).</p>
     </footer>
 
     <script>
-        // JavaScript para la navegación
-        document.addEventListener('DOMContentLoaded', function() {
-            const navButtons = document.querySelectorAll('.nav-btn');
-            const sections = document.querySelectorAll('.section-content');
-            
-            navButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    
-                    // Desactivar todos los botones y secciones
-                    navButtons.forEach(btn => {
-                        btn.classList.remove('bg-blue-100', 'text-blue-800');
-                        btn.classList.add('hover:bg-gray-100');
+        const menuContainer = document.getElementById('menuContainer');
+        const contentSections = document.querySelectorAll('.content-section');
+        const homeBtn = document.getElementById('homeBtn');
+        const menuButtons = document.querySelectorAll('#menuContainer .menu-button');
+        
+        let revisionChartInstance = null; // To store the chart instance
+
+        function showMenu() {
+            menuContainer.classList.remove('hidden');
+            contentSections.forEach(section => section.classList.add('hidden'));
+            // Scroll to top when menu is shown
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showSection(sectionId) {
+            menuContainer.classList.add('hidden');
+            contentSections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            // Initialize chart if this is the revision section and chart is not yet created
+            if (sectionId === 'revision' && !revisionChartInstance) {
+                const ctxRevision = document.getElementById('revisionCycleChart');
+                if (ctxRevision) {
+                    revisionChartInstance = new Chart(ctxRevision, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Periodo Activo (hasta 5 años)', 'Punto de Revisión'],
+                            datasets: [{
+                                label: 'Ciclo de Revisión',
+                                data: [5, 0.5],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.7)',
+                                    'rgba(239, 68, 68, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(239, 68, 68, 1)'
+                                ],
+                                borderWidth: 1,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { font: { size: 12, family: 'Inter' } }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) { label += ': '; }
+                                            if (context.parsed !== null) {
+                                                if (context.label === 'Periodo Activo (hasta 5 años)') {
+                                                   label += context.raw + ' años para revisión';
+                                                } else {
+                                                   label += 'Acción de revisión';
+                                                }
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '60%'
+                        }
                     });
-                    
-                    sections.forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    
-                    // Activar el botón y sección actual
-                    this.classList.add('bg-blue-100', 'text-blue-800');
-                    this.classList.remove('hover:bg-gray-100');
-                    document.getElementById(targetId).classList.add('active');
-                });
+                } else {
+                    console.error("Element with ID 'revisionCycleChart' not found when trying to initialize chart.");
+                }
+            } else if (sectionId === 'revision' && revisionChartInstance) {
+                // Optional: If chart needs to be updated when re-shown
+                // revisionChartInstance.update(); 
+            }
+             // Scroll to the top of the content section
+            window.scrollTo({ top: document.getElementById(sectionId).offsetTop - document.querySelector('header').offsetHeight - 20, behavior: 'smooth' });
+
+        }
+
+        homeBtn.addEventListener('click', showMenu);
+
+        menuButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const sectionId = button.getAttribute('data-section');
+                showSection(sectionId);
             });
         });
+
+        // Initial state: Show menu
+        document.addEventListener('DOMContentLoaded', () => {
+            showMenu();
+        });
+        
+        // Simple message display function
+        function showMessage(message, duration = 3000) {
+            const messageBox = document.getElementById('customMessageBox');
+            if (messageBox) {
+                messageBox.textContent = message;
+                messageBox.style.display = 'block';
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, duration);
+            } else {
+                console.log("Message Box:", message);
+            }
+        }
+
+        // Ensure canvas resizes correctly if container size changes
+        window.addEventListener('resize', () => {
+            if (revisionChartInstance && !document.getElementById('revision').classList.contains('hidden')) {
+                 revisionChartInstance.resize();
+            }
+        });
+
     </script>
 </body>
 </html>
